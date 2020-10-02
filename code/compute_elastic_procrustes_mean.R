@@ -1,3 +1,8 @@
+library(elasdics)
+library(mgcv)
+library(dplyr)
+library(shapeboost)
+
 set.seed(18)
 
 # Simulate open planar curves
@@ -43,24 +48,59 @@ fit_procrustes_mean <- function(srv_data_curves, knots, max_iter, type, eps)
     c(srv_data_curve$t, 1)
   })
   coefs <- 0
+  
+  # NEW: requirements (as of now)
+  require(mgcv)
+  require(dplyr)
+  require(shapeboost)
+  
+  # NEW: Build id column, super hacky way. This is bullshit (but it works)
+  ids <- do.call(c, lapply(t_optims, function(x) length(x)-1))  #note: t_optimns has 1 more
+  ids <- rbind(1:length(ids), ids)
+  ids <- apply(ids, 2, function(x) rep(x[1], times = x[2]))
+  ids <- do.call(c, ids)
+  
+  # NEW: Build arg grid for numerical integration
+  arg.grid <- seq(0,1, len = 50)
+  
   for (i in 1:max_iter) {
     model_data <- get_model_data(t_optims, srv_data_curves, knots, type)
     coefs_old <- coefs
     
     if (i == 2){
-      # Build id column, super hacky way. This is bullshit (but it works)
-      ids <- do.call(c, lapply(t_optims, function(x) length(x)-1))  #note: t_optimns has 1 more
-      ids <- rbind(1:length(ids), ids)
-      ids <- apply(ids, 2, function(x) rep(x[1], times = x[2]))
-      ids <- do.call(c, ids)
-
       # BUILD RESPONSE AND DESIGN MATRIX
+      
+      # x,y to complex, add id column
       model_data_complex <- complex(re = model_data[,2], im = model_data[,3]) %>% 
           matrix(nrow = dim(model_data)[1])
-      model_data_complex <- data.frame(id = ids, m_long = model_data$m_long, q_m_long_complex = model_data_complex)
+      model_data_complex <- data.frame(id = ids, m_long = model_data$m_long, q_m_long = model_data_complex)
       
-      print(model_data_complex)
+      # build response on s,t-grid per curve
+      cov_dat <- lapply(split(model_data_complex, model_data_complex$id), function(x) {
+        combs <- combn(1:nrow(x), 2)
+        data.frame(
+          qq = x$q_m_long[combs[1,]] * Conj(x$q_m_long[combs[2,]]),
+          t = x$m_long[combs[1,]],
+          s = x$m_long[combs[2,]]
+        )
+      })
+      cov_dat <- do.call(rbind, cov_dat)
       
+      # fit cov surface
+      # ToDo: Check k, knots, cyclic!
+      cov_fit_re <- bam( Re(qq) ~ s(t, s, bs = "sps", k = length(knots)),
+                         data = cov_dat )
+      cov_fit_im <- bam( Im(qq) ~ -1 + s(t, s, bs = "sps", k = length(knots), xt = list(skew = TRUE)),
+                         data = cov_dat )
+      
+      # predict smoothed covariance
+      cov_dat <- expand.grid(t = arg.grid, s = arg.grid)
+      yy <- matrix( complex(
+          real = predict(cov_fit_re, newdata = cov_dat),
+          imaginary = predict(cov_fit_im, newdata = cov_dat) ),
+        ncol = length(arg.grid) )
+      
+    
     }
     
     # TAKE MODEL_DATA AND COMPUTE PROCRUSTES MEAN
