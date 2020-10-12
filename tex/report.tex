@@ -1,0 +1,95 @@
+\documentclass[a4paper,12pt]{article}
+
+%% Packages
+% Document margins/formating
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{setspace} 
+\setstretch{1.5} % Zeilenabstand definieren
+% Language and fonts
+\usepackage[utf8]{inputenc} % Allows Umlauts
+\usepackage[T1]{fontenc} % western enc. Improves wordsplitting
+\usepackage[english]{babel} % Set language
+\usepackage[sc]{mathpazo} % Use the Palatino font
+\usepackage{microtype} % Slightly tweak font spacing for aesthetics
+\usepackage{mathtools}
+% Additional formating (optional)
+\usepackage[bf]{titlesec}
+\usepackage[hang, small,labelfont=bf,up,up]{caption} % Custom captions 
+% Bibliography
+\usepackage[backend=biber,style=authoryear,sorting=nyt]{biblatex}
+\usepackage[autostyle,autopunct]{csquotes} % For Quotations
+\renewcommand{\mkcitation}[1]{#1} % For correct footcites with csquotes
+\renewcommand*{\mkbibnamefamily}[1]{\textsc{#1}} % For small caps author names
+\addbibresource{references.bib} % Name of Biblatex file
+% Table formating
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{booktabs}
+\setlength{\heavyrulewidth}{1.5pt}
+\setlength{\abovetopsep}{4pt}
+% Additional packages
+\usepackage[hidelinks]{hyperref} % For hyperlinks in the PDF
+\usepackage{tikz}
+\usepackage{import}
+\usepackage{enumitem} 
+\usepackage{verbatim}
+\usepackage{siunitx}
+\usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage{color}
+\usepackage{transparent}
+\usepackage{comment}
+\usepackage{tcolorbox}
+
+
+\newcommand{\matr}[1]{\mathbf{#1}} % undergraduate algebra version
+
+
+
+%% The document starts here!
+\begin{document}
+
+
+\begin{titlepage}
+
+  \begin{center}
+  {\LARGE\textbf{Elastic Full Procrustes Means for Sparse and Irregular Planar Curves}}
+  \vspace{0.7cm}\\
+  {\large Master Thesis}
+  \vspace{0.7cm}\\
+  \textsc{Manuel Pfeuffer\footnote{\url{pfeuferm@hu-berlin.de}, Matriculation Number: 577668}}
+  \vspace{0.1cm}\\
+  12th October 2020, Berlin
+  \vspace{1cm}\\
+
+  \vfill
+  \end{center}
+
+  \noindent \textbf{Advisor:} Prof. Sonja Greven
+  \vspace{0.5em}
+
+\end{titlepage}
+
+
+\tableofcontents
+\newpage
+
+
+\section{Introduction}
+\label{sec:intro}
+\input{sections/1-introduction}
+
+
+\appendix
+\newpage
+\section{Appendix}
+\label{app}
+\input{sections/a-appendix}
+
+
+\newpage
+\nocite{*}
+\printbibliography[heading=bibintoc] % Insert bilbiography and create toc entry
+
+
+\end{document}
