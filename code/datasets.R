@@ -69,7 +69,7 @@ curves.digit3 <- function(rotate = FALSE, scale = FALSE, center = TRUE){
     
     data_curves <- shapes::digit3.dat
     data_curves <- apply(data_curves, MARGIN = 3, FUN = function(i){
-      data.frame(V1 = i[,1], V2 = i[,2])
+      data.frame(X1 = i[,1], X2 = i[,2])
     })
     
     # Apply random rotation, random scaling, centering.
