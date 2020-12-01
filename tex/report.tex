@@ -1,4 +1,4 @@
-\documentclass[a4paper,12pt]{article}
+\documentclass[a4paper,12pt,pagesize,DIV=calc,smallheadings,english]{article}
 
 %% Packages
 % Document margins/formating
@@ -9,12 +9,18 @@
 \usepackage[utf8]{inputenc} % Allows Umlauts
 \usepackage[T1]{fontenc} % western enc. Improves wordsplitting
 \usepackage[english]{babel} % Set language
-\usepackage[sc]{mathpazo} % Use the Palatino font
-\usepackage{microtype} % Slightly tweak font spacing for aesthetics
+\usepackage[tracking=true]{microtype} % Slightly tweak font spacing for aesthetics
+\DeclareMicrotypeSet*[tracking]{my}% Anleitung lesen um das zu verstehen.
+  { font = */*/*/sc/* }%
+\SetTracking{ encoding = *, shape = sc }{ 45 }%
+\usepackage[osf,sc]{mathpazo} % Use the Palatino font
+\usepackage{ellipsis} % Slightly tweak spacing for \dots
+% Math fonts and symbols
 \usepackage{mathtools}
+\usepackage{bm} % For bolding mathsymbols and letters
 % Additional formating (optional)
 \usepackage[bf]{titlesec}
-\usepackage[hang, small,labelfont=bf,up,up]{caption} % Custom captions 
+\usepackage[margin=15pt,hang,small,labelfont={bf,sf},up,up]{caption} % Custom captions 
 % Bibliography
 \usepackage[backend=biber,style=authoryear,sorting=nyt]{biblatex}
 \usepackage[autostyle,autopunct]{csquotes} % For Quotations
@@ -41,8 +47,6 @@
 \usepackage{comment}
 \usepackage{tcolorbox}
 
-
-\newcommand{\matr}[1]{\mathbf{#1}} % undergraduate algebra version
 
 
 
@@ -75,7 +79,7 @@
 \newpage
 
 
-\section{Introduction}
+\section{Basics Write-Up}
 \label{sec:intro}
 \input{sections/1-introduction}
 
