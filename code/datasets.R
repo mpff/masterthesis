@@ -83,6 +83,6 @@ curves.digit3 <- function(rotate = FALSE, scale = FALSE, center = TRUE){
         data_curves <- lapply(data_curves, center_curve)
     }
     
-    return(d3_curves)
+    return(data_curves)
 }
 
