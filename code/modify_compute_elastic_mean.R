@@ -2,14 +2,15 @@
 # Add proc2d parameter to 'compute_elastic_mean'. #
 #   if true: use 'fit_mean_proc2d'                #
 ###################################################
-compute_elastic_mean_modified <- function(data_curves, 
+compute_elastic_mean <- function(data_curves, 
                                         knots = seq(0, 1, len = 5),
                                         type = c("smooth", "polygon"), 
                                         closed = FALSE,
                                         proc2d = FALSE,
                                         eps = 0.01,
                                         pen_factor = 100,
-                                        max_iter = 50) {
+                                        max_iter = 50)
+{
 
   lapply(data_curves, function(data_curve) {
     if ("t" %in% names(data_curve)) 
@@ -99,6 +100,7 @@ compute_elastic_mean_modified <- function(data_curves,
   elastic_mean$t_optims <- NULL
   if (proc2d){
       # This is new.
+      elastic_mean$procrustes_curves <- NULL
       elastic_mean$G_optims <- NULL  # Rotation
       elastic_mean$b_optims <- NULL  # Scale
   }
@@ -266,8 +268,5 @@ fit_mean_proc2d <- function(srv_data_curves, knots, max_iter, type, eps)
 ##################################################################
 
 # Add both to namespace.
-environment(compute_elastic_mean_modified) <- asNamespace('elasdics')
+environment(compute_elastic_mean) <- asNamespace('elasdics')
 environment(fit_mean_proc2d) <- asNamespace('elasdics')
-
-# Switch out old compute_elastic_mean function.
-assignInNamespace("compute_elastic_mean", compute_elastic_mean_modified, ns = "elasdics")
