@@ -100,9 +100,9 @@ compute_elastic_mean <- function(data_curves,
   elastic_mean$t_optims <- NULL
   if (proc2d){
       # This is new.
-      elastic_mean$procrustes_curves <- NULL
-      elastic_mean$G_optims <- NULL  # Rotation
-      elastic_mean$b_optims <- NULL  # Scale
+      #elastic_mean$procrustes_fits
+      #elastic_mean$G_optims <- NULL  # Rotation
+      #elastic_mean$b_optims <- NULL  # Scale
   }
   class(elastic_mean) <- "elastic_mean"
   elastic_mean
@@ -123,14 +123,12 @@ fit_mean_proc2d <- function(srv_data_curves, knots, max_iter, type, eps)
   require(dplyr)
   require(shapeboost)
     
-    
+  # OLD: initialize t_optimns and coefs.
   t_optims <- lapply(srv_data_curves, function(srv_data_curve) {
     c(srv_data_curve$t, 1)
   })
   coefs <- 0
-  
 
-  
   # NEW: Build id column, super hacky way. THIS NEEDS REWORK!
   ids <- do.call(c, lapply(t_optims, function(x) length(x)-1))  #note: t_optims has 1 more
   ids <- rbind(1:length(ids), ids)
@@ -141,10 +139,16 @@ fit_mean_proc2d <- function(srv_data_curves, knots, max_iter, type, eps)
   arg.grid <- seq(0,1, len = 200)
   
   for (i in 1:max_iter) {
+    
+    # OLD: Evaluate the srv_data_curves at points t_optims. Get q(m_optim).
     model_data <- get_model_data(t_optims, srv_data_curves, knots, type)
     coefs_old <- coefs
     
-    # NEW: Fit Procrustes Mean
+    
+    #######################
+    # Fit Procrustes Mean #
+    #######################
+      
     # x,y to complex, add id column
     model_data_complex <- complex(re = model_data[,2], im = model_data[,3]) %>% 
       matrix(nrow = dim(model_data)[1])
@@ -178,7 +182,11 @@ fit_mean_proc2d <- function(srv_data_curves, knots, max_iter, type, eps)
     ei <- eigen(yy)
     mu <- data.frame(t = arg.grid, X1 = Re(ei$vectors[,1]), X2 = Im(ei$vectors[,1]))
     
-    # calculate procrustes fit of srv data curves
+      
+    ###################################
+    # Calculate Procrustes SRV Curves #
+    ###################################
+      
     procrustes_fits <- lapply(srv_data_curves, function(x) {
       mu_eval_x1 <- splinefun(x=mu$t, y=mu$X1, method="natural",  ties = mean)(x$t)
       mu_eval_x2 <- splinefun(x=mu$t, y=mu$X2, method="natural",  ties = mean)(x$t)
@@ -190,54 +198,47 @@ fit_mean_proc2d <- function(srv_data_curves, knots, max_iter, type, eps)
       data.frame(t = x$t, X1 = Re(x$complex), X2 = Im(x$complex))
     })
     
-    # Diagnostic plots.
-    #plot.new( )
-    #plot.window( xlim=c(-0.002,0.002), ylim=c(-0.002,0.002), asp = 1)
-    #mu_test <- get_points_from_srv(mu)
-    #data_curves_procrustes <- lapply(procrustes_fits, get_points_from_srv)
-    #lapply(data_curves_procrustes, lines, col = "gray")
-    #lines(mu_test, type = "l", col = "blue", lwd = 2)
     
-    # Prepare for warping (coefs + srv_data_curves)
+    #######################
+    # Prepare for Warping #
+    #######################
+      
     mu_knots_x1 <- splinefun(x=mu$t, y=mu$X1, method="natural",  ties = mean)(knots)
     mu_knots_x2 <- splinefun(x=mu$t, y=mu$X2, method="natural",  ties = mean)(knots)
     coefs <- as.matrix(data.frame(q_m_long.X1 = mu_knots_x1, q_m_long.X2 = mu_knots_x2))
     srv_data_curves <- procrustes_fits
-    ### PROCRUSTES MEAN FINISH!
-    
-    # Old mean calculation!
-    #coefs <- apply(model_data[, -1], 2, function(q_m_x_long) {
-    #  q_m_x_long[!is.finite(q_m_x_long)] <- NA
-    #  coef(lm(q_m_x_long ~ -1 + make_design(model_data[,1], knots = knots, closed = FALSE, type = type)))
-    #})
+
+      
+    # OLD: Stopping criteria step.
     stop_crit <- sum((coefs - coefs_old)^2)/sum(coefs^2)
     if (stop_crit < eps | max_iter == 0) {
       
-      # NEW: Diagnostic plots.
-      plot.new()
-      plot.window( xlim=c(-0.002,0.002), ylim=c(-0.002,0.002), asp = 1)
-      mu_test <- get_points_from_srv(mu)
+      # NEW (temporary): Diagnostic plot. Plot Procrusts Mean and Fit
+      #plot.new()
+      #plot.window( xlim=c(-0.002,0.002), ylim=c(-0.002,0.002), asp = 1)
+      #mu_test <- get_points_from_srv(mu)
       data_curves_procrustes <- lapply(procrustes_fits, get_points_from_srv)
-      lapply(data_curves_procrustes, lines, col = "gray")
-      lines(mu_test, type = "l", col = "blue", lwd = 2)
+      #lapply(data_curves_procrustes, lines, col = "gray")
+      #lines(mu_test, type = "l", col = "blue", lwd = 2)
       # FINISH
       
       rownames(coefs) <- NULL
       colnames(coefs) <- colnames(srv_data_curves[[1]][,-1])
-      return(list(type = type, coefs = coefs, knots = knots, 
-                  t_optims = t_optims))
+      return(list(type = type, coefs = coefs, knots = knots,  # Note: also return procrustes_fits. TODO: G,b!
+                  t_optims = t_optims, procrustes_fits = data_curves_procrustes))
     }
     if (type == "smooth") {
       pfun <- function(t) {
-        t(make_design(t, knots = knots, closed = FALSE, 
-                      type = type) %*% coefs)
+        t(make_design(t, knots = knots, closed = FALSE, type = type) %*% coefs)
       }
       t_optims <- lapply(1:length(srv_data_curves), function(j) {
-        t_optim <- find_optimal_t(srv_curve = pfun, s = c(srv_data_curves[[j]]$t, 
-                                                          1), q = t(srv_data_curves[[j]][, -1]), initial_t = t_optims[[j]], 
-                                  eps = eps * 100/i)
-        attr(t_optim, "dist_to_mean") <- attr(t_optim, 
-                                              "dist")
+        t_optim <- find_optimal_t(srv_curve = pfun,
+                                  s = c(srv_data_curves[[j]]$t,1), 
+                                  q = t(srv_data_curves[[j]][, -1]), 
+                                  initial_t = t_optims[[j]], 
+                                  eps = eps * 100/i
+                                 )
+        attr(t_optim, "dist_to_mean") <- attr(t_optim, "dist")
         attr(t_optim, "dist") <- NULL
         t_optim
       })
@@ -245,10 +246,12 @@ fit_mean_proc2d <- function(srv_data_curves, knots, max_iter, type, eps)
     else {
       t_optims <- lapply(1:length(srv_data_curves), function(j) {
         t_optim <- find_optimal_t_discrete(r = knots, 
-                                           p = t(coefs), s = c(srv_data_curves[[j]]$t, 
-                                                               1), q = t(srv_data_curves[[j]][, -1]), initial_t = t_optims[[j]])
-        attr(t_optim, "dist_to_mean") <- attr(t_optim, 
-                                              "dist")
+                                           p = t(coefs), 
+                                           s = c(srv_data_curves[[j]]$t, 1),
+                                           q = t(srv_data_curves[[j]][, -1]),
+                                           initial_t = t_optims[[j]]
+                                          )
+        attr(t_optim, "dist_to_mean") <- attr(t_optim, "dist")
         attr(t_optim, "dist") <- NULL
         t_optim
       })
@@ -258,10 +261,13 @@ fit_mean_proc2d <- function(srv_data_curves, knots, max_iter, type, eps)
   rownames(coefs) <- NULL
   colnames(coefs) <- colnames(srv_data_curves[[1]][, -1])
   
-  return(list(type = type, coefs = coefs, knots = knots, t_optims = t_optims))
+  # NEW: also return procrustes fits.
+  data_curves_procrustes <- lapply(procrustes_fits, get_points_from_srv)
+  return(list(type = type, coefs = coefs, knots = knots, t_optims = t_optims, procrustes_fits = data_curves_procrustes))
 }
 
 
+               
 
 ##################################################################
 # Switch out original compute_elastic_mean with modified version #
