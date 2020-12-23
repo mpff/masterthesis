@@ -1,4 +1,225 @@
-We want to estimate the mean shape of a set of planar curves $y_1,\dots,y_n : [0,1] \rightarrow \mathbb{C}$.
+\subsection{Scalar Products}
+$V$ n-dimensional vector space with basis $B = (b_1, \dots, b_n)$, then any scalar product $\langle\cdot,\cdot\rangle$ on $V$ can be expressed using a $(n \times n)$ matrix $G$, the Gram matrix of the scalar product. Its entries are the scalar products of the basis vectors:
+$$ G = (g_{ij})_{i,j=1,\dots,n} \quad \text{with} 
+  \quad g_{ij} = \langle b_i, b_j \rangle \quad \text{for}
+  \quad i,j = 1,\dots, n $$
+When vectors $x,y \in V$ are expressed with respect to the basis $B$ as
+$$ x = \sum_{i=1}^n x_i b_i \quad \text{and} \quad y = \sum_{i=1}^n y_i b_i $$
+the scalar product can be expressed using the Gram matrix, and in the complex case it holds that
+$$ \langle x, y \rangle = \sum^n_{i,j=1} \bar{x}_i y_j \langle b_i, b_j \rangle 
+  =\sum^n_{i,j=1} \bar{x}_i g_{ij} y_j = x^\dagger G y$$
+when $x_i,y_i \in \mathbb{C}$ for $i=1,\dots,n$ with $x^\dagger$ indicating the conjugate transpose of $x = (x_1, \dots, x_n)^T$. If $B$ is an \textit{orthonormal} basis, that is if $\langle b_i, b_j \rangle = \delta_{ij}$, it further holds that $\langle x,y \rangle = x^\dagger y$ as $G = \mathbb{1}_{n \times n}$.
+
+
+\subsection{Functional Scalar Products}
+This concept can be generalized for vectors in function spaces. Define the scalar product of two functions $f(t), g(t)$ as:
+$$ \langle f, g \rangle = \int_a^b \bar{f}(t) w(t) g(t) dt $$
+with weighting function $w(t)$ and $[a,b]$ depending on the function space. The scalar product has the following properties:
+\begin{enumerate}
+    \item $\langle f, g + h \rangle = \langle f,g \rangle + \langle f,h \rangle$
+    \item $\langle f, g \rangle = \overline{\langle g, f \rangle}$
+    \item $\langle f, cg \rangle = c \langle f,g \rangle$ or, using (2),
+        $\langle cf,g \rangle = \bar{c} \langle f,g \rangle$ for $c \in \mathbb{C}$
+\end{enumerate}
+If we have a functional basis $\{\phi_1, \dots , \phi_n\}$ (and possibly $n \to \infty$) of our function space we can also write the function $f$ as an expansion
+$$ f = \sum_{i=1}^n a_i \phi_i \quad \text{so that} \quad
+  f(t) = \sum_{i=1}^n a_i \phi_i (t)$$
+Additionally, if we have a \textit{orthongonal} basis, so that $\langle \phi_i, \phi_j \rangle = 0$ for $i \neq j$, we can take the scalar product with $\phi_k$ from the left
+$$ \langle \phi_k, f \rangle = \sum_{i=1}^n a_i \langle \phi_k, \phi_i \rangle =
+  a_k \langle \phi_k, \phi_k \rangle $$
+which yields the coefficients $a_k$: 
+$$ a_k = \frac{\langle \phi_k, f \rangle}{\langle \phi_k, \phi_k \rangle}$$
+
+For an \textit{orthonormal} basis it holds that $\langle \phi_i, \phi_j \rangle = \delta_{ij}$. Suppose that two functions $f,g$ are expanded in the same orthonormal basis:
+$$ f = \sum_{i=1}^n a_i \phi_i \quad \text{and} \quad 
+  g = \sum_{i=1}^n b_i \phi_i $$
+We can then write the scalar product as:
+$$ \langle f,g \rangle = 
+  \langle \sum_{i=1}^n a_i \phi_i, \sum_{i=1}^n b_i \phi_i \rangle = 
+  \sum_{i=1}^n \sum_{j=1}^n \hat{a}_i b_j \langle \phi_i, \phi_j \rangle =
+  \sum_{i=1}^n \bar{a}_i b_i = a^\dagger b$$
+for coefficient vectors $a, b \in \mathbb{C}^n$. This means that the functional scalar product reduces to a complex dot product. Additionally it holds that for the norm $||\cdot||$ of a function $f$:
+$$ ||f|| = \langle f,f \rangle^{\frac{1}{2}} = 
+  \sqrt{a^\dagger a} = \sqrt{\sum_{i=1}^n |a_i|^2}$$
+
+\section{FDA-Basics Recap}
+As discussed in the last section we can express a function $f$ in its \textit{basis function expansion} using a set of basis functions $\phi_k$ with $k=1,\dots,K$ and a set of coefficients $c_1,\dots,c_K$ (both possibly $\mathbb{C}$ valued e.g.\ in the case of $2D$-curves)
+$$ f = \sum_{k=1}^K c_k \phi_k = \bm{c'}\bm{\phi} $$
+where in the matrix notation $\bm{c}$ and $\bm{\phi}$ are the vectors containing the coefficients and basis functions.
+
+When considering a sample of $N$ functions $f_i$ we can write this in matrix notation as 
+$$ \bm{f} = \bm{C}\bm{\phi} $$
+where $C$ is a $(N \times K)$ matrix of coefficients and $\bm{f}$ is a vector containing the $N$ functions.
+
+\subsection{Smoothing by Regression}
+When working with functional data we can usually never observe a function $f$ directly and instead only observe discrete points $(x_i, t_i)$ along the curve, with $f(t_i) = x_i$.
+As we don't know the exact functional form of $f$, calculating the scalar products $\langle \phi_k, f \rangle$ and therefore calculating the coefficients $c_k$ of a given basis representation is not possible.
+
+However, we can estimate the basis coefficients using e.g.\ regression analysis an approach motivated by the error model
+$$ f(t_i) = \bm{c'}\bm{\phi(t_i)} + \epsilon_i $$
+If we observe our function $n$ times at $t_1,\dots,t_n$, we can estimate the coefficients from a least squares problem, where we try to minimize the deviation of the basis expansion from the observed values.
+Using matrix notation let the vector $\bm{f}$ contains the observed values $f(t_i)$, $i=1,\dots,n$ and $(n \times k)$ matrix $\bm{\Phi}$ contains the basis function values $\phi_k(t_i)$.
+Then we have
+$$ \bm{f} = \bm{\Phi}\bm{c} + \bm{\epsilon} $$
+with the estimate for the coefficient vector $\bm{c}$ given by
+$$ \hat{\bm{c}} = \left( \bm{\Phi'} \bm{\Phi}\right)^{-1} \bm{\Phi'} \bm{f}. $$
+Spline curves fit in this way are often called \textit{regression splines}.
+
+
+\subsection{Common Basis Representations}
+\paragraph{Piecewise Polynomials (Splines)}
+Splines are defined by their range of validity, the knots, and the order.
+Their are constructed by dividing the area of observation into subintervals with boundaries at points called \textit{breaks}.
+Over any subinterval the spline function is a polynomial of fixed degree or order.
+The term \textit{degree} refers to the highest power in the polynomial while its \textit{order} is one higher than its degree.
+E.g.\ a line has degree one but order two because it also has a constant term. 
+\textbf{[\dots]}
+
+
+\paragraph{Polygonal Basis}
+\textbf{[\dots]}
+
+
+\subsection{Bivariate Functional Data}
+The analogue of covariance matrices in MVA are covariance surfaces $\sigma(s,t)$ whose values specify the covariance between values $f(s)$ and $f(t)$ over a population of curves.
+We can write these bivariate functions in a \textit{bivariate basis expansion} $$ r(s,t) = \sum_{k=1}^K \sum_{l=1}^K b_{k,l} \phi_k(s) \psi_l(t) 
+  = \bm{\phi}(s)' \bm{B} \bm{\psi}(t) $$
+with a $K \times K$ coefficient matrix $B$ and two sets of basis functions $\phi_k$ and $\psi_l$ using \textit{Tensor Product Splines}
+$$ B_{k,l}(s,t) = \phi_k(s) \psi_l(t).$$
+
+
+
+\newpage
+\section{The Full Procrustes Mean for Planar Curves}
+Let $\beta$ be a continuous planar curve. It can be represented in a parameterized form in $\mathbb{R}^2$ as
+$$ \beta : [0,1] \rightarrow \mathbb{R}^2,\quad \beta(t) = ( x(t), y(t)) \,, $$
+where $x, y$ are scalar-valued \textit{coordinate functions} of $\beta$ and $t$ is the parameter.
+We can similarly represent it using the complex numbers $\mathbb{C}$ as
+$$ \beta : [0,1] \rightarrow \mathbb{C},\quad \beta(t) = x(t) + iy(t) \,, $$
+with the benefit that complex notation is often much simpler to use in the 2D case.
+
+For a set of planar curves $\beta_1,\dots,\beta_n : [0,1] \rightarrow \mathbb{C}$ the \textit{full Procrustes mean} $\hat{\mu}$ is defined as the curve minimizing the sum of squared \textit{full Procrustes distances} from each $y_i$ to an unknown unit size mean configuration $\mu$, that is
+$$ \hat{\mu} = \argmin_{\mu:[0,1]\rightarrow\mathbb{C}} \sum_{i=1}^n d^2_F(\mu,¸\beta_i) 
+  \quad\text{s.t.}\,\, ||\mu||^2 = 1\,.$$
+
+\subsection{The Full Procrustes Distance}
+Consider two curves $\beta_1, \beta_2 : [0,1] \rightarrow \mathbb{C}$ with $\langle \beta_1, \mathbb{1} \rangle = \langle \beta_2, \mathbb{1} \rangle = 0$ where $\mathbb{1}$ is the constant function $\mathbb{1}(t) = 1$ for all $t \in [0,1]$.
+Then $\beta_1$ and $\beta_2$ can be considered to be centered as
+$$ \langle \beta_1, \mathbb{1} \rangle 
+  = \int_0^1 \bar{\beta_1}(t)\mathbb{1}(t)dt\\
+  = \int_0^1 \bar{\beta_1}(t)dt 
+  = \int_0^1 (y(t) + i x(t))dt
+  = \underbrace{\int_0^1 y(t)dt}_{\stackrel{!}{=}0} + i \underbrace{\int_0^1 x(t)dt}_{\stackrel{!}{=}0} = 0 $$
+
+Then the full procrustes distance of $\beta_1, \beta_2$ is given by their minimum distance controlling for translation $\gamma \in \mathbb{C}$, and scaling and rotation $\omega = b e^{i\theta} \in \mathbb{C}$:
+\begin{align*}
+d_F^2 =& \min_{\omega,\gamma \in \mathbb{C}} ||\beta_1 - \gamma \mathbb{1} - \omega \beta_2 ||^2 \\
+  =& \min_{\omega,\gamma \in \mathbb{C}} \langle\beta_1 - \gamma \mathbb{1} - \omega \beta_2, \beta_1 - \gamma \mathbb{1} - \omega \beta_2 \rangle \\
+  =& \min_{\omega,\gamma \in \mathbb{C}}
+    \langle \beta_1 - \omega \beta_2, \beta_1 - \omega \beta_2 \rangle
+    - \underbrace{\langle \beta_1, \gamma \mathbb{1} \rangle}_{=\,0}
+    - \underbrace{\langle \gamma \mathbb{1}, \beta_1 \rangle}_{=\,0}
+    + \underbrace{\langle \gamma \mathbb{1}, \omega \beta_2 \rangle}_{=\,0}
+    + \underbrace{\langle \omega \beta_2, \gamma \mathbb{1} \rangle}_{=\,0}
+    + \underbrace{\langle \gamma \mathbb{1}, \gamma \mathbb{1} \rangle}_{=||\gamma \mathbb{1}||^2} \\
+  \stackrel{\gamma=0}{=}& \min_{\omega \in \mathbb{C}}\,
+    \langle \beta_1, \beta_1 \rangle 
+    + \langle \omega \beta_2, \omega \beta_2 \rangle
+    - \langle \beta_1, \omega \beta_2 \rangle
+    - \langle \omega \beta_2, \beta_1 \rangle \\
+  =& \min_{\omega \in \mathbb{C}}\,
+    \langle \beta_1, \beta_1 \rangle 
+    + |\omega|^2 \langle \beta_2, \beta_2 \rangle
+    - \omega \langle \beta_1, \beta_2 \rangle
+    - \overline{\omega} \langle \beta_2, \beta_1 \rangle
+\end{align*}
+To find $\omega \in \mathbb{C}$ that minimizes $||\beta_1 - \omega \beta_2||^2$ we first consider the part of the problem dependent on $\theta$. We need to solve
+$$ \min_{\omega \in \mathbb{C}} 
+  - \omega \langle \beta_1, \beta_2 \rangle
+  - \overline{\omega} \langle \beta_2, \beta_1 \rangle  = 
+\max_{\omega \in \mathbb{C}}
+  \omega \langle \beta_1, \beta_2 \rangle
+  + \overline{\omega} \langle \beta_2, \beta_1 \rangle $$
+by using $\omega = b e^{i\theta}$ and $\langle \beta_1, \beta_2 \rangle = a e^{i\phi}$:
+\begin{align*}
+\max_{\omega \in \mathbb{C}}
+  \omega \langle \beta_1, \beta_2 \rangle
+  + \overline{\omega} \langle \beta_2, \beta_1 \rangle
+=& \max_{b \in \mathbb{R}^+, \theta \in [0,2\pi]}
+  b e^{i\theta} a e^{i\phi} + b e^{-i\theta} a e^{-i\phi} \\
+=& \max_{b \in \mathbb{R}^+, \theta \in [0,2\pi]}
+  b e^{i\theta} a e^{i\phi} + b e^{-i\theta} a e^{-i\phi} \\
+=& \max_{b \in \mathbb{R}^+, \theta \in [0,2\pi]}
+ 2 b a \cos\left(\theta +\phi\right)\\
+\stackrel{\theta = -\phi}{=}& \max_{b \in \mathbb{R}^+}
+ 2 b a 
+\end{align*}
+and using $\theta = -\phi$ the original mimization problem therefore simplifies to
+\begin{align*}
+d_F^2 =& 
+\min_{b \in \mathbb{R}^+}\,
+  \langle \beta_1, \beta_1 \rangle 
+  + b^2 \langle \beta_2, \beta_2 \rangle
+  - 2 b a \\
+\frac{\partial d_F^2}{\partial b} =& \,
+  2 b \langle \beta_2, \beta_2 \rangle - 2a \stackrel{!}{=} 0 \\
+\Rightarrow \quad & b = \frac{a}{\langle \beta_2, \beta_2 \rangle}
+\end{align*}
+And for the \textit{full Procrustes distance} it follows that
+$$ d_F^2 
+= \langle \beta_1, \beta_1 \rangle - \frac{a^2}{\langle \beta_2, \beta_2 \rangle}
+= \langle \beta_1, \beta_1 \rangle - \frac{ \langle \beta_1, \beta_2 \rangle \langle \beta_2, \beta_1 \rangle}{\langle \beta_2, \beta_2 \rangle}$$
+As this expression is not symmetric in $\beta_1$ and $\beta_2$ we can take the curves to be of unit length with $\tilde{\beta}_j = \frac{\beta_j}{||\beta_j||}$, $j=1,2$ with $||\beta_j|| = \sqrt{\langle \beta_j, \beta_j \rangle}$, so that $\langle \tilde\beta_1, \tilde\beta_1 \rangle = \langle \tilde\beta_2, \tilde\beta_2 \rangle = 1$ and obtain a suitable measure of distance:
+$$ d_F = \sqrt{1 - \langle \tilde\beta_1, \tilde\beta_2 \rangle
+                   \langle \tilde\beta_2, \tilde\beta_1 \rangle}
+       = \sqrt{1 - \frac{ \langle \beta_1, \beta_2 \rangle \langle \beta_2, \beta_1 \rangle}{\langle \beta_1, \beta_1 \rangle \langle \beta_2, \beta_2 \rangle}}$$
+
+
+
+
+\subsection{The Full Procrustes mean}
+Again, for a set of planar curves $\beta_1,\dots,\beta_n : [0,1] \rightarrow \mathbb{C}$ the \textit{full Procrustes mean} $\hat{\mu}$ is defined as the curve minimizing the sum of squared \textit{full Procrustes distances} from each $\beta_i$ to an unknown unit size mean configuration $\mu$, that is
+\begin{align*}
+  \hat{\mu} =& \argmin_{\mu:[0,1]\rightarrow\mathbb{C}} \sum_{i=1}^n d^2_F(\mu,\beta_i) 
+    \quad\text{s.t.}\,\, ||\mu|| = 1 \\
+  =& \argmin_{\mu:[0,1]\rightarrow\mathbb{C}} \sum_{i=1}^n 1 - \frac{\langle \mu, \beta_i \rangle \langle \beta_i, \mu \rangle}{\langle \mu, \mu \rangle \langle \beta_i, \beta_i \rangle}
+    \quad\text{s.t.}\,\, ||\mu|| = 1 \\
+  =& \argmax_{\mu:[0,1]\rightarrow\mathbb{C}} \sum_{i=1}^n \langle \mu, \beta_i \rangle \langle \beta_i, \mu \rangle
+    \quad\text{s.t.}\,\, ||\mu|| = 1 \\
+  =& \argmax_{\mu:[0,1]\rightarrow\mathbb{C}} \sum_{i=1}^n 
+    \int_0^1 \bar\mu(t) \beta_i(t) dt \int_0^1 \bar\beta_i(s) \mu(s) ds
+    \quad\text{s.t.}\,\, ||\mu|| = 1 \\
+  =& \argmax_{\mu:[0,1]\rightarrow\mathbb{C}}  \int_0^1 \int_0^1 
+    \bar\mu(t) \underbrace{\left( \sum_{i=1}^n \beta_i(t) \bar\beta_i(s) \right)}_{\coloneqq \hat{C}(s,t)} \mu(s) dt ds
+    \quad\text{s.t.}\,\, ||\mu|| = 1 \\
+  =& \argmax_{\mu:[0,1]\rightarrow\mathbb{C}} \int_0^1 \bar\mu(t)
+  \underbrace{\int_0^1 \hat{C}(s,t) \mu(s) ds}_{\coloneqq \hat{A\mu}(t)} dt
+    \quad\text{s.t.}\,\, ||\mu|| = 1 \\
+  =& \argmax_{\mu:[0,1]\rightarrow\mathbb{C}}
+    \langle \mu, \hat{A\mu} \rangle
+    \quad\text{s.t.}\,\, ||\mu|| = 1 \\
+\end{align*}
+and using an orthonormal basis expansion $\hat{C}(s,t) = \sum_{k=1}^\infty \hat{c}_k \hat{\psi}_k(s) \hat{\psi}_k(t)$ \textbf{[Note: not sure about this...]}
+\begin{align*}
+  \hat{\mu}=& \argmax_{\mu:[0,1]\rightarrow\mathbb{C}}  \sum_{k=1}^\infty \int_0^1 \int_0^1 
+    \hat{c}_k \bar\mu(t) \hat\psi_k(t) \mu(s) \hat\psi_k(s) dt ds
+    \quad\text{s.t.}\,\, ||\mu|| = 1 \\
+  =& \argmax_{\mu:[0,1]\rightarrow\mathbb{C}}  \sum_{k=1}^\infty  
+    \hat{c}_k \langle\mu, \hat\psi_k \rangle \langle \bar\mu, \hat\psi_k \rangle
+    \quad\text{s.t.}\,\, ||\mu|| = 1 
+\end{align*}
+
+
+\textbf{[\dots]}
+
+When dealing with sparsely and irregularly sampled curves the calculation of the scalar products above becomes challenging.
+We can instead treat the empirical estimator above as an estimator for the 'population level' full Procrustes mean
+\begin{align*}
+\hat{\mu} =& \argmax_{\mu:||\mu||=1} \mathbb{E}[\langle \mu, B \rangle \langle B,\mu \rangle]\\
+  =& \argmax_{\mu:||\mu||=1}
+\end{align*}
+
+\subsection{Estimation of the covariance surface $C(s,t)$}
 Consider the following model for independent curves
 \begin{equation}
   Y_i(t_{ij}) = \mu(t_{ij}, \mathbf{x}_i) + E_i(t_{ij}) + \epsilon(t_{ij}),
