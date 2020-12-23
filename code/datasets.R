@@ -32,8 +32,8 @@ center_curve <- function (data_curve)
 
 # Datasets
 
-curves.spiral <- function(rotate = FALSE, scale = FALSE, center = TRUE){
-    # Dataset: Simulated spirals with random rotation and scaling.
+curves.spiral <- function(n_curves = 4, rotate = FALSE, scale = FALSE, center = TRUE){
+    # Dataset: Simulated spirals with optional random rotation and scaling.
     
     # Define spiral shape.
     curve <- function(t){
@@ -41,7 +41,7 @@ curves.spiral <- function(rotate = FALSE, scale = FALSE, center = TRUE){
     }
     
     # Transform to data curves format.
-    data_curves <- lapply(1:4, function(i){
+    data_curves <- lapply(1:n_curves, function(i){
       m <- sample(10:15, 1)
       delta <- abs(rnorm(m, mean = 1, sd = 0.05))
       t <- cumsum(delta)/sum(delta)

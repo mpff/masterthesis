@@ -125,7 +125,7 @@ fit_mean_proc2d <- function(srv_data_curves, knots, max_iter, type, eps)
   t_optims <- lapply(srv_data_curves, function(srv_data_curve) {
     c(srv_data_curve$t, 1)
   })
-  coefs <- 0
+  coefs_knots <- 0
     
   # NEW: initialize G_optimns as 0 and b_optimns as 1 (Rotation and Scale).
   # ToDo: calculate G,b instead of directly calculating the procrustes fits.
@@ -145,7 +145,7 @@ fit_mean_proc2d <- function(srv_data_curves, knots, max_iter, type, eps)
     
     # OLD: Evaluate the srv_data_curves at points t_optims. Get q(m_optim).
     model_data <- get_model_data(t_optims, srv_data_curves, knots, type)
-    coefs_old <- coefs
+    coefs_old <- coefs_knots
     
     
     #######################
@@ -183,14 +183,15 @@ fit_mean_proc2d <- function(srv_data_curves, knots, max_iter, type, eps)
     
     # calculate procrustes mean (leading eigenvector)
     ei <- eigen(yy)
-    coefs <- as.matrix(data.frame(q_m_long.X1 = Re(ei$vectors[,1]), q_m_long.X2 = Im(ei$vectors[,1])))
+    coefs_smooth <- as.matrix(data.frame(q_m_long.X1 = Re(ei$vectors[,1]), q_m_long.X2 = Im(ei$vectors[,1])))
+    coefs_knots <- make_design(knots, knots = arg.grid, closed = FALSE, type = type) %*% coefs_smooth
+    coefs_knots <- as.matrix(data.frame(q_m_long.X1 = coefs_knots[,1], q_m_long.X2 = coefs_knots[,2]))
     
       
     ###################################
     # Calculate Procrustes SRV Curves #
     ###################################
       
-    # ToDo: It might be better to calculate G_optim and b_optim on model data and afterwards transform srv_data_curves!
     procrustes_fits <- lapply(1:length(srv_data_curves), function(j) {
         # Grab warped srv_data_curve from model_data.
         x <- model_data[model_data_complex$id == j,]
@@ -198,7 +199,8 @@ fit_mean_proc2d <- function(srv_data_curves, knots, max_iter, type, eps)
         idx <- findInterval(arg.grid, x$m_long)
         idx.bool <- which(idx > 0 & idx < length(x$m_long))
         arg.grid.x <- arg.grid[idx.bool]
-        # Treat srv_data_curve as (piecewise) function and evaluate on overlap.
+        # Treat srv_data_curve as function and evaluate on overlap.
+        # Note: how to smooth srv_data_curve? -> depends on "type"
         q_coefs <- as.matrix(x[,-1])
         q_eval <- make_design(arg.grid.x, knots = x$m_long, closed = FALSE, type = type) %*% q_coefs
         q_eval <- complex(real = q_eval[,1], imaginary = q_eval[,2])
@@ -217,27 +219,25 @@ fit_mean_proc2d <- function(srv_data_curves, knots, max_iter, type, eps)
          
       
     # OLD: Stopping criteria step.
-    stop_crit <- sum((coefs - coefs_old)^2)/sum(coefs^2)
+    stop_crit <- sum((coefs_knots - coefs_old)^2)/sum(coefs_knots^2)
     if (stop_crit < eps | max_iter == 0) {
-      # NEW: calculate procrustes data curves and return with mean.
+      # NEW: calculate procrustes data curves on basis of srv.
       data_curves_procrustes <- lapply(procrustes_fits, get_points_from_srv)
-      # NEW: evaluate procrustes mean at knots (necessarry for elasdics::get_evals() !)
-      coefs_knots <- make_design(knots, knots = arg.grid, closed = FALSE, type = type) %*% coefs
-      coefs_knots <- as.matrix(data.frame(q_m_long.X1 = coefs_knots[,1], q_m_long.X2 = coefs_knots[,2]))
-      rownames(coefs) <- NULL
-      colnames(coefs) <- colnames(srv_data_curves[[1]][,-1])
+      data_curves_procrustes <- lapply(data_curves_procrustes, center_curve)
+      # Prepare output.
+      rownames(coefs_smooth) <- NULL
+      colnames(coefs_smooth) <- colnames(srv_data_curves[[1]][,-1])
       rownames(coefs_knots) <- NULL
       colnames(coefs_knots) <- colnames(srv_data_curves[[1]][,-1])
       return(list(type = type, coefs = coefs_knots, knots = knots,  # Note: also returns procrustes_fits. TODO: G,b!
                   t_optims = t_optims, G_optims = G_optims, b_optims = b_optims,
-                  coefs_smooth = coefs, knots_smooth = arg.grid,
+                  coefs_smooth = coefs_smooth, knots_smooth = arg.grid,
                   procrustes_fits_on_srv_basis = data_curves_procrustes))
-
     }
     # NEW: Calculate warping on the procrustes fits!
     if (type == "smooth") {
       pfun <- function(t) {
-        t(make_design(t, knots = arg.grid, closed = FALSE, type = type) %*% coefs)  # knots = arg.grid here!
+        t(make_design(t, knots = knots, closed = FALSE, type = type) %*% coefs_knots)  # knots = arg.grid here!
       }
       t_optims <- lapply(1:length(srv_data_curves), function(j) {
         t_optim <- find_optimal_t(srv_curve = pfun,
@@ -255,7 +255,7 @@ fit_mean_proc2d <- function(srv_data_curves, knots, max_iter, type, eps)
     else {
       t_optims <- lapply(1:length(srv_data_curves), function(j) {
         t_optim <- find_optimal_t_discrete(r = knots, 
-                                           p = t(coefs), 
+                                           p = t(coefs_knots), 
                                            s = c(procrustes_fits[[j]]$t, 1),
                                            q = t(procrustes_fits[[j]][, -1]),
                                            initial_t = t_optims[[j]]
@@ -270,18 +270,19 @@ fit_mean_proc2d <- function(srv_data_curves, knots, max_iter, type, eps)
                
   # NEW: calculate procrustes data curves on the basis of srv curves.
   data_curves_procrustes <- lapply(procrustes_fits, get_points_from_srv)
+  data_curves_procrustes <- lapply(data_curves_procrustes, center_curve)
   # NEW: evaluate procrustes mean at knots (necessarry for elasdics::get_evals() !)
   coefs_knots <- make_design(knots, knots = arg.grid, closed = FALSE, type = type) %*% coefs
   coefs_knots <- as.matrix(data.frame(q_m_long.X1 = coefs_knots[,1], q_m_long.X2 = coefs_knots[,2]))
-  rownames(coefs) <- NULL
-  colnames(coefs) <- colnames(srv_data_curves[[1]][,-1])
+  rownames(coefs_smooth) <- NULL
+  colnames(coefs_smooth) <- colnames(srv_data_curves[[1]][,-1])
   rownames(coefs_knots) <- NULL
   colnames(coefs_knots) <- colnames(srv_data_curves[[1]][,-1])
   # NEW: also return procrustes fits.
   data_curves_procrustes <- lapply(procrustes_fits, get_points_from_srv)
   return(list(type = type, coefs = coefs_knots, knots = knots,  # Note: also returns procrustes_fits. TODO: G,b!
               t_optims = t_optims, G_optims = G_optims, b_optims = b_optims,
-              coefs_smooth = coefs, knots_smooth = arg.grid, 
+              coefs_smooth = coefs_smooth, knots_smooth = arg.grid, 
               procrustes_fits_on_srv_basis = data_curves_procrustes))
 }
 
@@ -291,7 +292,7 @@ get_proc2d_fit <- function(data_curve, G, b)
 {
     # Procrustes fit: beta * e^(i*G) * curve
     names <- colnames(data_curve)
-    mat <- matrix(c(cos(G), sin(G), -sin(G), cos(G)), nrow = 2, ncol = 2)
+    mat <- matrix(c(cos(G), sin(G), - sin(G), cos(G)), nrow = 2, ncol = 2)
     data_curve.rot <- as.matrix(data_curve) %*% t(mat)
     data_curve.rot.scale <- b * data_curve.rot
     data_curve <- as.data.frame(data_curve.rot.scale)
