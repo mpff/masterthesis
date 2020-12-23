@@ -1,0 +1,39 @@
+
+Overfit:
+--------------------------------------------------------------------
+- im basiswechsel fit ?
+- check these parameters! 20x20 basis funktionen locker ausreichend.
+- Overfit der Covariance Glättung -> wieviele Basisfunktionen
+- Diagnostic: x,y (t) plot
+=> Richtungsentscheidung: arggrid oder finde bspline basis representation, schauen in mgcv welche basis intern benutzt wird!
+=> MGCV Basis anschauen. Almond schickt noch was. "smooth.construct" => check die sps function in almond's package!
+=> Eine Basis die sich durchzieht. Tensor Product Basis
+	=> Diskutieren! Aufschreiben.
+---------------------------------------------------------------------
+- Überlegen: Warum ist die Eigenfunktion der Covarianz-Basis ein Tensor-Produkt-Spline in der richtigen Basis.
+	=> Welche coefficienten hat die?
+
+
+Procrustes Fits:
+---------------------------------------------------------------------
+- plot funktion -> richtige skalierung und rotation.
+- eigenvector berechnung -> basismatrix in die transponiert wird ist nahe nicht invertierbar
+---------------------------------------------------------------------
+- Warping besser simulieren!! Bei dreiern: Zacke muss auf Zacke liegen!
+
+
+Herleitung:
+----------------------------------------------------------------------
+- Spektralnorm, Spektralnorm für kompakte Operatoren
+
+
+Datensatz: 
+----------------------------------------------------------------------
+- corpus colosum Datensatz (bisher fast nur ohne warping)
+- digits3: sparsity, echter Datensatz!
+
+
+Anmeldung:
+----------------------------------------------------------------------
+- Abgabe: 01. Juni 2021
+- entweder super ins Detail, oder
