@@ -1,4 +1,5 @@
 pkg/*
+formular/*
 
 
 # Ignore Jupyter Notebook checkpoints
