@@ -225,3 +225,38 @@ Consider the following model for independent curves
   Y_i(t_{ij}) = \mu(t_{ij}, \mathbf{x}_i) + E_i(t_{ij}) + \epsilon(t_{ij}),
     \quad j = 1,\dots,D_i, \, i = 1,\dots,n,
 \end{equation}
+\textbf{[Fast symmetric additive cov smoothing, skew-symmetry, population vs. sample, etc.]}
+
+\newpage
+\subsection{The Full Procrustes Mean in a fixed basis}
+To avoid having to sample the estimated covariance surface $\hat{C}(s,t)$ on a large grid when calculating its leading eigenfunction, it might be preferable to calculate this eigenfunction from the vector of basis coefficients directly.
+
+After choosing a basis representation $B$ with basis functions $b_j(t)$, $j = 1,\dots,k$ we want to estimate coefficients $\theta_j \in \mathbb{C}$ so that the Full Procrustes mean is given by $\hat{\mu}(t) = \sum_{j=1}^k \hat{\theta}_j \beta_j(t) = b^T \hat{\theta}$:
+\begin{align*}
+  \hat{\mu} =& \argmax_{\theta : ||b^T\theta||=1} \sum_{i=1}^n \langle b^T\theta, \beta_i \rangle \langle \beta_i, b^T\theta \rangle \\
+  =& \argmax_{\theta : ||b^T\theta||=1} \sum_{k,l} \sum_{i=1}^n \langle b_k \theta_k, \beta_i \rangle \langle \beta_i, b_l \theta_l \rangle \\
+  =& \argmax_{\theta : ||b^T\theta||=1} \sum_{k,l} \bar{\theta}_k \theta_l \sum_{i=1}^n \langle b_k, \beta_i \rangle \langle \beta_i, b_l \rangle \\
+  =& \argmax_{\theta : ||b^T\theta||=1} \bar{\theta}^T S \theta \\
+\end{align*}
+with $S = \left\{ \sum_{i=1}^n \langle b_k, \beta_i \rangle \langle \beta_i, b_l \rangle \right\}_{k,l}$.
+As is known from e.g.\ PCA, the solution to this problem is the leading complex eigenvector $\hat{\theta}$ of the matrix $S$. We can calculate $S$ in the following way:
+\begin{align*}
+  S_{kl} =& \sum_{i=1}^n \int_0^1 \bar{b}_k(t) \beta_i(t) dt \int_0^1 \bar{\beta}_i(s) b_l(s) ds \\
+  =& \int_0^1 \int_0^1 \bar{b}_k(t) \underbrace{\left( \sum_{i=1}^n \beta_i(t) \bar{\beta}_i(s) \right)}_{= C(s,t)} b_l(s) ds dt\\
+  =& \int_0^1 \int_0^1 \bar{b}_k(t) C(s,t) b_l(s) ds dt\\
+\end{align*}
+We may estimate $C(s,t)$ via tensor product splines, so that $\hat{C}(s,t) = \sum_{k,l} \hat{\xi}_{kl} b_k(t) b_l(s)$.
+However this does not actually simplify the above expression for $S_{kl}$:
+\begin{align*}
+  S_{kl} = \dots =& \int_0^1 \int_0^1 \bar{b}_k(t) \left( \sum_{p,q} \hat{\xi}_{pq} b_q(t) b_p(s) \right) b_l(s) ds dt\\
+  =& \sum_{p,q} \hat{\xi}_{pq} \int_0^1 \int_0^1 \bar{b}_k(t) b_q(t) b_p(s) b_l(s) ds dt\\
+  =& \sum_{p,q} \hat{\xi}_{pq} \langle b_k, b_q \rangle \langle \bar{b}_p, b_l \rangle
+\end{align*}
+At this point we would like to use the properties of an (let's assume orthogonal) basis, so that $\langle b_k, b_q \rangle = \delta_{kq}$, which we can't use here because of the complex conjugate of $b_p$ in the second scalar product.
+\textbf{To solve this nicely wouldn't we need tensor product splines of the form: $\hat{C}(s,t) = \sum_{k,l} \hat{\xi}_{kl} b_k(t) \bar{b}_l(s)$ (complex conjugate in the second basis term)?} This would lead us to:
+\begin{align*}
+  S_{kl} = \dots =& \sum_{p,q} \hat{\xi}_{pq} \langle b_k, b_q \rangle \langle b_p, b_l \rangle \\
+  =& \sum_{p,q} \hat{\xi}_{pq} \delta_{kq} \delta_{pl} \\
+  =& \hat{\xi}_{kl}\\
+\end{align*}
+Which means the matrix $S$ is just the matrix of coefficients $\hat{\Xi} = \{\hat{\xi}\}_{k,l} $from the covariance smoothing.
