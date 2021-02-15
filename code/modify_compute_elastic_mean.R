@@ -167,18 +167,24 @@ fit_mean_proc2d <- function(srv_data_curves, knots, max_iter, type, eps)
     })
     cov_dat <- do.call(rbind, cov_dat)
     
-    # fit covariance surface. ToDo: Check these params: k, knots, cyclic !
-    cov.k = 10  # Why use this?
-    cov_fit_re <- bam(Re(qq) ~ s(t, s, bs = "sps", k = cov.k),
-                      data = cov_dat)
-    cov_fit_im <- bam(Im(qq) ~ -1 + s(t, s, bs = "sps", k = cov.k, xt = list(skew = TRUE)),
-                      data = cov_dat)
+    # fit covariance surface. 
+    # Note: The parameters here have a huge influence on the results!!!
+    # ToDo: Find good standard parameters!
+    cov.m = ifelse(type == "smooth", 2, 1)
+    cov.knots = c(rep(0,cov.m+1), knots, rep(1,cov.m+1))
+    cov.k = length(cov.knots) - cov.m - 2  # Why use this?
+    cov_fit_re <- bam(Re(qq) ~ s(t, s, bs = "sps", k = cov.k, m = c(cov.m,0),
+                                 fx = FALSE, xt = list(skew = FALSE)),
+                      data = cov_dat, knots=list(t = cov.knots, s = cov.knots), method = "REML")
+    cov_fit_im <- bam(Im(qq) ~ -1 + s(t, s, bs = "sps", k = cov.k, m = c(cov.m,0),
+                                      fx = FALSE, xt = list(skew = TRUE)),
+                      data = cov_dat, knots=list(t = cov.knots, s = cov.knots), method = "REML")
     
     # predict smoothed covariance surface on arg.grid
     cov_dat <- expand.grid(t = arg.grid, s = arg.grid)
     yy <- matrix( complex(
-      real = predict(cov_fit_re, newdata = cov_dat),
-      imaginary = predict(cov_fit_im, newdata = cov_dat) ),
+      real = predict(cov_fit_re, newdata = cov_dat, outer.ok=TRUE),
+      imaginary = predict(cov_fit_im, newdata = cov_dat, outer.ok=TRUE) ),
       ncol = length(arg.grid) )
     
     # calculate procrustes mean (leading eigenvector)
@@ -221,6 +227,15 @@ fit_mean_proc2d <- function(srv_data_curves, knots, max_iter, type, eps)
     # OLD: Stopping criteria step.
     stop_crit <- sum((coefs_knots - coefs_old)^2)/sum(coefs_knots^2)
     if (stop_crit < eps | max_iter == 0) {
+      print(paste("Number of basis functions: ",length(cov_fit_re$coefficients)))
+      print("Knots (from):")
+      print(cov_fit_re$smooth[[1]]$knots)
+      print("-------------------------------")
+      print("Printing summary and plotting fit")
+      print(summary(cov_fit_re))
+      plot(cov_fit_re)
+      print("------------END----------------")
+
       # NEW: calculate procrustes data curves on basis of srv.
       data_curves_procrustes <- lapply(procrustes_fits, get_points_from_srv)
       data_curves_procrustes <- lapply(data_curves_procrustes, center_curve)
@@ -229,10 +244,11 @@ fit_mean_proc2d <- function(srv_data_curves, knots, max_iter, type, eps)
       colnames(coefs_smooth) <- colnames(srv_data_curves[[1]][,-1])
       rownames(coefs_knots) <- NULL
       colnames(coefs_knots) <- colnames(srv_data_curves[[1]][,-1])
-      return(list(type = type, coefs = coefs_knots, knots = knots,  # Note: also returns procrustes_fits. TODO: G,b!
+      return(list(type = type, coefs = coefs_knots, knots = knots,  
                   t_optims = t_optims, G_optims = G_optims, b_optims = b_optims,
                   coefs_smooth = coefs_smooth, knots_smooth = arg.grid,
-                  procrustes_fits_on_srv_basis = data_curves_procrustes))
+                  procrustes_fits_on_srv_basis = data_curves_procrustes,
+                  model_re = cov_fit_re, model_im = cov_fit_im))
     }
     # NEW: Calculate warping on the procrustes fits!
     if (type == "smooth") {
