@@ -1,21 +1,21 @@
-- Gram Matrix vor Eigen
+(ok) Gram Matrix vor Eigen
     => Eigen von Gram-Matrix^-1 * beta.mat
     => piecewise constant egal, linear od. höher 
     => numerische Integration, grid auswerten (siehe auch 'fda' paket)
 
-- Piecewise linear/constant ist am besten!
+(ok) Piecewise linear/constant ist am besten!
     => man braucht penalty für linear/constant
     => Für covariance ist schon wichtig das man penalty hat
     => penalty = 2/1/0
 
-
-- Knote + outer.ok
+(ok) Knote + outer.ok
     => smooth.construct vs. SplineDesign vs. spline.des
-    => homogene Knoten außerhalb mit "mittlerer Abstand der Knoten innerhalb".
+    (ok) homogene Knoten außerhalb mit "mittlerer Abstand der Knoten innerhalb".
     => smooth.construct default knoten von mgcv, anschauen, als template nehmen, funktion rausziehen und anpassen.
 
+- Mean in Basis mit Warping-step Verbinden
+
 - Mean sollte am Ende so gut ausschauen, wie wenn ich Lisa's Paket auf die Procrustes Fits draufhauen
-    => 
 
 - Procrustes Fits auf SRV Kurven:
     => skalarprodukt mit polygon ist einfach
