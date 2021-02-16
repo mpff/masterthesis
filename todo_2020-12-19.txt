@@ -2,8 +2,11 @@
 Overfit:
 --------------------------------------------------------------------
 - im basiswechsel fit ?
+   <= Nein, in der Kovarianz Glättung
 - check these parameters! 20x20 basis funktionen locker ausreichend.
+   <= Was heißt das für die Dimension (k) der Basis?
 - Overfit der Covariance Glättung -> wieviele Basisfunktionen
+
 - Diagnostic: x,y (t) plot
 => Richtungsentscheidung: arggrid oder finde bspline basis representation, schauen in mgcv welche basis intern benutzt wird!
 => MGCV Basis anschauen. Almond schickt noch was. "smooth.construct" => check die sps function in almond's package!
