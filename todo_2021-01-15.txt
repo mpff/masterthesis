@@ -13,7 +13,9 @@
     (ok) homogene Knoten außerhalb mit "mittlerer Abstand der Knoten innerhalb".
     => smooth.construct default knoten von mgcv, anschauen, als template nehmen, funktion rausziehen und anpassen.
 
-- Mean in Basis mit Warping-step Verbinden
+(ok) Mean in Basis mit Warping-step Verbinden
+
+- Checken ob Warping Step zusammenspiel richtig funktioniert
 
 - Mean sollte am Ende so gut ausschauen, wie wenn ich Lisa's Paket auf die Procrustes Fits draufhauen
 

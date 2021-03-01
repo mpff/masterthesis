@@ -1,0 +1,16 @@
+Package: elasdics
+Type: Package
+Title: Elastic Analysis of Sparse, Dense and Irregular Curves
+Version: 0.1.0
+Author: Lisa Steyer <lisa.steyer@hu-berlin.de>
+Maintainer: Lisa Steyer <lisa.steyer@hu-berlin.de>
+Description: Provides functions to align curves and to compute mean curves based on the 
+    elastic distance defined in the square-root-velocity framework.
+License: GPL-3
+Encoding: UTF-8
+Imports: splines, stats, numDeriv
+LazyData: true
+RoxygenNote: 7.1.1
+Suggests: 
+    testthat,
+    covr
