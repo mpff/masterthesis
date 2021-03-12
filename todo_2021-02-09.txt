@@ -1,0 +1,56 @@
+(ok) Gram Matrix vor Eigen
+    => Eigen von Gram-Matrix^-1 * beta.mat
+    => piecewise constant egal, linear od. höher 
+    => numerische Integration, grid auswerten (siehe auch 'fda' paket)
+
+(ok) Basis piecewise linear/constant
+    => man braucht penalty für linear/constant
+    => penalty = 2/1/0
+
+(ok) Knoten + outer.ok
+    (ok) homogene Knoten außerhalb mit "mittlerer Abstand der Knoten innerhalb".
+    => smooth.construct default knoten von mgcv, anschauen, als template nehmen, funktion rausziehen und anpassen.
+
+(ok) Mean in Basis mit Warping-step Verbinden
+
+(ok?) Checken ob Warping Step zusammenspiel richtig funktioniert
+
+(nope) Mean sollte am Ende so gut ausschauen, wie wenn ich Lisa's Paket auf die Procrustes Fits draufhauen
+
+(ok?) Procrustes Fits auf SRV Kurven:
+    => (ok) skalarprodukt mit polygon ist einfach
+    => (ok?) optimale Interpolation für die Kurven über die bekannte Kovarianzsturktur
+        => Koeffizienten sind normalverteilt mit der Kovarianzstruktur
+	=> baue zwei Methoden, einmal "Gitter" einmal "Interpolation mit Kovarianzstruktur"
+    => (todo) Auswerten an den Knoten und an den Beobachtungen. Dann bei piecewise linear/constant fast exakt
+
+(todo) Warping aufschreiben/verstehen/herleiten
+
+- Treffen: per Mail oder Lisa schreibt mir
+- Vortrag: Dienstag 20.04.2021 (zweite Semesterwoche)
+
+
+- Debug funktion: Alles aufschreiben.
+	=> Normaler Mean auf Procrustes Fits
+
+- 
+
+- Output des means:
+	=> (todo) Kurven müssen normiert sein -> ist die Covariance invariant unter Multiplikation?
+
+- Closed curves:
+	=> Lisa teilt mir Ihr Paper.
+
+- Zungenkurven: Phonetiker haben Kreuzdesigns (alle Sprecher sprechen alle Wörter -> mixed Modell?)
+	=> gruppenweiße means.
+	=> Rotation durch Messungenauigkeiten
+	=> Skalierung durch Größenunterschiede
+	=> Warping durch elastische Zungen und biologische Unterschiede zwischen Zungen.
+	=> unterschiedliche Länge -> 2d besser?
+	=> Ein paar Means berechnen mal, dann schauen wir.
+
+- (später!) Eigenwert optimieren, Toleranzen optimieren
+
+
+
+		
