@@ -2,9 +2,9 @@
 # Add proc2d parameter to 'compute_elastic_mean'. #
 #   if true: use 'fit_mean_proc2d'                #
 ###################################################
-compute_elastic_mean <- function(data_curves, 
+compute_elastic_mean <- function(data_curves,
                                         knots = seq(0, 1, len = 5),
-                                        type = c("smooth", "polygon"), 
+                                        type = c("smooth", "polygon"),
                                         closed = FALSE,
                                         proc2d = FALSE,
                                         eps = 0.01,
@@ -13,20 +13,20 @@ compute_elastic_mean <- function(data_curves,
 {
 
   lapply(data_curves, function(data_curve) {
-    if ("t" %in% names(data_curve)) 
+    if ("t" %in% names(data_curve))
       check_param(data_curve, closed)
   })
-  
+
   if (closed) {
     data_curves <- lapply(data_curves, function(data_curve) {
       check_closed(data_curve)
     })
   }
-  
+
   # Create arc length parametrization if curves don't have 't' column.
   data_curves <- lapply(data_curves, function(data_curve) {
     if (!("t" %in% colnames(data_curve))) {
-      data.frame(t = get_arc_length_param(data_curve), 
+      data.frame(t = get_arc_length_param(data_curve),
                  data_curve)
     }
     else {
@@ -35,31 +35,31 @@ compute_elastic_mean <- function(data_curves,
       data.frame(t = param, data_curve)
     }
   })
-  
+
   # Get SRV data curves
   srv_data_curves <- lapply(data_curves, get_srv_from_points)
-  
+
   type <- match.arg(type, c("smooth", "polygon"))
-  
+
   # Calculate Elastic Mean!
   if (!closed) {
     # open curves.
     if (!proc2d){
-      elastic_mean <- fit_mean(srv_data_curves = srv_data_curves, 
-                               knots = knots, max_iter = max_iter, type = type, 
+      elastic_mean <- fit_mean(srv_data_curves = srv_data_curves,
+                               knots = knots, max_iter = max_iter, type = type,
                                eps = eps)
     }
     else if (proc2d){
       # This is new.
-      elastic_mean <- fit_mean_proc2d(srv_data_curves = srv_data_curves, 
-                                      knots = knots, max_iter = max_iter, type = type, 
+      elastic_mean <- fit_mean_proc2d(srv_data_curves = srv_data_curves,
+                                      knots = knots, max_iter = max_iter, type = type,
                                     eps = eps)
     }
     # This just prepares output
     data_curves <- lapply(1:length(data_curves), function(j) {
       data_curves[[j]]$t_optim <- elastic_mean$t_optims[[j]]
       attributes(data_curves[[j]]$t_optim) <- NULL
-      data_curve <- data_curves[[j]][, c(1, ncol(data_curves[[j]]), 
+      data_curve <- data_curves[[j]][, c(1, ncol(data_curves[[j]]),
                                          2:(ncol(data_curves[[j]]) - 1))]
       attr(data_curve, "dist_to_mean") <- attr(elastic_mean$t_optims[[j]], "dist_to_mean")
       data_curve
@@ -70,28 +70,28 @@ compute_elastic_mean <- function(data_curves,
         warning("Option 'proc2d' does not (yet) work with closed curves. Calculating non-procrustes mean.")
     }
     # closed curves.
-    elastic_mean <- fit_mean_closed(srv_data_curves = srv_data_curves, 
-                                    knots = knots, max_iter = max_iter, type = type, 
+    elastic_mean <- fit_mean_closed(srv_data_curves = srv_data_curves,
+                                    knots = knots, max_iter = max_iter, type = type,
                                     eps = eps, pen_factor = pen_factor)
-    
+
     # This just prepares output I think. What's the additional stuff??
     data_curves <- lapply(1:length(data_curves), function(j) {
       t_optim <- elastic_mean$t_optims[[j]][-length(elastic_mean$t_optims[[j]])]
-      data_curve <- data_curves[[j]][-nrow(data_curves[[j]]), 
+      data_curve <- data_curves[[j]][-nrow(data_curves[[j]]),
                                      ]
-      part2_idx <- 1:(length(t_optim) - elastic_mean$shift_idxs[j] + 
+      part2_idx <- 1:(length(t_optim) - elastic_mean$shift_idxs[j] +
                         1)
       data_curve$t_optim <- c(t_optim[-part2_idx], t_optim[part2_idx])
-      data_curve <- data_curve[, c(1, ncol(data_curve), 
+      data_curve <- data_curve[, c(1, ncol(data_curve),
                                    2:(ncol(data_curve) - 1))]
       data_curve <- rbind(data_curve, data_curve[1, ])
       data_curve$t[nrow(data_curve)] <- 1
-      attr(data_curve, "dist_to_mean") <- attr(elastic_mean$t_optims[[j]], 
+      attr(data_curve, "dist_to_mean") <- attr(elastic_mean$t_optims[[j]],
                                                "dist_to_mean")
       data_curve
     })
   }
-  
+
   # Prepare final output
   elastic_mean$data_curves <- data_curves
   elastic_mean$closed <- closed
@@ -110,24 +110,24 @@ compute_elastic_mean <- function(data_curves,
 ############################
 fit_mean_proc2d <- function(srv_data_curves, knots, max_iter, type, eps)
 {
-    
+
   # NEW: requirements (as of now)
   require(mgcv)
   require(dplyr)
   require(sparseFLMM)
   require(orthogonalsplinebasis)
-    
+
   # OLD: initialize t_optimns and coefs.
   t_optims <- lapply(srv_data_curves, function(srv_data_curve) {
     c(srv_data_curve$t, 1)
   })
   coefs <- 0
-    
+
   # NEW: initialize G_optimns as 0 and b_optimns as 1 (Rotation and Scale).
   # ToDo: calculate G,b instead of directly calculating the procrustes fits.
   G_optims <- as.list(rep(0, length(srv_data_curves)))
   b_optims <- as.list(rep(1, length(srv_data_curves)))
-    
+
   # NEW: Build id column, super hacky way. THIS NEEDS REWORK!
   ids <- do.call(c, lapply(t_optims, function(x) length(x)-1))  #note: t_optims has 1 more
   ids <- rbind(1:length(ids), ids)
@@ -157,23 +157,23 @@ fit_mean_proc2d <- function(srv_data_curves, knots, max_iter, type, eps)
   G <- build_gram_matrix(smooth1D)
   Ginv <- solve(G)
   L <- chol(Ginv)
-  
+
 
   for (i in 1:max_iter) {
-    
+
     # OLD: Evaluate the srv_data_curves at points t_optims. Get q(m_optim).
     model_data <- get_model_data(t_optims, srv_data_curves, knots, type)
     coefs_old <- coefs
-    
-    
+
+
     #######################
     # Fit Procrustes Mean #
     #######################
-      
+
     # x,y to complex, add id column
     model_data_complex <- complex(re = model_data[,2], im = model_data[,3]) %>% matrix(nrow = dim(model_data)[1])
     model_data_complex <- data.frame(id = ids, m_long = model_data$m_long, q_m_long = model_data_complex)
-    
+
     # build response on s,t-grid per curve
     cov_dat <- lapply(split(model_data_complex, model_data_complex$id), function(x) {
       combs <- combn(1:nrow(x), 2)
@@ -184,7 +184,7 @@ fit_mean_proc2d <- function(srv_data_curves, knots, max_iter, type, eps)
       )
     })
     cov_dat <- do.call(rbind, cov_dat)
-    
+
     # Smooth covariance surface
     cov_fit_re <- bam(Re(qq) ~ s(t, s, bs="symm", k = cov.k, m = c(cov.m, cov.d),
                                  fx = FALSE, xt = list(skew = FALSE)),
@@ -209,8 +209,8 @@ fit_mean_proc2d <- function(srv_data_curves, knots, max_iter, type, eps)
     coefs.compl <- pca$vectors[,1]
     coefs <- as.matrix(data.frame(q_m_long.X1 = Re(coefs.compl), q_m_long.X2 = Im(coefs.compl)))
 
-    
-      
+
+
     ###################################
     # Calculate Procrustes SRV Curves #
     ###################################
@@ -235,14 +235,14 @@ fit_mean_proc2d <- function(srv_data_curves, knots, max_iter, type, eps)
         # Calculate G and b (Note: using "<<-" is not good practice...)
         G_optims[j] <<- Arg(qm)
         # Note: squared to adjust for SRV framework. b is on data_curve level!!!
-        b_optims[j] <<- (Mod(qm) / Re(qq))^2  
+        b_optims[j] <<- (Mod(qm) / Re(qq))^2
         # Calculate procrustes fit of original srv_data_curve
         # Note: warping is performed on the original srv_data_curves not on model_data!
         srv_complex = complex(real = srv_data_curves[[j]][,2], imaginary = srv_data_curves[[j]][,3])
         pfit <- as.vector(qm) * srv_complex / as.vector(qq)
         data.frame(t = srv_data_curves[[j]][,1], X1 = Re(pfit), X2 = Im(pfit))
     })
-      
+
     srv_procrustes_curves <- lapply(1:length(srv_data_curves), function(j) {
         # Grab warped srv_data_curve from model_data.
         q <- model_data_complex[model_data_complex$id == j,]
@@ -255,7 +255,7 @@ fit_mean_proc2d <- function(srv_data_curves, knots, max_iter, type, eps)
         # Calculate G and b (Note: using "<<-" is not good practice...)
         G_optims[j] <<- Arg(qm)
         # Note: squared to adjust for SRV framework. b is on data_curve level!!!
-        b_optims[j] <<- (Mod(qm) / Re(qq))^2  
+        b_optims[j] <<- (Mod(qm) / Re(qq))^2
         # Calculate procrustes fit of original srv_data_curve
         #srv_complex = complex(real = srv_data_curves[[j]][,2], imaginary = srv_data_curves[[j]][,3])
         #pfit <- c(qm/qq) * srv_complex
@@ -275,7 +275,7 @@ fit_mean_proc2d <- function(srv_data_curves, knots, max_iter, type, eps)
       # Prepare output.
       rownames(coefs) <- NULL
       colnames(coefs) <- colnames(srv_data_curves[[1]][,-1])
-      return(list(type = type, coefs = coefs, knots = knots,  
+      return(list(type = type, coefs = coefs, knots = knots,
                   t_optims = t_optims, G_optims = G_optims, b_optims = b_optims,
                   procrustes_curves = procrustes_curves))
     }
@@ -284,13 +284,13 @@ fit_mean_proc2d <- function(srv_data_curves, knots, max_iter, type, eps)
     # NEW: Calculate warping on the procrustes fits!
     if (type == "smooth") {
       pfun <- function(t) {
-        t(make_design(t, knots = knots, closed = FALSE, type = type) %*% coefs)  
+        t(make_design(t, knots = knots, closed = FALSE, type = type) %*% coefs)
       }
       t_optims <- lapply(1:length(srv_procrustes_curves), function(j) {
         t_optim <- find_optimal_t(srv_curve = pfun,
-                                  s = c(srv_procrustes_curves[[j]]$t,1), 
-                                  q = t(srv_procrustes_curves[[j]][, -1]), 
-                                  initial_t = t_optims[[j]], 
+                                  s = c(srv_procrustes_curves[[j]]$t,1),
+                                  q = t(srv_procrustes_curves[[j]][, -1]),
+                                  initial_t = t_optims[[j]],
                                   eps = eps * 100/i
                                  )
         attr(t_optim, "dist_to_mean") <- attr(t_optim, "dist")
@@ -301,8 +301,8 @@ fit_mean_proc2d <- function(srv_data_curves, knots, max_iter, type, eps)
     # ToDo: Check here! knots and coefs might have to fit!
     else {
       t_optims <- lapply(1:length(srv_procrustes_curves), function(j) {
-        t_optim <- find_optimal_t_discrete(r = knots, 
-                                           p = t(coefs), 
+        t_optim <- find_optimal_t_discrete(r = knots,
+                                           p = t(coefs),
                                            s = c(srv_procrustes_curves[[j]]$t, 1),
                                            q = t(srv_procrustes_curves[[j]][, -1]),
                                            initial_t = t_optims[[j]]
@@ -314,7 +314,7 @@ fit_mean_proc2d <- function(srv_data_curves, knots, max_iter, type, eps)
     }
   }
   warning("Stopping criteria eps has not been reached! Consider more iterations max_iter")
-               
+
   # NEW: calculate procrustes data curves on basis of srv.
   procrustes_curves <- lapply(srv_procrustes_curves, get_points_from_srv)
   procrustes_curves <- lapply(procrustes_curves, center_curve)
@@ -325,20 +325,6 @@ fit_mean_proc2d <- function(srv_data_curves, knots, max_iter, type, eps)
   return(list(type = type, coefs = coefs, knots = knots,
               t_optims = t_optims, G_optims = G_optims, b_optims = b_optims,
               procrustes_curves = procrustes_curves))
-}
-
-               
-# Helper function to calculate procrustes fits from G_optim and b_optim.          
-get_proc2d_fit <- function(data_curve, G, b)
-{
-    # Procrustes fit: beta * e^(i*G) * curve
-    names <- colnames(data_curve)
-    mat <- matrix(c(cos(G), sin(G), - sin(G), cos(G)), nrow = 2, ncol = 2)
-    data_curve.rot <- as.matrix(data_curve) %*% t(mat)
-    data_curve.rot.scale <- b * data_curve.rot
-    data_curve <- as.data.frame(data_curve.rot.scale)
-    colnames(data_curve) <- names
-    return(data_curve)
 }
 
 build_gram_matrix <- function(smooth){
@@ -359,15 +345,15 @@ get_coef_matrix <- function(model){
     beta <- model$smooth[[1]]$Z %*% model$coefficients
     matrix(beta, nrow=F, ncol=F)
 }
-               
-make_design <- function (t, knots, closed = FALSE, type = "smooth") 
+
+make_design <- function (t, knots, closed = FALSE, type = "smooth")
 {
     deg <- ifelse(type == "smooth", 1, 0)
     knotl = 1 / ( length(knots) - 1 )  # mean length of a knot
     # Switch add outer knots outside of [0,1] etc. !
     design_mat <- splineDesign(
         knots = c(rep(-knotl,deg), knots, rep(1+knotl,deg)),  # assumes deg is 0 or 1.
-        x = t, 
+        x = t,
         ord = deg + 1
     )
     if (closed == TRUE & type == "smooth") {
