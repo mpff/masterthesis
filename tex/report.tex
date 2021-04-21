@@ -46,12 +46,14 @@
 \usepackage{transparent}
 \usepackage{comment}
 \usepackage{tcolorbox}
-
+\usepackage{latex-tools}
 
 % Shortcuts/Definitions
 \DeclareMathOperator*{\argmin}{argmin}   % Jan Hlavacek
 \DeclareMathOperator*{\argmax}{argmax}   % Jan Hlavacek
 
+% Extra settings
+\allowdisplaybreaks
 
 
 
@@ -75,7 +77,7 @@
   \vfill
   \end{center}
 
-  \noindent \textbf{Advisor:} Prof. Sonja Greven
+  \noindent \textbf{Advisors:} Prof.\ Sonja Greven, Lisa Maike Steyer, Almond Stöcker
   \vspace{0.5em}
 
 \end{titlepage}
@@ -90,11 +92,16 @@
 \input{sections/1-introduction}
 
 
+\section{The Full Procrustes Mean for Planar Curves}
+\label{sec:proc2d}
+\input{sections/2-procrustes_mean}
+
+
 \appendix
 \newpage
-\section{Appendix}
-\label{app}
-\input{sections/a-appendix}
+\section{Additional Derivations}
+\label{app:deriv}
+\input{sections/a-derivations}
 
 
 \newpage
