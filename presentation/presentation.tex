@@ -115,13 +115,13 @@ $\quad$ Sparse and irregular, warping, translation/scaling/rotation
 \frametitle{Outline}
 \begin{itemize}
   \item[1.] What is an Elastic Full Procrustes Mean?
-  \item[] $\rightarrow$ Sparse and Irregular Planar Curves
-  \item[] $\rightarrow$ Elastic Mean and Warping
-  \item[] $\rightarrow$ Full Procrustes Mean and Procrustes Fits
+  %\item[] $\rightarrow$ Sparse and Irregular Planar Curves
+  %\item[] $\rightarrow$ Elastic Mean and Warping
+  %\item[] $\rightarrow$ Full Procrustes Mean and Procrustes Fits
   \item[2.] Estimation Strategy
-  \item[] $\rightarrow$ Hermitian Covariance Smoothing
-  \item[] $\rightarrow$ Estimation of the Procrustes Mean in a Fixed Basis
-  \item[] $\rightarrow$ Procrustes Fits
+  %\item[] $\rightarrow$ Hermitian Covariance Smoothing
+  %\item[] $\rightarrow$ Estimation of the Procrustes Mean in a Fixed Basis
+  %\item[] $\rightarrow$ Procrustes Fits
   \item[3.] Results (so far), Problems, Outlook
 \end{itemize}
 }
@@ -140,9 +140,9 @@ How can we compare observations $\beta_i = (\beta_{i1}, \beta_{i2}, \dots, \beta
 $\rightarrow$ Treat $\beta_i$ as \alert{functional} data $\beta_i(t)$: $\,\,\, \beta_i : [0,1] \rightarrow \mathbb{R}^2 $
 \begin{columns}
   \begin{column}{0.54\textwidth}
-    $\beta_i(t)$ observed at $t_i = (t_{i1}, \dots, t_{im_i})$:
+    $\beta_i(t)$ sampled at $t_i = (t_{i1}, \dots, t_{im_i})$:
     $$\beta_{i1} = \beta_i(t_{i1}), \dots, \beta_{im} = \beta_i(t_{im_i})$$
-    How to find $(t_{i1}, \dots, t_{im_i})$?
+    How to construct $(t_{i1}, \dots, t_{im_i})$?
     \begin{itemize}
       \item simple: arc--length
       \item better: same values of $t$ relate to same "part" of curve
@@ -165,7 +165,7 @@ $\rightarrow$ Treat $\beta_i$ as \alert{functional} data $\beta_i(t)$: $\,\,\, \
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \frame{
 \frametitle{Elastic Mean and Warping}
-\textbf{Elastic Mean:} Mean under optimal re-parametrization (\alert{warping}).
+\textbf{Problem:} Need to find an optimal re-parametrization (\alert{warping}).
 
 \vspace{0.5em}Well known problem in functional data analysis:
 \begin{itemize}
@@ -178,6 +178,7 @@ $$ q:[0,1] \rightarrow \mathbb{R}^2, \quad
 \end{block}
 \begin{itemize}
   \item Use warping methods for sparse and irregular curves as implemented in \texttt{elasdics} \parencite{elasdics}
+  \item Mean under optimal re-parametrization is called \textbf{elastic}
 \end{itemize}
 }
 
@@ -196,25 +197,57 @@ $$ q:[0,1] \rightarrow \mathbb{R}^2, \quad
 }
 
 
+
+\frame{
+\frametitle{Full Procrustes Mean and Procrustes Fits}
+\vspace{-0.3em}
+\textbf{Basic idea:}
+\begin{itemize}
+  \item[1.] Calculate mean that is invariant under rotation, scaling
+  \item[2.] Align rotation and scaling 
+  \item[3.] Align parametrisation 
+  \item[$\rightarrow$] use estimated mean as reference for alignment
+\end{itemize}
+%\vspace{-0.5em}
+%\begin{figure}
+%\hspace{-3em}
+%\begin{subfigure}{.33\textwidth}
+%  \centering
+%  \includegraphics[width=.8\linewidth]{images/basic1.png}
+%\end{subfigure}$\overset{1.}{\rightarrow}$%
+%\begin{subfigure}{.33\textwidth}
+%  \centering
+%  \includegraphics[width=.8\linewidth]{images/basic2.png}
+%\end{subfigure}$\overset{2}{\rightarrow}$%
+%\begin{subfigure}{.33\textwidth}
+%  \centering
+%  \includegraphics[width=.8\linewidth]{images/basic3.png}
+%\end{subfigure}$\overset{3.}{\rightarrow}$
+%\end{figure}
+%\vspace{-1.2em}
+\vspace{1em}
+1+2 are known problems in \textbf{statistical shape analysis} (see e.g. \textcite{DrydenMardia2016})
+$\,\rightarrow$ \alert{Procrustes mean} and \alert{Procrustes fits}
+
+\vspace{1.2em}
+\textbf{Note:} More efficient to perform steps directly on the SRV curves!
+
+}
+
+
 % 1-4
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \frame{
 \frametitle{Full Procrustes Mean and Procrustes Fits}
-\textbf{Idea:}
-\begin{itemize}
-  \item[1.] Calculate SRV mean that is invariant under rotation, scaling
-  \item[2.] Align rotation and scaling of SRV curves to mean
-  \item[3.] Perform warping on aligned SRV curves
-\end{itemize}
-\vspace{0.5em}
-Well known problem in \textbf{statistical shape analysis} (see e.g. \textcite{DrydenMardia2016})
-$\,\rightarrow$ 1.\ \alert{Procrustes mean} and 2.\ \alert{Procrustes fits}
+\textbf{Now:} Need to derive the Procrustes mean for functional data
 
-\vspace{0.8em}Using \alert{complex} notation $\,\, q_i : [0,1] \rightarrow \mathbb{C}, \quad q_i(t) = x_i(t) + i \, y_i(t)$
-
-\vspace{0.5em} we can show that the full Procrustes mean is given by:
+\vspace{0.8em}We can show using \alert{complex} notation 
+$$\,\, q_i : [0,1] \rightarrow \mathbb{C}, \quad q_i(t) = x_i(t) + i \, y_i(t)$$
+that the population level \alert{full Procrustes mean} for normalized curves $\tilde{q}$ is given by:
 $$\mu_q = \argmax_{z:[0,1] \rightarrow \mathbb{C},\,||z||=1} \int_0^1 \int_0^1 \overline{z}(s)\, \mathbb{E}\left[\tilde{q}(s) \overline{\tilde{q}}(t) \right] z(t) ds dt$$
-with $\tilde{q} = \frac{q}{||q||}$ a random, normalized SRV curves.
+\begin{itemize}
+  \item[$\rightarrow$] $\mathbb{E}\left[\tilde{q}(s) \overline{\tilde{q}}(t) \right]$ is the \alert{complex covariance function} $C(s,t)$
+\end{itemize}
 }
 
 
@@ -226,15 +259,14 @@ with $\tilde{q} = \frac{q}{||q||}$ a random, normalized SRV curves.
 $$\mu_q = \argmax_{z:[0,1] \rightarrow \mathbb{C},\, ||z|| = 1} \int_0^1 \int_0^1 \overline{z}(s) C(s,t) z(t) ds dt$$
 \vspace{-0.5em}
 \begin{itemize}
-  \item[$\rightarrow$] $\mathbb{E}\left[\tilde{q}_i(s) \overline{\tilde{q}}_i(t) \right]$ is the complex covariance function $C(s,t)$
   \item[$\rightarrow$] \alert{Functional PCA} problem (see \textcite{RamsaySilverman2005})
   \item[$\rightarrow$] Solution is the leading complex eigenfunction of $C(s,t)$
   \item[$\rightarrow$] We only need to find a good estimate $\alert{\hat{C}(s,t)}$ to get $\hat{\mu}_q$!
 \end{itemize}
-\vspace{0.5em}
+\vspace{1em}
 \textbf{Procrustes fits}:
-$$\hat{q}^P_i = \langle \tilde{q}_i, \hat{\mu}_q \rangle \tilde{q}_i$$ 
-\alert{Reminder}: $\,\cos(\theta) = \langle \vec{x}, \vec{y} \rangle $
+$$\hat{q}^P_i = \langle \tilde{q}_i, \hat{\mu}_q \rangle \tilde{q}_i$$
+with $\langle f, g \rangle = \int_0^1 \overline{f(t)} g(t) dt$
 }
 
 
@@ -248,9 +280,9 @@ $$\hat{q}^P_i = \langle \tilde{q}_i, \hat{\mu}_q \rangle \tilde{q}_i$$
 Treat estimation of $C(s,t) = \mathbb{E}[ \tilde{q}(s) \overline{\tilde{q}}(t)]$ as a regression problem:
 \vspace{0.5em}
 \begin{itemize}
-  \item non-parametric regression:  $\mathbb{E}[y] = f(s,t)$
-  \item treat parametrisation $t_{ij}, t_{ik}$ as \enquote{covariates} $s$ and $t$
   \item we can build response $y_{ijk} = \tilde{q}_i(t_{ij}) \overline{\tilde{q}}_i(t_{ik})$
+  \item treat parametrisation $t_{ij}, t_{ik}$ as \enquote{covariates} $s$ and $t$
+  \item non-parametric regression:  $\mathbb{E}[y] = f(s,t)$
   \item use $\hat{C}(s,t) = \hat{f}(s,t)$ for functional PCA
 \end{itemize}
 
@@ -272,8 +304,8 @@ $$\mathbb{E}[Re(y)] = f_{symm}(s,t)$$
 $$\mathbb{E}[Im(y)] = f_{skew}(s,t)$$
 \vspace{-1.2em}
 \begin{itemize}
-  \item model real and imaginary parts seperately
-  \item use \texttt{mgcv} \parencite{Wood2017} with \alert{symmetric} and \alert{skew-symmetric} tensor product P-splines from \texttt{sparseFLMM} \parencite{sparseFLMM}
+  \item model real and imaginary parts seperately using e.g.\ \texttt{mgcv} \parencite{Wood2017}
+  \item with \alert{symmetric} and \alert{skew-symmetric} tensor product P-splines from \texttt{sparseFLMM} \parencite{sparseFLMM}
 \end{itemize}
 \vspace{0.5em}
 \textbf{We get:}
@@ -295,13 +327,31 @@ $$\hat{C}(s,t) = b(s)^T \hat{\Xi} b(t), \quad \text{with} \quad \hat{\Xi} = \hat
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \frame{
 \frametitle{Empirical Procrustes Mean in a Fixed Basis}
-\textbf{Idea:} Estimate covariance function and mean in the same basis:
-$$\hat{\mu}_q(t) = b(t)^T \hat{\theta}_{\mu}$$
+\textbf{Idea:} Estimate covariance function and mean in the same basis.
 
 \vspace{1em}
-Then we can solve the optimization problem directly on $\hat{\Xi}$:
+Then the optimization problem reduces to:
 $$\hat\theta_\mu = \argmax_{\theta : \theta^H G \theta = 1} \theta^H G \hat{\Xi} G \theta \quad \text{with} \quad G_{kl} = \langle b_k, b_l \rangle $$
-$\Rightarrow$ Solution is the leading normalized eigenvector of $\hat{\Xi} G$\\
+Eigenvalue problem treating $\theta = \theta_{Re} + i \, \theta_{Im}$ seperately:
+$$ \begin{pmatrix}
+  \hat{\Xi}_{symm} & - \hat{\Xi}_{skew}\\
+  \hat{\Xi}_{skew} & \hat{\Xi}_{symm}
+\end{pmatrix}
+\begin{pmatrix}
+  G & 0 \\
+  0 & G 
+\end{pmatrix}
+\begin{pmatrix}
+  \theta_{Re} \\
+  \theta_{Im}
+\end{pmatrix}
+= \lambda
+\begin{pmatrix}
+  \theta_{Re} \\
+  \theta_{Im}
+\end{pmatrix}
+$$
+$\Rightarrow$ Solution is the leading normalized eigenvector of $\underline{\hat{\Xi}} \underline{G}$\\
 }
 
 
@@ -309,7 +359,7 @@ $\Rightarrow$ Solution is the leading normalized eigenvector of $\hat{\Xi} G$\\
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \frame{
 \frametitle{Procrustes Fits}
-Using $\hat{\mu}_q(t) = b(t)^T\hat{\theta}_q$ we can estimate the Procrustes fits:
+After obtaining $\hat{\mu}_q$ we can estimate the Procrustes fits:
 $$\hat{q}^P_i = \alert{\langle \tilde{q}_i, \hat{\mu}_q \rangle} \tilde{q}_i$$
 \vspace{-1.2em}
 \begin{itemize}
@@ -323,6 +373,61 @@ $$\hat{q}^P_i = \alert{\langle \tilde{q}_i, \hat{\mu}_q \rangle} \tilde{q}_i$$
 \end{figure}
 }
 
+
+
+\section{Results, Problems, Outlook}
+% 3-1
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\frame{
+\frametitle{Results}
+\begin{figure}
+  \includegraphics[width=0.85\textwidth]{images/results_digits3_warp.png}
+  \caption{Full Procrustes mean (left) and elastic full Procrustes mean (right) on \texttt{digits3.dat}.}
+\end{figure}
+}
+
+
+% 3-2
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\frame{
+\frametitle{Results / Problems}
+\begin{figure}
+  \includegraphics[width=0.8\textwidth]{images/results_spirals.png}
+  \vspace{-1em}
+  \caption{Polygon (left) and smooth (right) elastic full Procrustes mean with procrustes fits.}
+\end{figure}
+\vspace{-0.5em}
+\begin{itemize}
+  \item[$\rightarrow$] Parameters: \textbf{knots}, \textbf{spline degree}, \textbf{penalty} 
+  \item[$\rightarrow$] Consistent results for piecewise constant splines (at SRV level) and zero order penalty (in the cov.\ estimation).
+\end{itemize}
+}
+
+
+% 3-4
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\frame{
+\frametitle{Outlook}
+\textbf{Next steps:}
+\begin{itemize}
+  \item Real world data application (open curves)
+  \item Better normalization / estimation of procrustes fits
+\end{itemize}
+\vspace{1em}
+\textbf{Nice to have (maybe later):}
+\begin{itemize}
+  \item Mean for closed curves
+  \item \textbf{Code}: bugs, testcases, faster
+\end{itemize}
+}
+
+% Appendix
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Appendix}
+\nocite{*}
+\frame[allowframebreaks]{
+\printbibliography
+}
 
 % 2-5
 %%%%%%%%%%%%
@@ -352,35 +457,6 @@ $$\hat{q}^P_i = \alert{\langle \tilde{q}_i, \hat{\mu}_q \rangle} \tilde{q}_i$$
 }
 
 
-
-
-\section{Results, Problems, Outlook}
-% 3-1
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\frame{
-\frametitle{Results}
-\begin{figure}
-  \includegraphics[width=0.85\textwidth]{images/results_digits3_warp.png}
-  \caption{Full Procrustes mean (left) and elastic full Procrustes mean (right) on \texttt{digits3.dat} with with piecewise linear splines on SRV level.}
-\end{figure}
-}
-
-
-% 3-2
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\frame{
-\frametitle{Results / Problems}
-\begin{figure}
-  \includegraphics[width=0.8\textwidth]{images/results_spirals.png}
-  \vspace{-1em}
-  \caption{Elastic full Procrustes mean and procrustes fits for piecewise constant (left) and piecewise linear (right) splines on SRV level.}
-\end{figure}
-\begin{itemize}
-  \item[$\rightarrow$] Consistent results only for piecewise constant splines and zero order penalty.
-\end{itemize}
-}
-
-
 % 3-3
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \frame{
@@ -404,41 +480,47 @@ $$\hat{q}^P_i = \alert{\langle \tilde{q}_i, \hat{\mu}_q \rangle} \tilde{q}_i$$
 }
 
 
-% 3-4
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\frame{
-\frametitle{Outlook}
-\textbf{Next steps:}
-\begin{itemize}
-  \item Real world data application (open curves)
-  \item Better normalization / estimation of procrustes fits
-\end{itemize}
-\vspace{1em}
-\textbf{Nice to have (maybe later):}
-\begin{itemize}
-  \item Mean for closed curves
-  \item Real world data application (closed curves)
-  \item \textbf{Code}: bugs, testcases, package, faster
-\end{itemize}
-\vspace{1em}
-\textbf{Timeline:} Would like to be finished by July 
-}
 
-% Appendix
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Appendix}
-\nocite{*}
-\frame[allowframebreaks]{
-\printbibliography
+
+\frame{
+\frametitle{Derivation: Empirical Full Procrustes Mean}
+\begin{block}{Full Procrustes Distance and Mean}
+  $$d_F(q_1, q_2) = \inf_{\Gamma, b} ||q_1 - b \Gamma q_2||$$
+  \vspace{-1.5em}
+  $$\mu_q : [0,1] \rightarrow \mathbb{R}^2, \quad \hat{\mu}_q = \argmin_{z : [0,1] \rightarrow \mathbb{R}^2} \sum_{i=1}^N d_F(z, q_i)^2$$
+\end{block}
+One can show that \parencite[see Ch.\ 8]{DrydenMardia2016}:
+$$\hat{\mu}_q = \argmin_{z : [0,1] \rightarrow \mathbb{C}} \sum_{i=1}^N
+    \underbrace{1 - \frac{\langle z, q_i \rangle \langle q_i, z \rangle}{\langle z, z \rangle \langle q_i, q_i \rangle}}_{= d_F(z, q_i)^2}$$
 }
 
 
 \frame{
 \frametitle{Derivation: Empirical Full Procrustes Mean}
-
+\alert{Note}: $\langle q_1, q_2 \rangle = \int_0^1 \overline{q}_1(t) q_2(t) dt, \quad \text{and} \quad ||q_i|| = \sqrt{\langle q_i, q_i \rangle}$
+\begin{align*}
+ \hat{\mu}_q  &= \argmax_{z : ||z|| = 1} \sum_{i=1}^N \langle z, \tilde{q}_i \rangle \langle \tilde{q}_i, z \rangle, \quad \text{\alert{with}} \quad \tilde{q}_i = \frac{q_i}{||q_i||}\\ 
+  &= \argmax_{z:||z|| = 1} \sum_{i=1}^N \int_0^1 \overline{z}(s) \tilde{q}_i(s) ds \int_0^1 \overline{\tilde{q}}_i(t) z(t) dt \\
+  &= \argmax_{z:||z||=1} \int_0^1 \int_0^1 \overline{z}(s) \left( \alert{\sum_{i=1}^N \tilde{q}_i(s) \overline{\tilde{q}}_i(t)} \right) z(t) ds dt
+\end{align*}
+\begin{itemize}
+  \item[$\rightarrow$] sample analouge to $C(s,t) = \mathbb{E}[ \tilde{q}(s) \overline{\tilde{q}}(t)]$ 
+\end{itemize}
 }
 
 
+\frame{
+\frametitle{Derivation: Mean in a Fixed Basis}
+$$\mu_q = \argmax_{z:[0,1] \rightarrow \mathbb{C},\, ||z|| = 1} \int_0^1 \int_0^1 \overline{z}(s) C(s,t) z(t) ds dt$$
+\vspace{0.5em}
+with $z(t) = b(t)^T\theta$ and $\hat{C}(s,t) = b(s)^T \hat{\Xi} b(t)$. Then
+\begin{align*}
+  \hat{\theta}_\mu =& \argmax_{\theta : ||b^T\theta||=1} \int_0^1 \int_0^1 \overline{\left(b(s)^T\theta\right)} b(s)^T \hat{\Xi} b(t) b(t)^T \theta \, ds dt \\
+  =& \argmax_{\theta: ||b^T\theta||=1} \theta^H \left(\int_0^1 b(s) b(s)^T ds\right) \hat{\Xi} \left( \int_0^1 b(t) b(t)^T dt \right) \theta\\
+  = & \argmax_{\theta: ||b^T\theta||=1} \theta^H G \hat{\Xi} G \theta
+\end{align*}
+\alert{Note:} $||b^T\theta|| = \sqrt{\theta^H G \theta}$
+}
 
 
 \end{document}
