@@ -1,92 +1,67 @@
-\subsection{Scalar Products}
-$V$ n-dimensional vector space with basis $B = (b_1, \dots, b_n)$, then any scalar product $\langle\cdot,\cdot\rangle$ on $V$ can be expressed using a $(n \times n)$ matrix $G$, the Gram matrix of the scalar product. Its entries are the scalar products of the basis vectors:
-$$ G = (g_{ij})_{i,j=1,\dots,n} \quad \text{with} 
-  \quad g_{ij} = \langle b_i, b_j \rangle \quad \text{for}
-  \quad i,j = 1,\dots, n $$
-When vectors $x,y \in V$ are expressed with respect to the basis $B$ as
-$$ x = \sum_{i=1}^n x_i b_i \quad \text{and} \quad y = \sum_{i=1}^n y_i b_i $$
-the scalar product can be expressed using the Gram matrix, and in the complex case it holds that
-$$ \langle x, y \rangle = \sum^n_{i,j=1} \bar{x}_i y_j \langle b_i, b_j \rangle 
-  =\sum^n_{i,j=1} \bar{x}_i g_{ij} y_j = x^\dagger G y$$
-when $x_i,y_i \in \mathbb{C}$ for $i=1,\dots,n$ with $x^\dagger$ indicating the conjugate transpose of $x = (x_1, \dots, x_n)^T$. If $B$ is an \textit{orthonormal} basis, that is if $\langle b_i, b_j \rangle = \delta_{ij}$, it further holds that $\langle x,y \rangle = x^\dagger y$ as $G = \mathbb{1}_{n \times n}$.
+In statistical shape analysis one is interested in analysing the shape of
+geometrical objects, like the outlines of bones and organs, a handwritten
+digit, or the folds of a protein.
+When analysing such objects, differences in location, rotation, and size
+are often not of interest.
+Instead, the focus lies purely on their differences in  \textit{shape}, a
+widely adapted definition of which was established by \cite{Kendall1977} and which
+might be formulated in the following way:
+\begin{definition}[Shape] 
+    All geometrical information that remains when location, scale
+    and rotational effects are removed from an object 
+    \parencite[see][1]{DrydenMardia2016}.
+\end{definition}
+\noindent This geometrical information is usually approximated by measuring
+the cordinates of a fixed set of \textit{landmarks}, which are characteristic
+points on an object that match between and within populations
+\parencite[see][3]{DrydenMardia2016}.
+As these coordinates depend on the scale, rotation and translation of the
+object at time of measurement, only the \textit{equivalence class} of the
+landmark configuration modulo these transformations is indicative of its shape,
+which will be defined in more detail in section \ref{theo:inv}.
+A popular type of shape mean that does not depend on the rotation, scaling and
+translation of the input shapes is the \textit{full Procrustes mean}.
+Here, the mean is defined as the minimizer of a least squares criterion, using
+a distance measure that is invariant under the mentioned transformations, which
+will be discussed in section \ref{theo:proc}.
 
+Instead of approximating the geometry of an object using landmarks, its whole
+outline might be represented by an open or closed curve $\beta : [0,1]
+\rightarrow \mathbb{R}^d,\, d \in \mathbb{N}$, eliminating the (often
+subjective) decision of which points to consider as "characteristic".
+This functional data approach introduces an additional kind of shape invariance
+relating to the parametrisation $t \in [0,1]$ of $\beta$, as only the image of
+$\beta$ but not its parametrisation is indacative of the objects shape.
+A functional shape mean, which is invariant with respect to re-parametrisation
+of the input curves, is called an \textit{elastic} mean and its calculation is
+greatly simplified by working in the \textit{square-root-velocity} (SRV)
+framework as introduced in \cite{SrivastavaEtAl2011}.
+Elastic shape means and the SRV framework will be explained in section
+\ref{theo:srv}.
+Even though this functional approach eliminates the subjectivity of choosing a
+fixed set of landmarks, in practice a curve will never be fully observed and
+one has to again work with a set of sampled points along the curve. 
+A particular challenge is working with such curves, that are sparsely and
+irregularly sampled, where one has to employ appropriate smoothing techniques
+to make maximum use of the available (sparse) data.
+This will be briefly discussed in section \ref{theo:sparse}.
 
-\subsection{Functional Scalar Products}
-This concept can be generalized for vectors in function spaces. Define the scalar product of two functions $f(t), g(t)$ as:
-$$ \langle f, g \rangle = \int_a^b \bar{f}(t) w(t) g(t) dt $$
-with weighting function $w(t)$ and $[a,b]$ depending on the function space. The scalar product has the following properties:
-\begin{enumerate}
-    \item $\langle f, g + h \rangle = \langle f,g \rangle + \langle f,h \rangle$
-    \item $\langle f, g \rangle = \overline{\langle g, f \rangle}$
-    \item $\langle f, cg \rangle = c \langle f,g \rangle$ or, using (2),
-        $\langle cf,g \rangle = \bar{c} \langle f,g \rangle$ for $c \in \mathbb{C}$
-\end{enumerate}
-If we have a functional basis $\{\phi_1, \dots , \phi_n\}$ (and possibly $n \to \infty$) of our function space we can also write the function $f$ as an expansion
-$$ f = \sum_{i=1}^n a_i \phi_i \quad \text{so that} \quad
-  f(t) = \sum_{i=1}^n a_i \phi_i (t)$$
-Additionally, if we have a \textit{orthogonal} basis, so that $\langle \phi_i, \phi_j \rangle = 0$ for $i \neq j$, we can take the scalar product with $\phi_k$ from the left
-$$ \langle \phi_k, f \rangle = \sum_{i=1}^n a_i \langle \phi_k, \phi_i \rangle =
-  a_k \langle \phi_k, \phi_k \rangle $$
-which yields the coefficients $a_k$: 
-$$ a_k = \frac{\langle \phi_k, f \rangle}{\langle \phi_k, \phi_k \rangle}$$
-
-For an \textit{orthonormal} basis it holds that $\langle \phi_i, \phi_j \rangle = \delta_{ij}$. Suppose that two functions $f,g$ are expanded in the same orthonormal basis:
-$$ f = \sum_{i=1}^n a_i \phi_i \quad \text{and} \quad 
-  g = \sum_{i=1}^n b_i \phi_i $$
-We can then write the scalar product as:
-$$ \langle f,g \rangle = 
-  \langle \sum_{i=1}^n a_i \phi_i, \sum_{i=1}^n b_i \phi_i \rangle = 
-  \sum_{i=1}^n \sum_{j=1}^n \hat{a}_i b_j \langle \phi_i, \phi_j \rangle =
-  \sum_{i=1}^n \bar{a}_i b_i = a^\dagger b$$
-for coefficient vectors $a, b \in \mathbb{C}^n$. This means that the functional scalar product reduces to a complex dot product. Additionally it holds that for the norm $||\cdot||$ of a function $f$:
-$$ ||f|| = \langle f,f \rangle^{\frac{1}{2}} = 
-  \sqrt{a^\dagger a} = \sqrt{\sum_{i=1}^n |a_i|^2}$$
-
-\section{FDA-Basics Recap}
-As discussed in the last section we can express a function $f$ in its \textit{basis function expansion} using a set of basis functions $\phi_k$ with $k=1,\dots,K$ and a set of coefficients $c_1,\dots,c_K$ (both possibly $\mathbb{C}$ valued e.g.\ in the case of $2D$-curves)
-$$ f = \sum_{k=1}^K c_k \phi_k = \bm{c'}\bm{\phi} $$
-where in the matrix notation $\bm{c}$ and $\bm{\phi}$ are the vectors containing the coefficients and basis functions.
-
-When considering a sample of $N$ functions $f_i$ we can write this in matrix notation as 
-$$ \bm{f} = \bm{C}\bm{\phi} $$
-where $C$ is a $(N \times K)$ matrix of coefficients and $\bm{f}$ is a vector containing the $N$ functions.
-
-\subsection{Smoothing by Regression}
-When working with functional data we can usually never observe a function $f$ directly and instead only observe discrete points $(x_i, t_i)$ along the curve, with $f(t_i) = x_i$.
-As we don't know the exact functional form of $f$, calculating the scalar products $\langle \phi_k, f \rangle$ and therefore calculating the coefficients $c_k$ of a given basis representation is not possible.
-
-However, we can estimate the basis coefficients using e.g.\ regression analysis an approach motivated by the error model
-$$ f(t_i) = \bm{c'}\bm{\phi(t_i)} + \epsilon_i $$
-If we observe our function $n$ times at $t_1,\dots,t_n$, we can estimate the coefficients from a least squares problem, where we try to minimize the deviation of the basis expansion from the observed values.
-Using matrix notation let the vector $\bm{f}$ contains the observed values $f(t_i)$, $i=1,\dots,n$ and $(n \times k)$ matrix $\bm{\Phi}$ contains the basis function values $\phi_k(t_i)$.
-Then we have
-$$ \bm{f} = \bm{\Phi}\bm{c} + \bm{\epsilon} $$
-with the estimate for the coefficient vector $\bm{c}$ given by
-$$ \hat{\bm{c}} = \left( \bm{\Phi'} \bm{\Phi}\right)^{-1} \bm{\Phi'} \bm{f}. $$
-Spline curves fit in this way are often called \textit{regression splines}.
-
-
-\subsection{Common Basis Representations}
-\paragraph{Piecewise Polynomials (Splines)}
-Splines are defined by their range of validity, the knots, and the order.
-Their are constructed by dividing the area of observation into subintervals with boundaries at points called \textit{breaks}.
-Over any subinterval the spline function is a polynomial of fixed degree or order.
-The term \textit{degree} refers to the highest power in the polynomial while its \textit{order} is one higher than its degree.
-E.g.\ a line has degree one but order two because it also has a constant term. 
-\textbf{[\dots]}
-
-
-\paragraph{Polygonal Basis}
-\textbf{[\dots]}
-
-
-\subsection{Bivariate Functional Data}
-The analogue of covariance matrices in MVA are covariance surfaces $\sigma(s,t)$ whose values specify the covariance between values $f(s)$ and $f(t)$ over a population of curves.
-We can write these bivariate functions in a \textit{bivariate basis expansion} $$ r(s,t) = \sum_{k=1}^K \sum_{l=1}^K b_{k,l} \phi_k(s) \psi_l(t) 
-  = \bm{\phi}(s)' \bm{B} \bm{\psi}(t) $$
-with a $K \times K$ coefficient matrix $B$ and two sets of basis functions $\phi_k$ and $\psi_l$ using \textit{Tensor Product Splines}
-$$ B_{k,l}(s,t) = \phi_k(s) \psi_l(t).$$
-
-
+The aim of this thesis is to bring all these concepts together in the
+estimation of \enquote{Elastic Full Procrustes Means for Sparse and Irregular
+Planar Curves}. 
+The thesis focuses on the special case of 2D (i.e. planar) curves, as it can be
+shown that the Procrustes mean as particularly nice properties in this
+settings.
+Additionally this thesis will be mainly concerned with the mean estimation for
+open curves, as the closed curves case is more challenging mathematically.
+After covering the relevant background material in sufficent detail in section
+\ref{sec:theo}, an expression for the elastic full Procrustes mean will be
+derived in section \ref{sec:mean}.
+In section \ref{sec:algo}, an estimation strategy for the setting of sparse and
+irregular curves is proposed, which will be applied to simulated and empirical
+datasets in section \ref{sec:app}.
+Finally, in section \ref{sec:outl} a possible extension to closed curves will
+be briefly discussed.
+All results will be briefly summarized in section \ref{sec:sum}.
 
 \newpage

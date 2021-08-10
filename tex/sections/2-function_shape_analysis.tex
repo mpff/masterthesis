@@ -1,0 +1,58 @@
+\subsection{Shape Invariance and Equivalence Classes}
+\label{intro:inv}
+Before beginning with further derivations and definitions it is important to establish a mathematical framework for treating shapes.
+
+\begin{definition}[Equivalence relation, equivalence class and quotient space] 
+    A relation $\backsim$ on a set $X$ is called an \textbf{equivalence
+    relation} if, for all $x,y,z \in X$, it has the following properties:
+    \begin{itemize}[noitemsep,topsep=0pt]
+        \item[i.] $x \backsim x$ (reflexivity)
+        \item[ii.] $x \backsim y \Rightarrow y \backsim x$ (symmetry)
+        \item[iii.] $x \backsim y, y \backsim z \Rightarrow x \backsim z$
+        (transitivity)
+    \end{itemize}
+    The \textbf{equivalence class} $[x]$ of $x \in X$ is given by the set of
+    all $y \in X$ so that $x \backsim y$.
+    The \textbf{quotient space} $X \big/ {\backsim}$ of $X$ under the relation
+    $\backsim$ is the disjoint set of all equivalence classes in $X$ 
+    \parencite[see][40]{SrivastavaKlassen2016}.
+\end{definition}
+\noindent This means, that any statistical analysis of shapes should ultimately
+work with these equivalence classes as well.
+
+
+\subsection{The Full Procrustes Mean in Classical Shape Analysis}
+\label{intro:proc}
+\begin{definition}[Full Procrustes distance, full Procrustes mean]
+    For $X_1, X_2$ landmark configurations, represented as $m \times d$
+    matrices with $m$ landmarks in $d$ dimensions, the \textbf{full Procrustes
+    distance} between their shapes $[X_1], [X_2]$ is defined as
+    $$d_F([X_1], [X_2]) = 
+      \inf_{\lambda \in \mathbb{R}_+,\, \Gamma \in SO(m)} ||\widetilde{X}_1 - \lambda
+      \widetilde{X}_2\Gamma||, $$
+    where $\widetilde{X}_{1,2}$ are centered and normalized landmark
+    configurations, $\lambda \in \mathbb{R}_+$ is a scaling factor and $\Gamma
+    \in SO(d)$ a rotation matrix.
+
+    The \textbf{full Procrustes mean} shape for a sample of landmark
+    configurations $X_i$ ($i = 1,\dots,n$) is then given by the equivalence
+    class [$\hat\mu_F$] of a landmark configuration that minimizes the sum of
+    squared full Procrustes distances
+    $$\hat{\mu}_F = \arginf_{\mu} \sum_{i=1}^n d_F([\mu], [X_i])^2, $$
+    where $\mu$ is assumed centered and normalized
+    \parencites[see][71,114]{DrydenMardia2016}.
+\end{definition}
+
+
+\subsection{Elastic Means and the Square-Root-Velocity Framework}
+\label{intro:srv}
+\textbf{[How is functional shape data analyzed]}
+
+
+\subsection{Functional Data Analysis of Sparse and Irregular Planar Curves}
+\label{intro:sparse}
+\textbf{[What is sparse and irregular data]}
+
+
+
+\newpage
