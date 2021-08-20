@@ -1,6 +1,42 @@
+Before beginning with a derivation of the elastic full Procrustes mean, it is
+important to establish a notational and mathematical framework for the
+treatment of planar shapes.
+While the restriction to the 2D case might seem a major one, it still covers
+all shape data extracted from e.g.\ imagery and is therefore very applicable in
+practice.
+Examples of objects that can be analyzed in this way are handwritten digits or
+symbols, the outlines bones and organs in medical images, or even movement
+trajectories on a map.
+
+All these objects may be naturally represented as planar curves $\beta : [0,1]
+\rightarrow \mathbb{R}^2$ with $\beta(t) = (x(t),\, y(t))^T$, where $x(t)$ and
+$y(t)$ are the scalar-valud \textit{coordinate functions}.
+Calculations in 2D, and in particular the derivation of the
+full Procrustes mean, are greatly simplified by using complex notation.
+Going forward, we will therefore identify $\mathbb{R}^2$ with $\mathbb{C}$ and
+always use complex notation when representing a planar curve:
+$$\beta : [0,1] \rightarrow \mathbb{C}, \quad \beta(t) = x(t) + i\, y(t).$$
+
 \subsection{Shape Invariance and Equivalence Classes}
-\label{intro:inv}
-Before beginning with further derivations and definitions it is important to establish a mathematical framework for treating shapes.
+\label{theo:inv}
+The concept of shape is closely related to the concept of invariance under the
+transformations of scaling, translation and rotation.
+When considering the shape of a curve, we additionally have to take into
+account invariance with respect to re-parametrisation.
+This can be seen by noting that the curves $\beta(t)$ and $\beta(\gamma(t))$,
+with some \textit{warping function} $\gamma : [0,1] \rightarrow [0,1]$
+monotonically increasing and differentiable, have the same image and therefore
+represent the same geometrical object.
+We can say that the actions of translation, scaling, rotation and
+re-parametrization are \textit{equivalence relations} with respect to shape, as
+each action leavs the shape of the curve untouched and only changes the way the
+shape is represented.
+The shape of a curve can then be defined as the respective \textit{equivalence
+class}, i.e. the set of all possible shape preserving transformations of the
+curve.
+As two equivalence classses are neccessarily either disjoint or identical, we
+can consider two curves as having the same shape, if they are elements of the
+same equivalence class \parencite[see][40]{SrivastavaKlassen2016}.
 
 \begin{definition}[Equivalence relation, equivalence class and quotient space] 
     A relation $\backsim$ on a set $X$ is called an \textbf{equivalence
@@ -14,15 +50,86 @@ Before beginning with further derivations and definitions it is important to est
     The \textbf{equivalence class} $[x]$ of $x \in X$ is given by the set of
     all $y \in X$ so that $x \backsim y$.
     The \textbf{quotient space} $X \big/ {\backsim}$ of $X$ under the relation
-    $\backsim$ is the disjoint set of all equivalence classes in $X$ 
-    \parencite[see][40]{SrivastavaKlassen2016}.
+    $\backsim$ is the disjoint set of all equivalence classes in $X$. 
 \end{definition}
-\noindent This means, that any statistical analysis of shapes should ultimately
-work with these equivalence classes as well.
+
+We now want to define an equivalence relation with respect to shape.
+With this in mind, let us first consider how the discussed transformations act
+individually on the set of parametrized planar curves with complex
+representation $\beta : [0,1]
+\rightarrow \mathbb{C}$:
+\begin{itemize}
+  \item
+    The \textbf{translation} group $\mathbb{C}$ acts on $\beta$ by $(\xi, \beta)
+    \mapsto \beta + \xi$, for any $\xi \in \mathbb{C}$.
+    We can consider two curves as equivalent with respect to translation
+    $\beta_1 \backsim \beta_2$, if there exists a complex scalar $\tilde\xi \in
+    \mathbb{C}$ so that $\beta_1 = \beta_2  + \tilde\xi$.
+    For this relation an equivalence class is $[\beta] = \{\beta + \xi\, |\,
+    \beta : [0,1] \rightarrow \mathbb{C},\, \xi \in \mathbb{C}\}$.
+  \item 
+    The \textbf{scaling} group $\mathbb{R}^+$ acts on $\beta$ by $(\lambda, \beta)
+    \mapsto \lambda \beta$, for any $\lambda \in \mathbb{R}^+$.
+    We define $\beta_1 \backsim \beta_2$, if there exists a scalar
+    $\tilde\lambda \in \mathbb{R}^+$ so that $\beta_1 = \tilde\lambda \beta_2$.
+    An equivalence class is $[\beta] = \{\lambda\beta\,|\,\beta : [0,1]
+    \rightarrow \mathbb{C},\, \lambda \in \mathbb{R}^+\}$.
+  \item 
+    The \textbf{rotation} group $[0,2\pi]$ acts on $\beta$ by $(\theta, \beta)
+    \mapsto e^{i\theta} \beta$, for any $\theta \in [0,2\pi]$.
+    We define $\beta_1 \backsim \beta_2$, if there exists a $\tilde\theta \in
+    [0,2\pi]$ with $\beta_1 = e^{i\tilde\theta} \beta_2$.
+    An equivalence class is $[\beta] = \{e^{i\theta}\beta\,|\, \beta : [0,1]
+    \rightarrow \mathbb{C},\, \theta \in [0,2\pi]\}$.
+  \item 
+    The \textbf{re-parametrization} group $\Gamma$ acts on $\beta$ by $(\gamma,\beta)
+    \mapsto \beta \circ \gamma$, for any $\gamma \in \Gamma$ with $\Gamma$
+    being the set of monotonically increasing and differentiable warping
+    functions.
+    We define $\beta_1 \backsim \beta_2$, if there exists a warping function
+    $\tilde\gamma \in \Gamma$ with $\beta_1 = \beta_2 \circ \tilde\gamma$.
+    An equivalence class is $[\beta] = \{\beta \circ \gamma\,|\, \beta : [0,1]
+    \rightarrow \mathbb{C},\, \gamma \in \Gamma\}$.
+\end{itemize}
+In a next step, we can consider how these transformations act in concert and
+whether they \textit{commute}, that is, whether the order of applying the
+transformations changes outcomes.
+Consider for example the actions of the rotation and scaling product group
+$\mathbb{R}^+ \times [0,2\pi]$ given by $((\lambda, \theta), \beta) \mapsto
+\lambda e^{i\theta} \beta$, which clearly commute as $\lambda
+(e^{i\theta}\beta) = e^{i\theta}(\lambda\beta)$.
+However, the joint actions of scaling, rotation, and translation do not
+commute, as $\lambda e^{i\theta}(\beta + \xi) \neq \lambda e^{i\theta}\beta +
+\xi$ and therefore, the order of translating and rotating or scaling matters.
+\textit{Euclidean similarity transformations}.
+\begin{definition}[Euclidean similarity transformation] 
+  We define an \textbf{Euclidean similarity transformation} on a curve $\beta :
+  [0,1] \rightarrow \mathbb{C}$ as the joint action of scaling, rotation, and
+  translation by $((\xi, \lambda, \theta), \beta) \mapsto \lambda e^{i\theta}
+  \beta + \xi$, with $\xi \in \mathbb{C}$, $\lambda \in \mathbb{R}^+$, and
+  $\theta \in [0,2\pi]$ \parencite[see][62]{DrydenMardia2016}.
+\end{definition}
+With respect to the action of re-parametrization, we can note that it
+necessarily commutes with all Euclidean similarity transformations as those
+only change the image of $\beta$, while the former only changes the
+parametrization.
+Putting everything together, we can finally give a mathematical definition of
+the shape of a planar curve.
+\begin{definition}[Shape]
+  The \textbf{shape} of a planar curve $\beta : [0,1] \rightarrow \mathbb{C}$
+  is given by the equivalence class with respect to all Euclidean similarity
+  transformations and re-parametrizations of $\beta$
+  $$ [\beta] = \{\lambda e^{i\theta}(\beta \circ \gamma) + \xi\,|\, \xi \in
+  \mathbb{C},\, \lambda \in \mathbb{R}^+,\, \theta \in [0,2\pi],\, \gamma \in
+  \Gamma\} $$
+\end{definition}
 
 
-\subsection{The Full Procrustes Mean in Classical Shape Analysis}
-\label{intro:proc}
+
+
+
+\subsection{The Full Procrustes Mean for Planar Curves}
+\label{theo:proc}
 \begin{definition}[Full Procrustes distance, full Procrustes mean]
     For $X_1, X_2$ landmark configurations, represented as $m \times d$
     matrices with $m$ landmarks in $d$ dimensions, the \textbf{full Procrustes
@@ -45,14 +152,11 @@ work with these equivalence classes as well.
 
 
 \subsection{Elastic Means and the Square-Root-Velocity Framework}
-\label{intro:srv}
-\textbf{[How is functional shape data analyzed]}
+\label{theo:srv}
 
 
 \subsection{Functional Data Analysis of Sparse and Irregular Planar Curves}
-\label{intro:sparse}
-\textbf{[What is sparse and irregular data]}
-
+\label{theo:sparse}
 
 
 \newpage

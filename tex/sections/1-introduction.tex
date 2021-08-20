@@ -1,6 +1,6 @@
-In statistical shape analysis one is interested in analysing the shape of
-geometrical objects, like the outlines of bones and organs, a handwritten
-digit, or the folds of a protein.
+In statistical shape analysis one is interested in analysing the geometry of
+objects, like the outlines of bones and organs, a handwritten digit, or the
+folds of a protein.
 When analysing such objects, differences in location, rotation, and size
 are often not of interest.
 Instead, the focus lies purely on their differences in  \textit{shape}, a
@@ -11,7 +11,7 @@ might be formulated in the following way:
     and rotational effects are removed from an object 
     \parencite[see][1]{DrydenMardia2016}.
 \end{definition}
-\noindent This geometrical information is usually approximated by measuring
+\noindent This geometrical information is usually approximated, by measuring
 the cordinates of a fixed set of \textit{landmarks}, which are characteristic
 points on an object that match between and within populations
 \parencite[see][3]{DrydenMardia2016}.
@@ -30,7 +30,7 @@ outline might be represented by an open or closed curve $\beta : [0,1]
 \rightarrow \mathbb{R}^d,\, d \in \mathbb{N}$, eliminating the (often
 subjective) decision of which points to consider as "characteristic".
 This functional data approach introduces an additional kind of shape invariance
-relating to the parametrisation $t \in [0,1]$ of $\beta$, as only the image of
+relating to the parametrisation $t$ of $\beta$, as only the image of
 $\beta$ but not its parametrisation is indacative of the objects shape.
 A functional shape mean, which is invariant with respect to re-parametrisation
 of the input curves, is called an \textit{elastic} mean and its calculation is
@@ -39,29 +39,35 @@ framework as introduced in \cite{SrivastavaEtAl2011}.
 Elastic shape means and the SRV framework will be explained in section
 \ref{theo:srv}.
 Even though this functional approach eliminates the subjectivity of choosing a
-fixed set of landmarks, in practice a curve will never be fully observed and
+fixed set of landmarks, in practice, a curve will never be fully observed and
 one has to again work with a set of sampled points along the curve. 
-A particular challenge is working with such curves, that are sparsely and
-irregularly sampled, where one has to employ appropriate smoothing techniques
-to make maximum use of the available (sparse) data.
+A particular challenge is working with curves that are sparsely and irregularly
+sampled, where one has to employ appropriate smoothing techniques to make
+maximum use of the available (sparse) data.
 This will be briefly discussed in section \ref{theo:sparse}.
 
 The aim of this thesis is to bring all these concepts together in the
 estimation of \enquote{Elastic Full Procrustes Means for Sparse and Irregular
 Planar Curves}. 
+This is a novel approach as, firstly, the literature on elastic shape means has
+so far mostly focused on the different mean concept of the Riemannian center of
+mass mean \parencite{SrivastavaEtAl2011} and secondly, shape means of
+sparse and irregular shape data have so far only been considered modulo
+re-parametrisation and translation, excluding rotation and scaling invariance
+\parencite{Steyer2021}.
 The thesis focuses on the special case of 2D (i.e. planar) curves, as it can be
-shown that the Procrustes mean as particularly nice properties in this
-settings.
+shown that the Procrustes mean has particularly nice properties in this
+setting when working with complex notation.
 Additionally this thesis will be mainly concerned with the mean estimation for
 open curves, as the closed curves case is more challenging mathematically.
-After covering the relevant background material in sufficent detail in section
-\ref{sec:theo}, an expression for the elastic full Procrustes mean will be
-derived in section \ref{sec:mean}.
+After covering the relevant background material  in section \ref{sec:theo}, an
+expression for the elastic full Procrustes mean will be derived in section
+\ref{sec:mean}.
 In section \ref{sec:algo}, an estimation strategy for the setting of sparse and
 irregular curves is proposed, which will be applied to simulated and empirical
 datasets in section \ref{sec:app}.
 Finally, in section \ref{sec:outl} a possible extension to closed curves will
 be briefly discussed.
-All results will be briefly summarized in section \ref{sec:sum}.
+All results will be summarized in section \ref{sec:sum}.
 
 \newpage
