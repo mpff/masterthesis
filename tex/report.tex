@@ -56,15 +56,10 @@
 \DeclareMathOperator*{\arginf}{arginf}   % Jan Hlavacek
 
 % Theorems and Definitions
-\mdfdefinestyle{definitionstyle}{%
-  linewidth=1pt,%
-  innertopmargin=0pt
-}
-\theoremstyle{plain}
-\mdtheorem{theorem}{Theorem}[section]
-\mdtheorem{corollary}{Corollary}[theorem]
-\mdtheorem{lemma}[theorem]{Lemma}
-\newmdtheoremenv[style=definitionstyle]{definition}[theorem]{Definition} % definition numbers depend on lemma nbrs
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{corollary}{Corollary}[theorem]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{definition}[theorem]{Definition}
 
 
 % Extra settings

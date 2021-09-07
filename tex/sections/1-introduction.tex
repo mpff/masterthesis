@@ -1,16 +1,22 @@
+Statistical Shape Analysis is the branch of statistics concerned with modelling the geometry of objects.
+Examples might be the outlines of bones and organs, a handwritten digit, or the folds of a protein.
+To capture an object's geometrical information, a common approach is the use of so called \enquote{landmarks}: characteristic points on an object, which match between and within populations \parencite[see][3]{DrydenMardia2016}.
+However, in recent years an alternative approach has become more popular, where objects are represented using curves.
+This has the advantage of offering a more flexible representation of an object's geometry, as the analysis is not restricted to a set of discrete points.
+Usually, the curves are themselves represented by functions $\beta : [0,1] \rightarrow \mathbb{R}^k$, which, for example in 2D, might describe the outlines of an object in an image. 
+As each object corresponds to one function, this opens up a connection to the branch of statistics concerned with modelling whole functions: Functional Data Analysis \parencite[see e.g.][]{Ramsay2006}.
+
+When analysing the geometry of objects, differences in location, rotation, and size are often not of interest.
+Instead, the focus lies purely on their differences in  \textit{shape}, a widely adapted definition of which was established by \cite{Kendall1977} and which might be formulated in the following way:
+\begin{definition}[Shape] 
+    All geometrical information that remains when location, scale and rotational effects are removed from an object \parencite[see][1]{DrydenMardia2016}.
+\end{definition}
+\noindent The functional approach to shape analysis introduces an additional kind of invariance relating to the parametrisation $t \in [0,1]$, as only the image of $\beta$ but not its parametrisation is indacative of the object's shape.
+
+\newpage
 In statistical shape analysis one is interested in analysing the geometry of
 objects, like the outlines of bones and organs, a handwritten digit, or the
 folds of a protein.
-When analysing such objects, differences in location, rotation, and size
-are often not of interest.
-Instead, the focus lies purely on their differences in  \textit{shape}, a
-widely adapted definition of which was established by \cite{Kendall1977} and which
-might be formulated in the following way:
-\begin{definition}[Shape] 
-    All geometrical information that remains when location, scale
-    and rotational effects are removed from an object 
-    \parencite[see][1]{DrydenMardia2016}.
-\end{definition}
 \noindent This geometrical information is usually approximated, by measuring
 the cordinates of a fixed set of \textit{landmarks}, which are characteristic
 points on an object that match between and within populations

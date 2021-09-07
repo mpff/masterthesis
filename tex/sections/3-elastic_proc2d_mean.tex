@@ -1,5 +1,3 @@
-\subsection{Group action: Warping and Euclidean simmilarity transform}
-
 
 Let $\beta$ be a continuous planar curve.
 It can be represented in a parameterized form in $\mathbb{R}^2$ as
@@ -19,15 +17,6 @@ For a set of planar curves $\beta_1,\dots,\beta_n : [0,1] \rightarrow \mathbb{C}
 which we can be further simplified by normalizing $\beta_i := \frac{\beta_i}{|| \beta_i ||}$ and using $\langle \mu, \mu \rangle = 1$
 $$ \hat{\mu} = \argmax_{\mu:[0,1]\rightarrow\mathbb{C}} \sum_{i=1}^n \langle \mu, \beta_i \rangle \langle \beta_i, \mu \rangle \quad\text{s.t.}\,\, ||\mu|| = 1. $$
 The expression for $d^2_F(\mu,\beta_i)$ in the case of planar curves is derived in appendix \ref{app:deriv-full-proc-dist}.
-
-
-\subsection{The SRV Framework}
-Instead of working with the original curve $\beta$, for calculation of \textit{elastic} means it is advantageous to work with its corresponding \textit{square root velocity curve} given by
-$$ q : [0, 1] \rightarrow \mathbb{C}, \quad q(t) = \frac{\dot{\beta}(t)}{\sqrt{|| \dot{\beta}(t) ||}} \quad \text{for} \,\, \dot{\beta}(t) \neq 0 $$
-where original curve $\beta$ can be obtained up to translation by back transformation via $\beta(t) = \beta(0) + \int_0^t q(s) || q(s) || ds$.
-Moreover, if the original curve is of unit length the SRV curve will be automatically normalized:
-$$ ||q|| = \sqrt{\langle q, q \rangle} = \sqrt{ \int_0^1 \overline{q(t)} q(t) \, dt } = \sqrt{ \int_0^1 |q(t)|^2 \, dt} = \sqrt{\int_0^1 |\dot{\beta}(t)| \, dt} = \sqrt{1} = 1. $$
-
 
 
 \subsection{The Full Procrustes mean}

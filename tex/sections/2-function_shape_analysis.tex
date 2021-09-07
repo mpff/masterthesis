@@ -17,7 +17,7 @@ Going forward, we will therefore identify $\mathbb{R}^2$ with $\mathbb{C}$ and
 always use complex notation when representing a planar curve:
 $$\beta : [0,1] \rightarrow \mathbb{C}, \quad \beta(t) = x(t) + i\, y(t).$$
 
-\subsection{Shape Invariance and Equivalence Classes}
+\subsection{Equivalence Classes and Shape Invariance}
 \label{theo:inv}
 The concept of shape is closely related to the concept of invariance under the
 transformations of scaling, translation and rotation.
@@ -29,8 +29,9 @@ monotonically increasing and differentiable, have the same image and therefore
 represent the same geometrical object.
 We can say that the actions of translation, scaling, rotation and
 re-parametrization are \textit{equivalence relations} with respect to shape, as
-each action leavs the shape of the curve untouched and only changes the way the
-shape is represented.
+each action leaves the shape of the curve untouched and only changes the way
+the shape is represented.
+
 The shape of a curve can then be defined as the respective \textit{equivalence
 class}, i.e. the set of all possible shape preserving transformations of the
 curve.
@@ -50,10 +51,10 @@ same equivalence class \parencite[see][40]{SrivastavaKlassen2016}.
     The \textbf{equivalence class} $[x]$ of $x \in X$ is given by the set of
     all $y \in X$ so that $x \backsim y$.
     The \textbf{quotient space} $X \big/ {\backsim}$ of $X$ under the relation
-    $\backsim$ is the disjoint set of all equivalence classes in $X$. 
+    $\backsim$ is the set of all equivalence classes in $X$. 
 \end{definition}
 
-We now want to define an equivalence relation with respect to shape.
+\noindent We now want to define an equivalence relations with respect to shape.
 With this in mind, let us first consider how the discussed transformations act
 individually on the set of parametrized planar curves with complex
 representation $\beta : [0,1]
@@ -100,47 +101,121 @@ $\mathbb{R}^+ \times [0,2\pi]$ given by $((\lambda, \theta), \beta) \mapsto
 (e^{i\theta}\beta) = e^{i\theta}(\lambda\beta)$.
 However, the joint actions of scaling, rotation, and translation do not
 commute, as $\lambda e^{i\theta}(\beta + \xi) \neq \lambda e^{i\theta}\beta +
-\xi$ and therefore, the order of translating and rotating or scaling matters.
-\textit{Euclidean similarity transformations}.
+\xi$.
+It follows that the order of translating and rotating or scaling matters and
+when defining such a joint action, one usually takes the translation to act on
+the already scaled and rotated curve.
 \begin{definition}[Euclidean similarity transformation] 
-  We define an \textbf{Euclidean similarity transformation} on a curve $\beta :
+  We define an \textbf{Euclidean similarity transformation} of a curve $\beta :
   [0,1] \rightarrow \mathbb{C}$ as the joint action of scaling, rotation, and
-  translation by $((\xi, \lambda, \theta), \beta) \mapsto \lambda e^{i\theta}
-  \beta + \xi$, with $\xi \in \mathbb{C}$, $\lambda \in \mathbb{R}^+$, and
-  $\theta \in [0,2\pi]$ \parencite[see][62]{DrydenMardia2016}.
+  translation by 
+  $$((\xi, \lambda, \theta), \beta) \mapsto \lambda e^{i\theta} \beta + \xi,$$
+  with $\xi \in \mathbb{C}$, $\lambda \in \mathbb{R}^+$, and $\theta \in
+  [0,2\pi]$ \parencite[see][62]{DrydenMardia2016}.
 \end{definition}
-With respect to the action of re-parametrization, we can note that it
-necessarily commutes with all Euclidean similarity transformations as those
-only change the image of $\beta$, while the former only changes the
+\noindent With respect to the action of re-parametrization, we can note that it
+necessarily commutes with all Euclidean similarity transformations, as those
+only act on the image of $\beta$, while the former only acts on the
 parametrization.
-Putting everything together, we can finally give a mathematical definition of
-the shape of a planar curve.
+Putting everything together, we can finally give a formal definition of the
+shape of a planar curve.
 \begin{definition}[Shape]
   The \textbf{shape} of a planar curve $\beta : [0,1] \rightarrow \mathbb{C}$
-  is given by the equivalence class with respect to all Euclidean similarity
-  transformations and re-parametrizations of $\beta$
-  $$ [\beta] = \{\lambda e^{i\theta}(\beta \circ \gamma) + \xi\,|\, \xi \in
-  \mathbb{C},\, \lambda \in \mathbb{R}^+,\, \theta \in [0,2\pi],\, \gamma \in
-  \Gamma\} $$
+  is given by its equivalence class with respect to all Euclidean similarity
+  transformations and re-parametrizations
+  $$ [\beta] = \left\{\lambda e^{i\theta}(\beta \circ \gamma) + \xi\,|\, \xi
+  \in \mathbb{C},\, \lambda \in \mathbb{R}^+,\, \theta \in [0,2\pi],\, \gamma
+  \in \Gamma\right\}. $$
+  The \textbf{shape space} is then given by the corresponding quotient space 
+  $$\mathbb{C}^{[0,1]} \big/ \mathbb{C} \rtimes \left( \mathbb{R}^+ \times
+  [0,2\pi] \right) \times \Gamma = \left\{[\beta]|\beta \in
+  \mathbb{C}^{[0,1]}\right\},$$
+  where the symbol \enquote{$\rtimes$} denotes a semi-direct product, i.e. that
+  the translation group acts \enquote{after} scaling and rotation
+  \parencite[for details see][Chapter 3]{SrivastavaKlassen2016}.
 \end{definition}
 
-
-
+\noindent As we are interested in calculating shape means, we now need to find a way to
+measure simmilarity and dissimilarity between shapes.
+More formally, this means that we want to measure distances between equivalence
+classes in shape space.
+As equivalence classes and quotient spaces are already quite abstract concepts
+and as the discussed spaces may be quite complex, we need to find a way of
+simplifying calculations in shape space.
+The basic idea is to find unique curves as a representation for each equivalence
+class, so that distance in shape space can be equivalently calculated as the
+distance between these curves.
+In short we want to find intersections of the function space, so that there is
+a one-to-one relationship between elements of that interesection and the
+squivalence classes in shape space.
+Consider, for example, the action of the translation group $\mathbb{C}$
+with corresponding quotient space $\mathbb{C}^{[0,1]} \big/ \mathbb{C} =
+\left\{[\beta] \,|\, \beta \in \mathbb{C}^{[0,1]} \right\}$ and $[\beta] =
+\{\beta + \xi\,|\, \xi \in \mathbb{C}\}$.
+For each equivalence class in $\mathbb{C}^{[0,1]} \big/ \mathbb{C}$ there is
+exactly one element in the space of all centered curves $\mathcal{C}_1 =
+\left\{ \beta \in \mathbb{C}^{[0,1]}\,\big|\, \int_0^1 \beta(t) \, dt = 0
+\right\}$ belonging to that equivalence class.
+For the scaling group $\mathbb{R}^+$, when considering only continuously
+differentiable $\beta$, we can similarly form the space of all unit-length
+curves $\mathcal{C}_2 = \left\{\beta \in \mathbb{C}^{[0,1]}\,\big|\,
+\beta\,\text{continuously differentiable},\, \int_0^1 |\dot{\beta}(t)| \, dt =
+1 \right\}$ and for each equivalence class with respect to scaling there is
+again exactly one element in $\mathcal{C}_2$ belonging to that class.
+Both intersections taken together result in the concept of \textit{pre-shape}
+and the act of removing translation and scaling variability by centering and
+restricting curves to unit-length is called \enquote{quotienting out} \parencite[see][133\,f.]{SrivastavaKlassen2016}.
+\begin{definition}[Pre-shape]
+  The \textbf{pre-shape} of a countinously differentiable planar curve $\beta :
+  [0,1] \rightarrow \mathbb{C}$ is given by its centered unit-length
+  representation 
+  $$\tilde\beta = l_\beta^{-1} \left(\beta - c_\beta\right)$$
+  with $l_\beta = \int_0^1|\dot\beta(t)|\,dt$ and $c_\beta = \int_0^1
+  \beta(t)\,dt$.
+  The \textbf{shape} of $\beta$ can then also be defined as
+  $$[\beta] = \left\{e^{i\theta}(\tilde\beta \circ \gamma) \,\big|\, \theta \in
+  [0,2\pi],\, \gamma \in \Gamma\right\}.$$
+\end{definition}
+\noindent We can use the concept of pre-shape to construct an appropriate distance
+measure for equivalence classes with respect to scaling and translation, by
+using the usual distance metric for complex functions with the respective
+pre-shapes.
+$$d_{\mathbb{C}^{[0,1]} \big/ \mathbb{C} \rtimes
+\mathbb{R}^+}([\beta_1], [\beta_2]) = d_{\mathbb{C}^{[0,1]}}(\tilde\beta_1,
+\tilde\beta_2)$$
+\noindent Working with pre-shapes means that we only have to take care of shape
+equivalence with respect to rotation and re-parametrization going forward.
+However, both types of transformations are not as easily dealt with as
+translation and scaling.
+We will now take a look at a different way of constructing distance measures
+for quotient spaces, one dealing with rotation and one dealing with
+re-parametrization.
 
 
 \subsection{The Full Procrustes Mean for Planar Curves}
 \label{theo:proc}
-\begin{definition}[Full Procrustes distance, full Procrustes mean]
-    For $X_1, X_2$ landmark configurations, represented as $m \times d$
-    matrices with $m$ landmarks in $d$ dimensions, the \textbf{full Procrustes
-    distance} between their shapes $[X_1], [X_2]$ is defined as
-    $$d_F([X_1], [X_2]) = 
-      \inf_{\lambda \in \mathbb{R}_+,\, \Gamma \in SO(m)} ||\widetilde{X}_1 - \lambda
-      \widetilde{X}_2\Gamma||, $$
-    where $\widetilde{X}_{1,2}$ are centered and normalized landmark
-    configurations, $\lambda \in \mathbb{R}_+$ is a scaling factor and $\Gamma
-    \in SO(d)$ a rotation matrix.
 
+The \textit{full Procrustes distance} is a widely used distance function in
+classical shape analysis that allows for scale and rotation invariant shape
+distance calculation.
+To remove translation and scaling variablity, we chose to restrict our curves
+to a certain fixed position and scale.
+This works, because we can simply calculate both for any curve.
+However, there is no similar way to calculate the \enquote{rotation} of a
+curve and in fact, saying that a curve is \enquote{rotated} is only meaningful in
+comparison to other curves. 
+A solution is to align the rotation of any two curves on a case by case basis,
+when calculating the distance between them.
+\begin{definition}[Full Procrustes distance]
+  The \textbf{full Procrustes distance} between the shapes $[\beta_1]$,
+  $[\beta_2]$ of two continously differentiable $\beta_1$, $\beta_2$ with
+  $\beta_i : [0,1] \rightarrow \mathbb{C}$ is given by 
+    $$d_F([\beta_1], [\beta_2]) = \inf_{\lambda \in \mathbb{R}^+,\, \theta \in
+    [0,2\pi]} ||\tilde{\beta}_1 - \lambda e^{i\theta} \tilde{\beta}_2||, $$
+    where $\tilde\beta_{1,2}$ are the centered, unit-length pre-shapes of
+    $\beta_{1,2}$.
+\end{definition}
+\begin{definition}[Full Procrustes mean]
     The \textbf{full Procrustes mean} shape for a sample of landmark
     configurations $X_i$ ($i = 1,\dots,n$) is then given by the equivalence
     class [$\hat\mu_F$] of a landmark configuration that minimizes the sum of
@@ -150,11 +225,23 @@ the shape of a planar curve.
     \parencites[see][71,114]{DrydenMardia2016}.
 \end{definition}
 
+\textbf{[Define an intersection of the quotient space by projections. Proof that this is good. Procrustes Fits.]}
 
 \subsection{Elastic Means and the Square-Root-Velocity Framework}
 \label{theo:srv}
-
-
+Instead of working with the original curve $\beta$, for calculation of
+\textit{elastic} means it is advantageous to work with its corresponding
+\textit{square root velocity curve} given by
+$$ q : [0, 1] \rightarrow \mathbb{C}, \quad q(t) =
+\frac{\dot{\beta}(t)}{\sqrt{|| \dot{\beta}(t) ||}} \quad \text{for} \,\,
+\dot{\beta}(t) \neq 0 $$
+where original curve $\beta$ can be obtained up to translation by back
+transformation via $\beta(t) = \beta(0) + \int_0^t q(s) || q(s) || ds$.
+Moreover, if the original curve is of unit length the SRV curve will be
+automatically normalized:
+$$ ||q|| = \sqrt{\langle q, q \rangle} = \sqrt{ \int_0^1 \overline{q(t)} q(t)
+\, dt } = \sqrt{ \int_0^1 |q(t)|^2 \, dt} = \sqrt{\int_0^1 |\dot{\beta}(t)| \,
+dt} = \sqrt{1} = 1. $$
 \subsection{Functional Data Analysis of Sparse and Irregular Planar Curves}
 \label{theo:sparse}
 
