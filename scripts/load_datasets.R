@@ -32,7 +32,7 @@ center_curve <- function (data_curve)
 
 # Datasets
 
-curves.spiral <- function(n_curves = 4, rotate = FALSE, scale = FALSE, center = TRUE){
+curves.spiral <- function(n_curves = 4, rotate = FALSE, scale = FALSE, center = FALSE){
     # Dataset: Simulated spirals with optional random rotation and scaling.
     
     # Define spiral shape.
@@ -64,7 +64,7 @@ curves.spiral <- function(n_curves = 4, rotate = FALSE, scale = FALSE, center = 
 }
 
 
-curves.digit3 <- function(rotate = FALSE, scale = FALSE, center = TRUE){
+curves.digit3 <- function(rotate = FALSE, scale = FALSE, center = FALSE){
     # Dataset : Handwritten digits 3.
     
     data_curves <- shapes::digit3.dat
