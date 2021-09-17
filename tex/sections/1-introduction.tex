@@ -1,6 +1,6 @@
-Statistical Shape Analysis \parencite[see e.g.][]{DrydenMardia2016} is the branch of statistics concerned with modelling the geometry of objects.
+Statistical Shape Analysis \parencite[see e.g.][]{DrydenMardia2016} is a branch of statistics concerned with modelling the geometry of objects.
 Examples might be the outlines of bones and organs, a handwritten digit, or the folds of a protein.
-To capture an object's geometrical information, a common approach is the use of so called \enquote{landmarks}: characteristic points on an object, which match between and within populations \parencite[see][3]{DrydenMardia2016}.
+To capture an object's geometrical information, a common approach is the use of so called \textit{landmarks}: characteristic points on an object, which match between and within populations \parencite[see][3]{DrydenMardia2016}.
 However, in recent years an alternative approach has gained in popularity, where objects are represented using curves.
 This has the advantage of a more flexible representation of an object's geometry, as the analysis is not restricted to a set of discrete points along the object.
 Usually, the curves are themselves represented by functions $\beta : [0,1] \rightarrow \mathbb{R}^k$, which, for example in 2D, might describe the outlines of an object in an image. 
@@ -14,7 +14,7 @@ Instead, the focus lies purely on their differences in  \textit{shape}, a widely
 \noindent Additionally, the functional approach to shape analysis necessitates invariance relating to parametrisation, as only the image of any function describing e.g.\ an object's outline, but not its parametrisation, is indacative of the object's shape.
 
 When analysing object data, a prerequisite for many statistical methods is the ability to measure the simmilarity and dissimilarity of observations in the form of a distance function.
-\cite{SrivastavaEtAl2011} introduced a mathematical framework for the analysis of shapes as curves using their square-root-velocity (SRV) representation and a so called \enquote{elastic} distance, which is invariant under re-parametrisation.
+\cite{SrivastavaEtAl2011} introduced a mathematical framework for the analysis of shapes as curves using their square-root-velocity (SRV) representation and a so called \enquote{elastic} distance, which is invariant under re-parametrisation \textbf{(is it, really?)}.
 While this SRV framework has been used for the calculation of elastic shape means, which also include invariance under scaling, rotation and translation, most of these approaches focus on \enquote{Riemannian} or \enquote{geodesic} mean concepts \textbf{[cite examples here? Srivastava?]}.
 
 Another popular mean concept from landmark shape analysis is the \textit{Full Procrustes Mean}, which has particularly nice properties in two dimensions, when identifying $\mathbb{R}^2$ with $\mathbb{C}$ \parencite[see][Chap.\ 8]{DrydenMardia2016}, as its calculation can be shown to be related to an eigenfunction problem of the complex covariance surface of the observed curves.
@@ -22,9 +22,9 @@ This offers an advantage when working in the challenging setting of sparsely and
 Here, in particular, \cite{CederbaumScheiplGreven2018} offers a method for efficient covariance smoothing in the sparse setting. 
 
 The aim of this thesis is to extend existing methods for elastic mean estimation of sparse and irregularly sampled curves, as proposed by \cite{Steyer2021} and implemented in the \texttt{R} package \texttt{elasdics} \parencite{elasdics}, to also include invariance with respect to rotation and scaling.
-The later will be achieved by generalizing the concept of the \textit{Full Procrustes Mean} from landmark data to functional data \textbf{[I should be doing more, actually]}, leading to the estimation of shape means in the form of \textit{Elastic Full Procrustes Means}.
-To make use of the nice properties of the Procrustes mean, analysis will be restricted to the case of planar curves.
-Here, appropriate smoothing techniques for efficient estimation of the complex covariance surfaces from sparse data, as available in the \texttt{R} package \texttt{sparseFLMM} \parencite{sparseFLMM}, will be used.
+The later will be achieved by generalizing the concept of the \textit{Full Procrustes Mean} from landmark to functional data and by iteratively applying parametrization- and rotation-alignment and full Procrustes mean estimation \textbf{[Be more precise.]}, leading to the estimation of shape means in the form of \textit{Elastic Full Procrustes Means}.
+To make use of the nice properties of the Procrustes mean in two dimensions, analysis will be restricted to the case of planar curves.
+Here, appropriate smoothing techniques for sparse estimation of the complex covariance surfaces, as available in the \texttt{R} package \texttt{sparseFLMM} \parencite{sparseFLMM}, will be used.
 
 The thesis is organized as follows. 
 \textbf{[Organize this at the end.]}

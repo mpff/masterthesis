@@ -35,7 +35,7 @@
 \setlength{\heavyrulewidth}{1.5pt}
 \setlength{\abovetopsep}{4pt}
 % Additional packages
-\usepackage{hyperref} % For hyperlinks in the PDF
+\usepackage[hidelinks]{hyperref} % For hyperlinks in the PDF
 \usepackage{tikz}
 \usepackage{import}
 \usepackage{enumitem} 
@@ -59,8 +59,11 @@
 \newtheorem{theorem}{Theorem}[section]
 \newtheorem{corollary}{Corollary}[theorem]
 \newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{remark}[theorem]{Remark}
 \newtheorem{definition}[theorem]{Definition}
 
+% Long mapsto arrows
+%\usepackage{stmaryrd}
 
 % Extra settings
 \allowdisplaybreaks
@@ -71,13 +74,15 @@
 \begin{document}
 
 
+% --- Front Matter
+
 \begin{titlepage}
 
   \vspace*{0.5cm}
 
   \begin{center}
-    {\LARGE\textbf{Elastic Full Procrustes Means for Sparse and\vspace{0.4cm}\\
-    Irregular Planar Curves}}
+    {\LARGE\textbf{Elastic Full Procrustes Means\vspace{0.4cm}\\
+    for Sparse and Irregular Planar Curves}}
   \vspace{1cm}\\
     {\large Masters Thesis}
   \vspace{0.7cm}\\
@@ -96,51 +101,68 @@
 
 \end{titlepage}
 
-
+\pagenumbering{roman}
 \tableofcontents
+
+
+% --- Main Content
+
 \newpage
-
-
+\pagenumbering{arabic}
 \section{Introduction}
 \label{sec:intro}
 \input{sections/1-introduction}
 
+\newpage
 \section{Functional and Shape Data Analysis of Planar Curves}
 \label{sec:theo}
 \input{sections/2-function_shape_analysis}
 
+\newpage
 \section{The Elastic Full Procrustes Means for Planar Curves}
 \label{sec:mean}
 \input{sections/3-elastic_proc2d_mean}
 
+\newpage
 \section{Estimation Strategy}
 \label{sec:algo}
 
+\newpage
 \section{Empirical Application}
 \label{sec:app}
 
+\newpage
 \section{Outlook}
 \label{sec:outl}
 
+\newpage
 \section{Summary}
 \label{sec:sum}
-
-\appendix
-\newpage
-\section{Derivations and Proofs}
-\label{app:deriv}
-\input{sections/a-derivations}
-\newpage
-\section{Supplementary Materials}
-\label{app:deriv}
-\input{sections/b-supplements}
-\newpage
-\input{sections/c-discards}
-
 
 \newpage
 \nocite{*}
 \printbibliography[heading=bibintoc] % Insert bilbiography and create toc entry
+
+
+% --- Appendix
+
+\newpage
+\appendix
+\addtocontents{toc}{\protect\setcounter{tocdepth}{1}}
+\section{Derivations and Proofs}
+\label{app:deriv}
+\input{sections/a-derivations}
+
+\newpage
+\section{Supplementary Materials}
+\label{app:deriv}
+\input{sections/b-supplements}
+
+\newpage
+\section{---Discarded---}
+\input{sections/c-discards}
+
+
 
 
 \end{document}

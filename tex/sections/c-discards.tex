@@ -1,5 +1,5 @@
-\section{Math-Basics Recap}
-\subsection{Scalar Products}
+\subsection{Math-Basics Recap}
+\subsubsection{Scalar Products}
 $V$ n-dimensional vector space with basis $B = (b_1, \dots, b_n)$, then any scalar product $\langle\cdot,\cdot\rangle$ on $V$ can be expressed using a $(n \times n)$ matrix $G$, the Gram matrix of the scalar product. Its entries are the scalar products of the basis vectors:
 $$ G = (g_{ij})_{i,j=1,\dots,n} \quad \text{with} 
   \quad g_{ij} = \langle b_i, b_j \rangle \quad \text{for}
@@ -12,7 +12,7 @@ $$ \langle x, y \rangle = \sum^n_{i,j=1} \bar{x}_i y_j \langle b_i, b_j \rangle
 when $x_i,y_i \in \mathbb{C}$ for $i=1,\dots,n$ with $x^\dagger$ indicating the conjugate transpose of $x = (x_1, \dots, x_n)^T$. If $B$ is an \textit{orthonormal} basis, that is if $\langle b_i, b_j \rangle = \delta_{ij}$, it further holds that $\langle x,y \rangle = x^\dagger y$ as $G = \mathbb{1}_{n \times n}$.
 
 
-\subsection{Functional Scalar Products}
+\subsubsection{Functional Scalar Products}
 This concept can be generalized for vectors in function spaces. Define the scalar product of two functions $f(t), g(t)$ as:
 $$ \langle f, g \rangle = \int_a^b \bar{f}(t) w(t) g(t) dt $$
 with weighting function $w(t)$ and $[a,b]$ depending on the function space. The scalar product has the following properties:
@@ -43,7 +43,7 @@ for coefficient vectors $a, b \in \mathbb{C}^n$. This means that the functional 
 $$ ||f|| = \langle f,f \rangle^{\frac{1}{2}} = 
   \sqrt{a^\dagger a} = \sqrt{\sum_{i=1}^n |a_i|^2}$$
 
-\section{FDA-Basics Recap}
+\subsection{FDA-Basics Recap}
 As discussed in the last section we can express a function $f$ in its \textit{basis function expansion} using a set of basis functions $\phi_k$ with $k=1,\dots,K$ and a set of coefficients $c_1,\dots,c_K$ (both possibly $\mathbb{C}$ valued e.g.\ in the case of $2D$-curves)
 $$ f = \sum_{k=1}^K c_k \phi_k = \bm{c'}\bm{\phi} $$
 where in the matrix notation $\bm{c}$ and $\bm{\phi}$ are the vectors containing the coefficients and basis functions.
@@ -52,7 +52,7 @@ When considering a sample of $N$ functions $f_i$ we can write this in matrix not
 $$ \bm{f} = \bm{C}\bm{\phi} $$
 where $C$ is a $(N \times K)$ matrix of coefficients and $\bm{f}$ is a vector containing the $N$ functions.
 
-\subsection{Smoothing by Regression}
+\subsubsection{Smoothing by Regression}
 When working with functional data we can usually never observe a function $f$ directly and instead only observe discrete points $(x_i, t_i)$ along the curve, with $f(t_i) = x_i$.
 As we don't know the exact functional form of $f$, calculating the scalar products $\langle \phi_k, f \rangle$ and therefore calculating the coefficients $c_k$ of a given basis representation is not possible.
 
@@ -67,7 +67,7 @@ $$ \hat{\bm{c}} = \left( \bm{\Phi'} \bm{\Phi}\right)^{-1} \bm{\Phi'} \bm{f}. $$
 Spline curves fit in this way are often called \textit{regression splines}.
 
 
-\subsection{Common Basis Representations}
+\subsubsection{Common Basis Representations}
 \paragraph{Piecewise Polynomials (Splines)}
 Splines are defined by their range of validity, the knots, and the order.
 Their are constructed by dividing the area of observation into subintervals with boundaries at points called \textit{breaks}.
@@ -81,7 +81,7 @@ E.g.\ a line has degree one but order two because it also has a constant term.
 \textbf{[\dots]}
 
 
-\subsection{Bivariate Functional Data}
+\subsubsection{Bivariate Functional Data}
 The analogue of covariance matrices in MVA are covariance surfaces $\sigma(s,t)$ whose values specify the covariance between values $f(s)$ and $f(t)$ over a population of curves.
 We can write these bivariate functions in a \textit{bivariate basis expansion} $$ r(s,t) = \sum_{k=1}^K \sum_{l=1}^K b_{k,l} \phi_k(s) \psi_l(t) 
   = \bm{\phi}(s)' \bm{B} \bm{\psi}(t) $$
