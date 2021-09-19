@@ -7,7 +7,10 @@ $$\beta : [0,1] \rightarrow \mathbb{C}, \quad \beta(t) = x(t) + i\, y(t).$$
 For reasons that will become apparent in Section \ref{theo:srv} we furthermore assume $\beta$ to be absolute continuous so that $\beta \in \mathcal{AC}([0,1],\, \mathbb{C})$.
 \textbf{[Maybe better define spaces here? Hilbert space? Inner product? Basis expansin with complex coefficients. Or do that later on SRV level?]}
 
-\subsection{Equivalence Classes and Shape Invariance}
+
+
+
+\section{Equivalence Classes and Shape Invariance}
 \label{theo:inv}
 The concept of shape is closely related to the concept of invariance under the transformations of scaling, translation and rotation.
 When considering the shape of a curve, we additionally have to take into account invariance with respect to re-parametrisation.
@@ -72,18 +75,33 @@ shape of a planar curve.
   [0,2\pi] \right) \times \Gamma = \left\{[\beta]\,|\,\beta \in
   \mathbb{C}^{[0,1]}\right\},$$
   where the symbol \enquote{$\rtimes$} denotes a semi-direct product, i.e. that
-  the translation group acts \enquote{after} scaling and rotation and where we assumed the $\beta$'s to be absolutely continuous \textbf{[Note: this notation is crap.]}
+  the translation group acts \enquote{after} scaling and rotation and where we assumed the $\beta$'s to be absolutely continuous \textbf{[This notation is not very clear.]}
   \parencite[for details see][Chapter 3]{SrivastavaKlassen2016}.
 \end{definition}
-\noindent \textbf{[This doesn't lead well to the next subsection.]} As we are ultimately interested in calculating shape means, we now need to find a way to measure simmilarity and dissimilarity between equivalence classes in the form of a distance function.
-The basic idea is to find unique curves as a representation for each equivalence class, so that distance in shape space can be equivalently calculated as the distance between these representations in curve space.
-In short we want to find intersections of the function space, so that there is a one-to-one relationship between elements of that interesection and the equivalence classes in shape space.
 
-\subsection{The SRV Framework and the Elastic Distance}
+\noindent We now want to construct a distance function in shape space.
+As equivalence classes as the elements of shape spaces are quite complex objects, this is usually done by calculating distances in the underlying functional space, where one optimizes over all possible elements of both equivalence classes.
+For example, when assuming $\beta_1$, $\beta_2 \in \mathbb{L}^2([0,1],\, \mathbb{C})$ we might calculate distances in shape space by optimizing over their $\mathbb{L}^2$-distance
+$$d([\beta_1], [\beta_2]) = \inf_{\tilde \beta_1 \in [\beta_1],\,\tilde \beta_2 \in [\beta_2]} d_{\mathbb{L}^2}(\tilde \beta_1, \tilde \beta_2) = \inf_{\tilde\beta_1 \in [\beta_1],\, \tilde\beta_2 \in [\beta_2]} || \tilde\beta_1 - \tilde\beta_2 ||.$$
+However, this approach runs into problems, when considering whether all shape-preserving transformations act by isometries on this distance, i.e.\ whether equal changes in translation, rotation, scaling and re-parametrization to both curves change their distance. 
+As it turns out, neither re-parametrization nor scaling are distance preserving when using the $\mathbb{L}^2$-distance, as $||\beta_1 \circ \gamma - \beta_2 \circ \gamma|| \neq ||\beta_1 - \beta_2||$ and $||\lambda \beta_1 - \lambda \beta_2|| \neq ||\beta_1 - \beta_2||$.
+
+
+
+\section{The SRV Framework and the Elastic Distance}
 \label{theo:srv}
-Instead of working with the original curve $\beta$, for the calculation of \textit{elastic} (parametrization-invariant) means, it is advantageous to work with its corresponding \textit{square-root-velocity function} (SRVF) given by
+Let us first consider only the issues of re-parametrization and translation.
+A solution proposed by \cite{SrivastavaEtAl2011} is the use of the \textit{square-root-velocity} (SRV) framework and an \textit{elastic} metric, the Fisher-Rao Riemannian metric, which is isometric with respect to re-parametrization of the input curves.
+The calculation of the Fisher-Rao metric between two curves can be simplified by using the usual $\mathbb{L}^2$-metric between their respective SRV curves.
+
+\begin{definition}[Elastic distance \parencite{SrivastavaEtAl2011}]
+  For $\beta_1$, $\beta_2 \in \mathcal{AC}([0,1],\,\mathbb{C})$ with $[\beta_1]_{\text{Trl+Wrp}}$, $[\beta_2]_{\text{Trl+Wrp}}$ their respective equivalence classes modulo translation and warping, the \textbf{elastic distance} between $[\beta_1]_{\text{Trl+Wrp}}$ and $[\beta_2]_{\text{Trl+Wrp}}$ is given by
+  $$d([\beta_1]_{\text{Trl+Wrp}},\, [\beta_2]_{\text{Trl+Wrp}}) = \inf_{\gamma \in \Gamma} || q_1 - (q_2 \circ \gamma) \sqrt{\dot\gamma} ||,$$
+  where $q_1, q_2$ denote the corresponding \textbf{square-root-velocity functions} (SRVFs) given by
 $$ \quad q(t) = \frac{\dot{\beta}(t)}{\sqrt{|| \dot{\beta}(t) ||}} \quad \text{for} \,\, \dot{\beta}(t) \neq 0, \,\, \text{with} \,\, q \in \mathbb{L}^2([0,1], \mathbb{C}). $$
-The original curve $\beta$ can be obtained from its SRV representation up to translation by the back transformation $\beta(t) = \beta(0) + \int_0^t q(s) || q(s) || ds$.
+\end{definition}
+
+\noindent When working in the SRV framework, the original curve $\beta$ can always be obtained from its SRVF up to translation, by the back transformation $\beta(t) = \beta(0) + \int_0^t q(s) || q(s) || ds$.
 As this representation makes use of derivatives, any curve $\beta$ that has a SRVF must fulfill some kind of differentiability constraint, where in this case this holds for any absolutely continuous $\beta \in \mathcal{AC}([0,1],\, \mathbb{C})$ \parencite[see][134]{SrivastavaKlassen2016}.
 The SRVFs are considered elements of a Hilbert space, given by $\mathcal{L}^2([0,1],\,\mathbb{C})$ equipped with the complex inner product $\langle \cdot, \cdot \rangle$ and corresponding norm $||\cdot||$, where the complex inner product of $q,q' \in \mathcal{L}^2([0,1],\,\mathbb{C})$ is given by
 $$ \langle q, q' \rangle = \int_0^1 \overline{q(t)} q'(t) dt \,, $$
@@ -91,94 +109,39 @@ with $\overline{z} = \operatorname{Re}(z) - i \operatorname{Im}(z)$ denoting the
 
 As we can always recover the original curve up to translation, the SRV representation holds all relevant information about the shape of a curve.
 This means we can perform any shape analysis equivalently on SRV level, as we can later always transform the results of e.g.\ a mean calculation back to original curve level.
-\textbf{[This should probably be shown... I.e. procrustes mean of SRV + integral = procrustes mean of orig curve.]}
+\textbf{[Show this?]}
 
 \begin{lemma}
   The actions of the translation, scaling, rotation, and re-parametrization groups commute on SRV level.
 \end{lemma}
 
-\noindent\textit{Proof.} The SRVF $\tilde q(t)$ of  $\tilde\beta(t) = \lambda e^{i\theta}\beta\left(\gamma(t)\right) + \xi$ is given by
+\begin{proof} The SRVF $\tilde q(t)$ of  $\tilde\beta(t) = \lambda e^{i\theta}\beta\left(\gamma(t)\right) + \xi$ is given by
 $$ \tilde q (t) 
   = \frac{\dot{\tilde\beta}(t)}{\sqrt{| \dot{\tilde\beta}(t) |}} 
   = \frac{\lambda e^{i\theta} \dot\beta\left(\gamma(t)\right) \dot\gamma(t)}{\sqrt{||\lambda e^{i\theta} \dot\beta\left(\gamma(t)\right) \dot\gamma(t)||}} 
   = \sqrt{\lambda} e^{i\theta} \frac{\dot\beta\left(\gamma(t)\right)}{\sqrt{||\dot\beta\left(\gamma(t)\right)||}} \sqrt{\dot\gamma(t)} 
   = \sqrt\lambda e^{i\theta} \left( q \circ \gamma \right) \sqrt{\dot\gamma(t)},$$
 where the result is the same, irrespective of the order of applying the transformations.
+\end{proof}
 
-\begin{remark}
-  It follows, that the individual transformations translate to SRV level by
-    $$\text{i.)} \,\, (\xi, q) \xmapsto{\text{Trl}} q \qquad \text{ii.)} \,\, (\lambda, q) \xmapsto{\text{Scl}} \sqrt\lambda q \qquad \text{iii.)} \,\, (\theta, q) \xmapsto{\text{Rot}} e^{i\theta} q \qquad \text{iv.)} \,\, (\gamma, q) \xmapsto{\text{Wrp}} (q \circ \gamma) \sqrt{\dot\gamma}, $$
-  where, in particular, the SRVF is invariant to translations of the original curve.
-\end{remark}
-
-\noindent This invariance with respect to translation is a nice property of the SRV framework, as it means that we can identify the shape of a curve as the equivalence class of its respective SRVF modulo scaling, rotation, and warping, but we do not need to consider translation.
+\noindent It follows, that the individual transformations translate to SRV level by i.) $(\xi, q) \xmapsto{\text{Trl}} q$, ii.) $(\lambda, q) \xmapsto{\text{Scl}} \sqrt\lambda q$, iii.) $(\theta, q) \xmapsto{\text{Rot}} e^{i\theta} q$, iv.) $(\gamma, q) \xmapsto{\text{Wrp}} (q \circ \gamma) \sqrt{\dot\gamma}$, where, in particular, the SRVF is invariant to translations of the original curve.
+The invariance with respect to translation is a nice property of the SRV framework, as it means that we can identify the shape of a curve as the equivalence class of its respective SRVF modulo scaling, rotation, and warping, but we do not need to consider translation.
 \begin{definition}[Shape (SRV level)]
   The \textbf{shape} of an absolutely continuous, planar curve $\beta \in \mathcal{AC}([0,1],\, \mathbb{C})$ is given by the equivalence class of its SRV representation $q = \frac{\dot\beta(t)}{\sqrt{|\dot\beta(t)|}} \in \mathbb{L}^2([0,1],\,\mathbb{C})$ modulo scaling, rotation and re-parametrization
   $$[q] = \left\{\sqrt\lambda e^{i\theta}(q \circ \gamma) \sqrt{\dot\gamma(t)} \,|\, \lambda \in \mathbb{R}^+,\, \theta \in [0,2\pi],\, \gamma
   \in \Gamma\right\},$$
   and it holds that $[\beta] \cong [q]$. The \textbf{shape space} can then be identified with 
-  $$\mathbb{L}^2([0,1], \mathbb{C}) \big/ \mathbb{R}^+ \times [0,2\pi] \times \Gamma = \left\{[q]\,|\,q \in \mathbb{L}^2({[0,1],\,\mathbb{C})}\right\}.$$
+  $$\mathbb{L}^2 \big/ G = \mathbb{L}^2([0,1], \mathbb{C}) \big/ \mathbb{R}^+ \times [0,2\pi] \times \Gamma = \left\{[q]\,|\,q \in \mathbb{L}^2({[0,1],\,\mathbb{C})}\right\}.$$
+  \textbf{[Note: Definition should have the closure of [q]!]}
 \end{definition}
 
-\textbf{[Why use the SRV framework?]}
-\textbf{[Deal with Wrp variance by elastic distance and fixing a certain parametrisation. Shape distance to Elastic distance!]}
 
-\subsection{The Full Procrustes Mean for Planar Curves}
+
+\section{The Elastic Full Procrustes Distance for Planar Curves}
 \label{theo:proc}
-Consider, for example, the action of the translation group $\mathbb{C}$
-with corresponding quotient space $\mathbb{C}^{[0,1]} \big/ \mathbb{C} =
-\left\{[\beta] \,|\, \beta \in \mathbb{C}^{[0,1]} \right\}$ and $[\beta] =
-\{\beta + \xi\,|\, \xi \in \mathbb{C}\}$.
-For each equivalence class in $\mathbb{C}^{[0,1]} \big/ \mathbb{C}$ there is
-exactly one element in the space of all centered curves $\mathcal{C}_1 =
-\left\{ \beta \in \mathbb{C}^{[0,1]}\,\big|\, \int_0^1 \beta(t) \, dt = 0
-\right\}$ belonging to that equivalence class.
-For the scaling group $\mathbb{R}^+$, when considering only continuously
-differentiable $\beta$, we can similarly form the space of all unit-length
-curves $\mathcal{C}_2 = \left\{\beta \in \mathbb{C}^{[0,1]}\,\big|\,
-\beta\,\text{continuously differentiable},\, \int_0^1 |\dot{\beta}(t)| \, dt =
-1 \right\}$ and for each equivalence class with respect to scaling there is
-again exactly one element in $\mathcal{C}_2$ belonging to that class.
-Both intersections taken together result in the concept of \textit{pre-shape}
-and the act of removing translation and scaling variability by centering and
-restricting curves to unit-length is called \enquote{quotienting out} \parencite[see][133\,f.]{SrivastavaKlassen2016}.
-\begin{definition}[Pre-shape]
-  The \textbf{pre-shape} of a countinously differentiable planar curve $\beta :
-  [0,1] \rightarrow \mathbb{C}$ is given by its centered unit-length
-  representation 
-  $$\tilde\beta = l_\beta^{-1} \left(\beta - c_\beta\right)$$
-  with $l_\beta = \int_0^1|\dot\beta(t)|\,dt$ and $c_\beta = \int_0^1
-  \beta(t)\,dt$.
-  The \textbf{shape} of $\beta$ can then also be defined as
-  $$[\beta] = \left\{e^{i\theta}(\tilde\beta \circ \gamma) \,\big|\, \theta \in
-  [0,2\pi],\, \gamma \in \Gamma\right\}.$$
-\end{definition}
-\noindent We can use the concept of pre-shape to construct an appropriate distance
-measure for equivalence classes with respect to scaling and translation, by
-using the usual distance metric for complex functions with the respective
-pre-shapes.
-$$d_{\mathbb{C}^{[0,1]} \big/ \mathbb{C} \rtimes
-\mathbb{R}^+}([\beta_1], [\beta_2]) = d_{\mathbb{C}^{[0,1]}}(\tilde\beta_1,
-\tilde\beta_2)$$
-\noindent Working with pre-shapes means that we only have to take care of shape
-equivalence with respect to rotation and re-parametrization going forward.
-However, both types of transformations are not as easily dealt with as
-translation and scaling.
-We will now take a look at a different way of constructing distance measures
-for quotient spaces, one dealing with rotation and one dealing with
-re-parametrization.
-
 The \textit{full Procrustes distance} is a widely used distance function in
 classical shape analysis that allows for scale and rotation invariant shape
 distance calculation.
-To remove translation and scaling variablity, we chose to restrict our curves
-to a certain fixed position and scale.
-This works, because we can simply calculate both for any curve.
-However, there is no similar way to calculate the \enquote{rotation} of a
-curve and in fact, saying that a curve is \enquote{rotated} is only meaningful in
-comparison to other curves. 
-A solution is to align the rotation of any two curves on a case by case basis,
-when calculating the distance between them.
 \begin{definition}[Full Procrustes distance]
   The \textbf{full Procrustes distance} between the shapes $[\beta_1]$,
   $[\beta_2]$ of two continously differentiable $\beta_1$, $\beta_2$ with
@@ -203,8 +166,3 @@ when calculating the distance between them.
 Moreover, if the original curve is of unit length the SRV curve will be automatically normalized \textbf{[Keep this for later]}:
 $$ ||q|| = \sqrt{\langle q, q \rangle} = \sqrt{ \int_0^1 \overline{q(t)} q(t) \, dt } = \sqrt{ \int_0^1 |q(t)|^2 \, dt} = \sqrt{\int_0^1 |\dot{\beta}(t)| \, dt} = \sqrt{1} = 1. $$
 
-\subsection{Functional Data Analysis of Sparse and Irregular Planar Curves}
-\label{theo:sparse}
-
-
-\newpage

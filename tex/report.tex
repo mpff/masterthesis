@@ -1,71 +1,73 @@
-\documentclass[a4paper,12pt,pagesize,DIV=calc,smallheadings,english]{article}
+% Document type
+\documentclass[a4paper,12pt,english,headings=small]{scrreprt}
 
 %% Packages
+
 % Document margins/formating
 \usepackage[margin=2.5cm]{geometry}
 \usepackage{setspace} 
 \setstretch{1.5} % Zeilenabstand definieren
+
 % Language and fonts
+\usepackage[tracking=true]{microtype} % Slightly tweak font spacing for aesthetics
 \usepackage[utf8]{inputenc} % Allows Umlauts
 \usepackage[osf,sc]{mathpazo} % Use the Palatino font
 \usepackage[T1]{fontenc} % western enc. Improves wordsplitting
 \usepackage[english]{babel} % Set language
-\usepackage[tracking=true]{microtype} % Slightly tweak font spacing for aesthetics
 \DeclareMicrotypeSet*[tracking]{my}% Anleitung lesen um das zu verstehen.
   { font = */*/*/sc/* }%
 \SetTracking{ encoding = *, shape = sc }{ 45 }%
 \usepackage{ellipsis} % Slightly tweak spacing for \dots
+
 % Math fonts and symbols
 \usepackage{mathtools}
 \usepackage{bm} % For bolding mathsymbols and letters
 \usepackage{amssymb}
-% Additional formating (optional)
-\usepackage[bf]{titlesec}
+\usepackage{siunitx}
+\usepackage{amsthm} % For theorems, definitions, etc.
+
+% Graphics, figures and tables
+\usepackage{graphicx}
+\usepackage{tikz}
 \usepackage[margin=15pt,hang,small,labelfont={bf,sf},up,up]{caption} % Custom captions 
-% Bibliography
-\usepackage[backend=biber,style=authoryear,sorting=nyt]{biblatex}
-\usepackage[autostyle,autopunct]{csquotes} % For Quotations
-\renewcommand{\mkcitation}[1]{#1} % For correct footcites with csquotes
-\renewcommand*{\mkbibnamefamily}[1]{\textsc{#1}} % For small caps author names
-\addbibresource{references.bib} % Name of Biblatex file
-% Table formating
+\usepackage{subcaption}
 \usepackage{array}
 \usepackage{multirow}
 \usepackage{booktabs}
 \setlength{\heavyrulewidth}{1.5pt}
 \setlength{\abovetopsep}{4pt}
+
+% Bibliography
+\usepackage[backend=biber,style=authoryear,sorting=nyt]{biblatex}
+\usepackage[autostyle,autopunct]{csquotes} % For Quotations
+\renewcommand{\mkcitation}[1]{#1} % For correct footcites with csquotes
+\renewcommand*{\mkbibnamefamily}[1]{\textsc{#1}} % For small caps author names
+\setlength\bibnamesep{1.33\itemsep}  % Spacing between authors
+\addbibresource{references.bib} % Name of Biblatex file
+
+
 % Additional packages
 \usepackage[hidelinks]{hyperref} % For hyperlinks in the PDF
-\usepackage{tikz}
 \usepackage{import}
 \usepackage{enumitem} 
 \usepackage{verbatim}
-\usepackage{siunitx}
-\usepackage{graphicx}
-\usepackage{subcaption}
 \usepackage{color}
 \usepackage{transparent}
 \usepackage{comment}
-\usepackage{tcolorbox}
-\usepackage{amsthm}
-\usepackage{mdframed}
 
 % Shortcuts/Definitions
 \DeclareMathOperator*{\argmin}{argmin}   % Jan Hlavacek
 \DeclareMathOperator*{\argmax}{argmax}   % Jan Hlavacek
 \DeclareMathOperator*{\arginf}{arginf}   % Jan Hlavacek
 
-% Theorems and Definitions
-\newtheorem{theorem}{Theorem}[section]
+% Define theorems and definitions
+\newtheorem{theorem}{Theorem}[chapter]
 \newtheorem{corollary}{Corollary}[theorem]
 \newtheorem{lemma}[theorem]{Lemma}
 \newtheorem{remark}[theorem]{Remark}
 \newtheorem{definition}[theorem]{Definition}
 
-% Long mapsto arrows
-%\usepackage{stmaryrd}
-
-% Extra settings
+%% Settings
 \allowdisplaybreaks
 
 
@@ -77,19 +79,25 @@
 % --- Front Matter
 
 \begin{titlepage}
-
-  \vspace*{0.5cm}
+  \vspace*{0.45cm}
 
   \begin{center}
-    {\LARGE\textbf{Elastic Full Procrustes Means\vspace{0.4cm}\\
+    {\LARGE\sffamily\textbf{Elastic Full Procrustes Means\vspace{0.33cm}\\
     for Sparse and Irregular Planar Curves}}
   \vspace{1cm}\\
     {\large Masters Thesis}
-  \vspace{0.7cm}\\
-  \textsc{Manuel Pfeuffer\footnote{\url{pfeuferm@hu-berlin.de}, Matriculation Number: 577668}}
   \vspace{0.1cm}\\
-  12th October 2020, Berlin
-  \vspace{1cm}\\
+    in partial fulfillment of the requirements for the degree
+  \vspace{0.1cm}\\
+    \textbf{M.Sc.\ Statistics}
+  \vspace{1.4cm}\\
+  \textsc{\large Manuel Pfeuffer\footnote{\url{pfeuferm@hu-berlin.de}, Matriculation Number: 577668}}
+  \vspace{0.1cm}\\
+  20th September 2021, Berlin
+  \vspace{1.8cm}\\
+    \includegraphics[width=0.4\textwidth]{graphics/hulogo.pdf}
+  \vspace{0.8cm}\\
+  \sffamily{Chair of Statistics $\cdot$ School of Business and Economics $\cdot$ Humboldt-Universität zu Berlin}\\
 
   \vfill
   \end{center}
@@ -109,34 +117,34 @@
 
 \newpage
 \pagenumbering{arabic}
-\section{Introduction}
+\chapter{Introduction}
 \label{sec:intro}
 \input{sections/1-introduction}
 
 \newpage
-\section{Functional and Shape Data Analysis of Planar Curves}
+\chapter{Functional and Shape Data Analysis of Planar Curves}
 \label{sec:theo}
 \input{sections/2-function_shape_analysis}
 
 \newpage
-\section{The Elastic Full Procrustes Means for Planar Curves}
+\chapter{The Elastic Full Procrustes Means for Planar Curves}
 \label{sec:mean}
 \input{sections/3-elastic_proc2d_mean}
 
 \newpage
-\section{Estimation Strategy}
+\chapter{Estimation Strategy}
 \label{sec:algo}
 
 \newpage
-\section{Empirical Application}
+\chapter{Empirical Application}
 \label{sec:app}
 
 \newpage
-\section{Outlook}
+\chapter{Outlook}
 \label{sec:outl}
 
 \newpage
-\section{Summary}
+\chapter{Summary}
 \label{sec:sum}
 
 \newpage
@@ -149,17 +157,17 @@
 \newpage
 \appendix
 \addtocontents{toc}{\protect\setcounter{tocdepth}{1}}
-\section{Derivations and Proofs}
+\chapter{Derivations and Proofs}
 \label{app:deriv}
 \input{sections/a-derivations}
 
 \newpage
-\section{Supplementary Materials}
+\chapter{Supplementary Materials}
 \label{app:deriv}
 \input{sections/b-supplements}
 
 \newpage
-\section{---Discarded---}
+\chapter{---Discarded---}
 \input{sections/c-discards}
 
 
