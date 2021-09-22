@@ -4,7 +4,7 @@
 %% Packages
 
 % Document margins/formating
-\usepackage[margin=2.5cm]{geometry}
+\usepackage[margin=2.5cm,footskip=\dimexpr1.25cm+\dp\strutbox\relax]{geometry}
 \usepackage{setspace} 
 \setstretch{1.5} % Zeilenabstand definieren
 
@@ -70,6 +70,10 @@
 %% Settings
 \allowdisplaybreaks
 
+\usepackage[automark]{scrlayer-scrpage}
+\KOMAoptions{onpsinit={\linespread{1}\selectfont}}% <- added
+\clearpairofpagestyles
+\cfoot*{\pagemark}
 
 
 %% The document starts here!
@@ -122,29 +126,24 @@
 \input{sections/1-intro}
 
 \newpage
-\chapter{Elastic Shape Analysis of Planar Curves}
+\chapter{Elastic Full Procrustes Means for Planar Curves}
 \label{sec:theo}
-\input{sections/2-distance}
+\input{sections/2-theory}
 
 \newpage
-\chapter{Elastic Full Procrustes Means for Sparse and Irregular Planar Curves}
+\chapter{Estimation Strategy for Sparse and Irregular Observations}
 \label{sec:mean}
-\input{sections/3-mean}
+\input{sections/3-estimation}
 
 \newpage
-\chapter{Estimation Strategy}
-\label{sec:algo}
-\input{sections/4-estimation}
-
-\newpage
-\chapter{Empirical Application}
+\chapter{Empirical Applications}
 \label{sec:app}
-\input{sections/5-application}
+\input{sections/4-application}
 
 \newpage
 \chapter{Summary}
 \label{sec:sum}
-\input{sections/6-summary}
+\input{sections/5-summary}
 
 
 % ---- References
@@ -154,10 +153,10 @@
 
 
 % --- Appendix
+%\addtocontents{toc}{\protect\setcounter{tocdepth}{1}}
 
 \newpage
 \appendix
-\addtocontents{toc}{\protect\setcounter{tocdepth}{1}}
 \chapter{Appendix}
 \label{app:deriv}
 \input{sections/a-appendix}
@@ -168,7 +167,7 @@
 \input{sections/b-supplements}
 
 \newpage
-\chapter{---Discarded---}
+\chapter*{---Discarded---}
 \input{sections/c-discards}
 
 

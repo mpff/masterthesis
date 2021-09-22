@@ -187,3 +187,48 @@ distance calculation.
 Moreover, if the original curve is of unit length the SRV curve will be automatically normalized \textbf{[Keep this for later]}:
 $$ ||q|| = \sqrt{\langle q, q \rangle} = \sqrt{ \int_0^1 \overline{q(t)} q(t) \, dt } = \sqrt{ \int_0^1 |q(t)|^2 \, dt} = \sqrt{\int_0^1 |\dot{\beta}(t)| \, dt} = \sqrt{1} = 1. $$
 
+
+
+\section{The Elastic Full Procrustes Mean for Planar Curves}
+
+Let $\beta$ be a continuous planar curve.
+It can be represented in a parameterized form in $\mathbb{R}^2$ as
+$$ \beta : [0,1] \rightarrow \mathbb{R}^2,\quad \beta(t) = ( x(t), y(t)) \,, $$
+where $x, y$ are scalar-valued \textit{coordinate functions} of $\beta$, parametrized by $t$.
+We can equivalently represent a planar curve using complex numbers as
+$$ \beta : [0,1] \rightarrow \mathbb{C},\quad \beta(t) = x(t) + iy(t) \,, $$
+with the added benefit that complex notation often simplifies calculations in the 2D case.
+
+For a set of planar curves $\beta_1,\dots,\beta_n : [0,1] \rightarrow \mathbb{C}$, either centered with $\langle \beta_i, \mathbb{1} \rangle$ or with no relative translation to each other, the \textit{full Procrustes mean} $\hat{\mu}$ is then defined as the curve minimizing the sum of squared \textit{full Procrustes distances} from each $\beta_i$ to an unknown unit size mean configuration $\mu$, that is
+\begin{align*}
+    \hat{\mu} =& \argmin_{\mu:[0,1]\rightarrow\mathbb{C}} \sum_{i=1}^n d^2_F(\mu,\beta_i)
+    \quad\text{s.t.}\,\, ||\mu|| = 1 \\
+    =& \argmin_{\mu:[0,1]\rightarrow\mathbb{C}} \sum_{i=1}^n 1 - \frac{\langle \mu, \beta_i \rangle \langle \beta_i, \mu \rangle}{\langle \mu, \mu \rangle \langle \beta_i, \beta_i \rangle}
+    \quad\text{s.t.}\,\, ||\mu|| = 1
+\end{align*}
+which we can be further simplified by normalizing $\beta_i := \frac{\beta_i}{|| \beta_i ||}$ and using $\langle \mu, \mu \rangle = 1$
+$$ \hat{\mu} = \argmax_{\mu:[0,1]\rightarrow\mathbb{C}} \sum_{i=1}^n \langle \mu, \beta_i \rangle \langle \beta_i, \mu \rangle \quad\text{s.t.}\,\, ||\mu|| = 1. $$
+The expression for $d^2_F(\mu,\beta_i)$ in the case of planar curves is derived in appendix \ref{app:deriv-full-proc-dist}.
+
+
+
+
+Consider a set of planar SRV curves $q_1,\dots,q_n : [0,1] \rightarrow \mathbb{C}$ of unit length $||q_i|| = 1$ for all $i$.
+The \textit{full Procrustes mean} $\hat{\mu}$ is given by
+\begin{align*}
+    \hat{\mu} =& \argmax_{\mu:[0,1]\rightarrow\mathbb{C}} \sum_{i=1}^n \langle \mu, q_i \rangle \langle q_i, \mu \rangle
+    \quad\text{s.t.}\,\, ||\mu|| = 1 \\
+    =& \argmax_{\mu:[0,1]\rightarrow\mathbb{C}} \sum_{i=1}^n
+    \int_0^1 \overline{\mu(t)} q_i(t) \, dt \int_0^1 \overline{q_i(s)} \mu(s) \, ds
+    \quad\text{s.t.}\,\, ||\mu|| = 1 \\
+    =& \argmax_{\mu:[0,1]\rightarrow\mathbb{C}}  \int_0^1 \int_0^1
+    \overline{\mu(t)} \underbrace{\left( \sum_{i=1}^n q_i(t) \overline{q_i(s)} \right)}_{\coloneqq \, n \hat{C}(s,t)} \mu(s) \, dt ds
+    \quad\text{s.t.}\,\, ||\mu|| = 1 \\
+    =& \argmax_{\mu:[0,1]\rightarrow\mathbb{C}} \int_0^1
+    \overline{\mu(t)} \int_0^1 \hat{C}(s,t) \mu(s) \, ds dt
+    \quad\text{s.t.}\,\, ||\mu|| = 1
+\end{align*}
+with the solution given by the eigenfunction corresponding to the largest eigenvector of the complex empirical covariance function $\hat{C}(s,t) = n^{-1} \sum_{i=1}^n q_i(t) \overline{q_i(s})$.
+
+
+
