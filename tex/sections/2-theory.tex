@@ -1,114 +1,102 @@
 As a starting point, it is important to establish a notational and mathematical framework for the treatment of planar shapes.
 While the restriction to the 2D case might seem a major one, it still covers all shape data extracted from e.g.\ imagery and is therefore very applicable in practice.
 The outline of a 2D object may be naturally represented by a planar curves $\beta : [0,1] \rightarrow \mathbb{R}^2$ with $\beta(t) = (x(t),\, y(t))^T$, where $x(t)$ and $y(t)$ are the scalar-valued \textit{coordinate functions}.
-Calculations in 2D, and in particular the derivation of the full Procrustes mean, are greatly simplified by using complex notation.
+Calculations in two dimensions, and in particular the derivation of the full Procrustes mean, are greatly simplified by using complex notation.
 Going forward, we will therefore identify $\mathbb{R}^2$ with $\mathbb{C}$ and always use complex notation when representing a planar curve
 $$\beta : [0,1] \rightarrow \mathbb{C}, \quad \beta(t) = x(t) + i\, y(t).$$
-For reasons that will become apparent in Section \ref{theo:srv} we furthermore assume $\beta$ to be absolute continuous so that $\beta \in \mathcal{AC}([0,1],\, \mathbb{C})$.
+For reasons that will be discussed in Section \ref{theo:srv}, we furthermore assume the curves to be absolutely continuous or $\beta \in \mathcal{AC}([0,1],\, \mathbb{C})$.
 
 
 
 \section{Equivalence Classes and Shape Invariance}
 \label{theo:inv}
 As mentioned in the introduction, shape is usually defined by its invariance under the transformations of scaling, translation, and rotation.
-When considering the shape of a curve, we additionally have to take into account invariance with respect to re-parametrisation.
-This can be seen by noting that the curves $\beta(t)$ and $\beta(\gamma(t))$, with some re-parametrisation or \textit{warping function} $\gamma : [0,1] \rightarrow [0,1]$ monotonically increasing and differentiable, have the same image and therefore represent the same geometrical object.
+When considering the shapes of curves, we additionally have to take into account invariance with respect to re-parametrisation.
+This can be seen, by noting that the curves $\beta(t)$ and $\beta(\gamma(t))$, with some re-parametrisation or \textit{warping function} $\gamma : [0,1] \rightarrow [0,1]$ monotonically increasing and differentiable, have the same image and therefore represent the same geometrical object.
 We can say that the actions of translation, scaling, rotation, and re-parametrisation are \textit{equivalence relations} with respect to shape, as each action leaves the shape of the curve untouched and only changes the way the shape is represented.
 The shape of a curve can then be defined as the respective \textit{equivalence class}, i.e. the set of all possible shape preserving transformations of the curve.
 As two equivalence classses are neccessarily either disjoint or identical, we can consider two curves as having the same shape, if they are elements of the same equivalence class \parencite[see][40]{SrivastavaKlassen2016}.
 
 When defining such an equivalence class, one has to first consider how the individual transformations act on the set of parametrized planar curves with complex representation $\beta : [0,1] \rightarrow \mathbb{C}$.
-This is usually done using the notion of \textit{group actions} and \textit{product groups} (for multiple transformations acting at once), to which a brief introduction may be found in \cite[Chap.\ 3]{SrivastavaKlassen2016}.
-\begin{itemize}
-  \item
+This is usually done using the notion of \textit{group actions} and \textit{product groups}, with the later desciribing multiple transformations acting at once.
+A brief introduction to group actions may be found in \cite[Chap.\ 3]{SrivastavaKlassen2016}.
+Let us first consider how each type of transformation acts individually:
+\begin{itemize}[leftmargin=0.75cm]
+  \item[i.)]
     The \textbf{translation} group $\mathbb{C}$ acts on $\beta$ by $(\xi, \beta) \xmapsto{\text{Trl}} \beta + \xi$, for any $\xi \in \mathbb{C}$.
-    We can consider two curves as equivalent with respect to translation $\beta_1 \overset{\text{Trl}}{\backsim} \beta_2$, if there exists a complex scalar $\tilde\xi \in \mathbb{C}$ so that $\beta_1 = \beta_2  + \tilde\xi$.
+    We can consider two curves as equivalent with respect to translation $\beta_1 \overset{\text{Trl}}{\backsim}) \beta_2$, if there exists a complex scalar $\tilde\xi \in \mathbb{C}$ so that $\beta_1 = \beta_2  + \tilde\xi$.
     Then, for some function $\beta$, the related equivalence class with respect to translation is given by $[\beta]_{\text{Trl}} = \{\beta + \xi\, |\, \xi \in \mathbb{C}\}$.
-  \item 
+  \item[ii.)] 
     The \textbf{scaling} group $\mathbb{R}^+$ acts on $\beta$ by $(\lambda, \beta) \xmapsto{\text{Scl}} \lambda \beta$, for any $\lambda \in \mathbb{R}^+$.
     We define $\beta_1 \overset{\text{Scl}}{\backsim} \beta_2$, if there exists a scalar $\tilde\lambda \in \mathbb{R}^+$ so that $\beta_1 = \tilde\lambda \beta_2$.
     An equivalence class is $[\beta]_{\text{Scl}} = \{\lambda\beta\,|\, \lambda \in \mathbb{R}^+\}$.
-  \item 
+  \item[iii.)] 
     The \textbf{rotation} group $[0,2\pi]$ acts on $\beta$ by $(\theta, \beta) \xmapsto{\text{Rot}}  e^{i\theta} \beta$, for any $\theta \in [0,2\pi]$.
     We define $\beta_1 \overset{\text{Rot}}{\backsim} \beta_2$, if there exists a $\tilde\theta \in [0,2\pi]$ with $\beta_1 = e^{i\tilde\theta} \beta_2$.
     An equivalence class is $[\beta]_{\text{Rot}} = \{e^{i\theta}\beta\,|\, \theta \in [0,2\pi]\}$.
-  \item 
+  \item[iv.)] 
     The \textbf{warping} group $\Gamma$ acts on $\beta$ by $(\gamma,\beta) \xmapsto{\text{Wrp}} \beta \circ \gamma$, for any $\gamma \in \Gamma$ with $\Gamma$ being the set of monotonically increasing and differentiable warping functions.
     We define $\beta_1 \overset{\text{Wrp}}{\backsim} \beta_2$, if there exists a warping function $\tilde\gamma \in \Gamma$ with $\beta_1 = \beta_2 \circ \tilde\gamma$.
     An equivalence class is $[\beta]_{\text{Wrp}} = \{\beta \circ \gamma\,|\, \gamma \in \Gamma\}$.
 \end{itemize}
 In a next step, we can consider how these transformations act in concert and whether they \textit{commute}, that is, whether the order of applying the transformations changes outcomes.
-Consider for example the actions of the rotation and scaling product group $\mathbb{R}^+ \times [0,2\pi]$ given by $(\lambda, (\theta, \beta)) \xmapsto{\text{Scl} + \text{Rot}} \lambda e^{i\theta} \beta$.
+Consider for example the actions of the rotation and scaling product group $\mathbb{R}^+ \times [0,2\pi]$ given by $((\lambda, \theta), \beta) \xmapsto{\text{Scl} + \text{Rot}} \lambda e^{i\theta} \beta$.
 These clearly commute, because the order of applying rotation or scaling do not make a difference, as $\lambda(e^{i\theta}\beta) = e^{i\theta}(\lambda\beta)$.
 However, the joint actions of scaling and translation do not commute, as $\lambda(\beta + \xi) \neq \lambda\beta + \xi$, with the same holding for the joint action of rotation and translation.
-It follows that the order of translating and rotating or scaling matters and when defining such a joint action one usually takes the translation to act on the already scaled and rotated curve.
-\textbf{[Maybe better define rot/scaling on the centered and retranslated curve, as in \cite{Stoecker2021}?]}
+As the order of translating and rotating or scaling matters, one usually takes the translation to act on the already scaled and rotated curve, when defining such a joint action.
+This action is usually called an \textit{Euclidean similarity transformation}.
 
 \begin{definition}[Euclidean similarity transformation] 
-  We define an \textbf{Euclidean similarity transformation} of a curve $\beta :
-  [0,1] \rightarrow \mathbb{C}$ as the joint action of scaling, rotation, and
-  translation by 
+  We define an \textbf{Euclidean similarity transformation} of a curve $\beta : [0,1] \rightarrow \mathbb{C}$ as the joint action of scaling, rotation, and translation by 
   $$((\xi, \lambda, \theta), \beta) \mapsto \lambda e^{i\theta} \beta + \xi,$$
-  with $\xi \in \mathbb{C}$, $\lambda \in \mathbb{R}^+$, and $\theta \in
-  [0,2\pi]$ \parencite[see][62]{DrydenMardia2016}.
+  with $\xi \in \mathbb{C}$, $\lambda \in \mathbb{R}^+$, and $\theta \in [0,2\pi]$ \parencite[see][62]{DrydenMardia2016}.
 \end{definition}
 
-\noindent With respect to the action of re-parametrization, we can note that it
-necessarily commutes with all Euclidean similarity transformations, as those
-only act on the image of $\beta$, while the former only acts on the
-parametrization.
-Putting everything together, we can finally give a formal definition of the
-shape of a planar curve.
+\noindent With respect to the action of re-parametrization, we can note that it necessarily commutes with all Euclidean similarity transformations, as those only act on the image of $\beta$, while the former only acts on the parametrization.
+Putting everything together, we can finally give a formal definition of the shape of a planar curve.
 
 \begin{definition}[Shape]
-  The \textbf{shape} of a planar curve $\beta : [0,1] \rightarrow \mathbb{C}$
-  is given by its equivalence class with respect to all Euclidean similarity
-  transformations and re-parametrizations
-  $$ [\beta] = \left\{\lambda e^{i\theta}(\beta \circ \gamma) + \xi\,|\, \xi
-  \in \mathbb{C},\, \lambda \in \mathbb{R}^+,\, \theta \in [0,2\pi],\, \gamma
-  \in \Gamma\right\}. $$
+  The \textbf{shape} of an absolutely continous planar curve $\beta \in \mathcal{AC}([0,1], \mathbb{C})$ is given by its equivalence class with respect to all Euclidean similarity transformations and re-parametrisations
+  $$ [\beta] = \left\{\lambda e^{i\theta}(\beta \circ \gamma) + \xi\,|\, \xi \in \mathbb{C},\, \lambda \in \mathbb{R}^+,\, \theta \in [0,2\pi],\, \gamma \in \Gamma\right\}. $$
   The \textbf{shape space} is then given by the corresponding quotient space 
-  $$\mathcal{AC}([0,1], \mathbb{C}) \big/ \mathbb{C} \rtimes \left( \mathbb{R}^+ \times
-  [0,2\pi] \right) \times \Gamma = \left\{[\beta]\,|\,\beta \in
-  \mathbb{C}^{[0,1]}\right\},$$
-  where the symbol \enquote{$\rtimes$} denotes a semi-direct product, i.e. that
-  the translation group acts \enquote{after} scaling and rotation and where we assumed the $\beta$'s to be absolutely continuous \textbf{[This notation is not very clear.]}
-  \parencite[for details see][Chapter 3]{SrivastavaKlassen2016}.
+  $$\mathcal{AC}([0,1], \mathbb{C}) \big/ \Gamma \times \mathbb{C} \rtimes \left( \mathbb{R}^+ \times [0,2\pi] \right) = \left\{[\beta]\,|\,\beta \in \mathbb{C}^{[0,1]}\right\},$$
+  where the symbol \enquote{$\rtimes$} denotes a semi-direct product, i.e. the translation group acts \enquote{after} scaling and rotation. 
+  \textbf{[This is probably not super clear.]}
 \end{definition}
-
-\noindent We now want to construct a distance function in shape space.
-As equivalence classes as the elements of shape spaces are quite complex objects, this is usually done by calculating distances in the underlying functional space, where one optimizes over all possible elements of both equivalence classes.
-For example, when assuming $\beta_1$, $\beta_2 \in \mathbb{L}^2([0,1],\, \mathbb{C})$ we might calculate distances in shape space by optimizing over the $\mathbb{L}^2$-distance
-$$d([\beta_1], [\beta_2]) = \inf_{\tilde \beta_1 \in [\beta_1],\,\tilde \beta_2 \in [\beta_2]} d_{\mathbb{L}^2}(\tilde \beta_1, \tilde \beta_2) = \inf_{\tilde\beta_1 \in [\beta_1],\, \tilde\beta_2 \in [\beta_2]} || \tilde\beta_1 - \tilde\beta_2 ||.$$
-However, this approach runs into problems, when considering whether all shape-preserving transformations act by isometries on this distance, i.e.\ whether equal changes in translation, rotation, scaling and re-parametrization to both curves change their distance. 
-As it turns out, neither re-parametrization nor scaling are distance preserving when using the $\mathbb{L}^2$-distance, as $||\beta_1 \circ \gamma - \beta_2 \circ \gamma|| \neq ||\beta_1 - \beta_2||$ and $||\lambda \beta_1 - \lambda \beta_2|| \neq ||\beta_1 - \beta_2||$.
-However, the later is very easy to deal with as we will see, for example by rescaling all curves to unit-length.
-
 
 
 \section{The Square-Root-Velocity Framework}
 \label{theo:srv}
-Let us first focus on the issue of re-parametrization, which is much harder to solve.
-A solution proposed by \cite{SrivastavaEtAl2011}, is to ditch the $\mathbb{L}^2$-metric in favor of an \textit{elastic metric}, which is isometric with respect to re-parametrization.
+We now want to calculate distances between the shapes of curves, which we identified with certain equivalence classes.
+As these equivalence classes are elements of a non-Euclidean shape space, calculating their distance is not straight-forward.
+A common approach is to \enquote{project} the distance calculation in shape space down into the underlying functional space.
+For example, consider $\beta_1$, $\beta_2 \in \mathbb{L}^2([0,1],\, \mathbb{C})$.
+We might want to calculate their shape-distance as their minimal $\mathbb{L}^2$-distance, when optimizing over all shape-preserving transformations:
+$$d([\beta_1], [\beta_2]) = \inf_{\tilde \beta_1 \in [\beta_1],\,\tilde \beta_2 \in [\beta_2]} d_{\mathbb{L}^2}(\tilde \beta_1, \tilde \beta_2) = \inf_{\tilde\beta_1 \in [\beta_1],\, \tilde\beta_2 \in [\beta_2]} || \tilde\beta_1 - \tilde\beta_2 ||_{\mathbb{L}^2}.$$
+However this approach runs into problems, when considering whether all transformations act by isometries on this distance, i.e.\ whether equally changing the translation, rotation, scaling or re-parametrization of both curves changes their distance. 
+As it turns out, neither re-parametrization nor scaling are distance preserving when using the $\mathbb{L}^2$-distance, as $||\beta_1 \circ \gamma - \beta_2 \circ \gamma|| \neq ||\beta_1 - \beta_2||$ and $||\lambda \beta_1 - \lambda \beta_2|| \neq ||\beta_1 - \beta_2||$ 
+
+Let us first focus on the issue of re-parametrization.
+A solution proposed by \cite{SrivastavaEtAl2011} is to ditch the $\mathbb{L}^2$-metric in favor of an \textit{elastic metric}, which is isometric with respect to re-parametrization.
 Calculation of this metric, the Fisher-Rao Riemannian metric, can be greatly simplified by using the \textit{square-root-velocity} (SRV) framework, as the Fisher-Rao metric of two curves can equivalently be calculated as the $\mathbb{L}^2$-distance of their respective SRV curves.
 
 \begin{definition}[SRV function of a planar curve]
-  For $\beta \in \mathcal{AC}([0,1],\,\mathbb{C})$, the corresponding \textbf{SRV function} (SRVF) is given by
-$$ \quad q(t) = \frac{\dot{\beta}(t)}{\sqrt{|| \dot{\beta}(t) ||}} \quad \text{for} \,\, \dot{\beta}(t) \neq 0, \,\, \text{with} \,\, q \in \mathbb{L}^2([0,1], \mathbb{C}),$$
+  The \textbf{SRV function} (SRVF) of an absolutely continuous planar curve $\beta \in \mathcal{AC}([0,1],\,\mathbb{C})$ is given by
+  $$ \quad q(t) = \frac{\dot{\beta}(t)}{\sqrt{|| \dot{\beta}(t) ||}} \quad \text{for} \,\, \dot{\beta}(t) \neq 0, \,\, \text{with} \,\, q \in \mathbb{L}^2([0,1], \mathbb{C}),$$
   where the original curve $\beta$ can be re-constructed from its SRVF, up to translation, by $\beta(t) = \beta(0) + \int_0^t q(s) || q(s) || ds$.
 \end{definition}
 
 \noindent As this representation makes use of derivatives, any curve $\beta$ that has a SRVF must fulfill some kind of differentiability constraint.
-Here, it is enough to consider only curves that are absolutely continuous $\beta \in \mathcal{AC}([0,1],\, \mathbb{C})$, which, in particular, means that the original curves do not have to be smooth but can be piecewise linear \parencite[see][91]{SrivastavaKlassen2016}.
-The SRVFs are considered elements of a Hilbert space, given by $\mathcal{L}^2([0,1],\,\mathbb{C})$ equipped with the complex inner product $\langle \cdot, \cdot \rangle$ and corresponding norm $||\cdot||$, where the complex inner product of $q,q' \in \mathcal{L}^2([0,1],\,\mathbb{C})$ is given by
+Here it is enough to consider only curves that are absolutely continuous $\beta \in \mathcal{AC}([0,1],\, \mathbb{C})$.
+In particular, this means that the original curves do not have to be smooth but might also be piecewise linear \parencite[see][91]{SrivastavaKlassen2016}.
+The SRVFs are considered elements of a Hilbert space, which is given by $\mathcal{L}^2([0,1],\,\mathbb{C})$ equipped with the complex inner product $\langle \cdot, \cdot \rangle$ and corresponding norm $||\cdot||$.
+The complex inner product of $q,q' \in \mathcal{L}^2([0,1],\,\mathbb{C})$ is defined as
 $$ \langle q, q' \rangle = \int_0^1 \overline{q(t)} q'(t) dt \,, $$
 with $\overline{z} = \operatorname{Re}(z) - i \operatorname{Im}(z)$ denoting the complex conjugate.
 
+\textbf{[---Rewrite from here---]}
 As we can always recover the original curve up to translation, the SRV representation holds all relevant information about the shape of a curve.
 This means we can perform any shape analysis equivalently on SRV level, as we can later always transform the results of e.g.\ a mean calculation back to original curve level.
-\textbf{[Show this?]}
-
-
 
 \begin{lemma}
   The actions of the translation, scaling, rotation, and re-parametrization groups commute on SRV level.
@@ -138,8 +126,8 @@ The is a nice property of the SRV framework, as it means that we can identify th
   $$[q] = \left\{\sqrt\lambda e^{i\theta}(q \circ \gamma) \sqrt{\dot\gamma(t)} \,|\, \lambda \in \mathbb{R}^+,\, \theta \in [0,2\pi],\, \gamma
   \in \Gamma\right\},$$
   and it holds that $[\beta] \cong [q]$. The \textbf{shape space} can then be identified with 
-  $$\mathbb{L}^2 \big/ G = \mathbb{L}^2([0,1], \mathbb{C}) \big/ \mathbb{R}^+ \times [0,2\pi] \times \Gamma = \left\{[q]\,|\,q \in \mathbb{L}^2({[0,1],\,\mathbb{C})}\right\}.$$
-  \textbf{[Note: Definition should have the closure of [q]!]}
+  $$\mathbb{L}^2([0,1], \mathbb{C}) \big/ \mathbb{R}^+ \times [0,2\pi] \times \Gamma = \left\{[q]\,|\,q \in \mathbb{L}^2({[0,1],\,\mathbb{C})}\right\}.$$
+  \textbf{[Note: Definition should have the closure of [q]?]}
 \end{definition}
 
 
