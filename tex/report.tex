@@ -11,7 +11,7 @@
 % Language and fonts
 \usepackage[tracking=true]{microtype} % Slightly tweak font spacing for aesthetics
 \usepackage[utf8]{inputenc} % Allows Umlauts
-\usepackage[osf,sc]{mathpazo} % Use the Palatino font
+\usepackage[sc,noBBpl]{mathpazo} % Use the Palatino font with ams mathbb symb.
 \usepackage[T1]{fontenc} % western enc. Improves wordsplitting
 \usepackage[english]{babel} % Set language
 \DeclareMicrotypeSet*[tracking]{my}% Anleitung lesen um das zu verstehen.
@@ -21,8 +21,8 @@
 
 % Math fonts and symbols
 \usepackage{mathtools}
+\usepackage{amssymb} % for extra math symbols and mathbb
 \usepackage{bm} % For bolding mathsymbols and letters
-\usepackage{amssymb}
 \usepackage{siunitx}
 \usepackage{amsthm} % For theorems, definitions, etc.
 
@@ -47,7 +47,7 @@
 
 
 % Additional packages
-\usepackage[hidelinks]{hyperref} % For hyperlinks in the PDF
+\usepackage[]{hyperref} % For hyperlinks in the PDF
 \usepackage{import}
 \usepackage{enumitem} 
 \usepackage{verbatim}
@@ -59,13 +59,39 @@
 \DeclareMathOperator*{\argmin}{argmin}   % Jan Hlavacek
 \DeclareMathOperator*{\argmax}{argmax}   % Jan Hlavacek
 \DeclareMathOperator*{\arginf}{arginf}   % Jan Hlavacek
+\DeclarePairedDelimiter\abs{\lvert}{\rvert}%
+\DeclarePairedDelimiter\norm{\lVert}{\rVert}%
 
 % Define theorems and definitions
+\theoremstyle{plain}
 \newtheorem{theorem}{Theorem}[chapter]
 \newtheorem{corollary}{Corollary}[theorem]
 \newtheorem{lemma}[theorem]{Lemma}
-\newtheorem{remark}[theorem]{Remark}
-\newtheorem{definition}[theorem]{Definition}
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[chapter]
+\theoremstyle{remark}
+\newtheorem*{remark}{Remark}
+
+
+% Boxxes
+\usepackage[many,skins]{tcolorbox}
+\usepackage{xpatch}
+% Add box to definitions
+\tcolorboxenvironment{definition}{enhanced,sharp corners=all,colback=white,colframe=white,toprule=0pt,bottomrule=0pt,leftrule=1pt,rightrule=1pt,overlay={
+    \draw[black,line width=1pt] (frame.north west) -- ++(1cm,0pt);
+    \draw[black,line width=1pt] (frame.north west) -- ++(0pt,-0.61cm);
+    \draw[black,line width=1pt] (frame.south east) -- ++(-1cm,0pt);
+    \draw[black,line width=1pt] (frame.south east) -- ++(0pt,0.61cm);
+}}
+% Add box to proofs.
+\tcolorboxenvironment{proof}{
+  blanker,
+  before skip=20pt,
+  after skip=24pt,
+  borderline west={0.4pt}{0.4pt}{black},
+  breakable,
+  left=12pt,
+}
 
 %% Settings
 \allowdisplaybreaks
@@ -83,25 +109,24 @@
 % --- Front Matter
 
 \begin{titlepage}
-  \vspace*{0.45cm}
-
   \begin{center}
+  \sffamily{Chair of Statistics $\cdot$ School of Business and Economics $\cdot$ Humboldt-Universität zu Berlin}\\
+  \vspace{1.66cm}
     {\LARGE\sffamily\textbf{Elastic Full Procrustes Means\vspace{0.33cm}\\
     for Sparse and Irregular Planar Curves}}
-  \vspace{1cm}\\
+  \vspace{1.2cm}\\
     {\large Masters Thesis}
   \vspace{0.1cm}\\
     in partial fulfillment of the requirements for the degree
   \vspace{0.1cm}\\
     \textbf{M.Sc.\ Statistics}
-  \vspace{1.4cm}\\
-  \textsc{\large Manuel Pfeuffer\footnote{\url{pfeuferm@hu-berlin.de}, Matriculation Number: 577668}}
+  \vspace{1.2cm}\\
+  \textsc{\large Manuel Pfeuffer\footnote{\url{mnl.pfeuffer@gmail.com}, Matriculation number: 577668}}
   \vspace{0.1cm}\\
   20th September 2021, Berlin
-  \vspace{1.8cm}\\
+  \vspace{2.0cm}\\
     \includegraphics[width=0.4\textwidth]{graphics/hulogo.pdf}
-  \vspace{0.8cm}\\
-  \sffamily{Chair of Statistics $\cdot$ School of Business and Economics $\cdot$ Humboldt-Universität zu Berlin}\\
+  \vspace{0.5cm}\\
 
   \vfill
   \end{center}
@@ -153,7 +178,7 @@
 
 
 % --- Appendix
-%\addtocontents{toc}{\protect\setcounter{tocdepth}{1}}
+\addtocontents{toc}{\protect\setcounter{tocdepth}{1}}
 
 \newpage
 \appendix
