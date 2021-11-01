@@ -47,18 +47,20 @@
 
 
 % Additional packages
-\usepackage[]{hyperref} % For hyperlinks in the PDF
+\usepackage[nodayofweek]{datetime}
+\usepackage[hidelinks]{hyperref} % For hyperlinks in the PDF
 \usepackage{import}
-\usepackage{enumitem} 
 \usepackage{verbatim}
 \usepackage{color}
 \usepackage{transparent}
 \usepackage{comment}
+\usepackage{enumitem}
 
 % Shortcuts/Definitions
 \DeclareMathOperator*{\argmin}{argmin}   % Jan Hlavacek
 \DeclareMathOperator*{\argmax}{argmax}   % Jan Hlavacek
 \DeclareMathOperator*{\arginf}{arginf}   % Jan Hlavacek
+\DeclareMathOperator*{\argsup}{argsup}   % Jan Hlavacek
 \DeclarePairedDelimiter\abs{\lvert}{\rvert}%
 \DeclarePairedDelimiter\norm{\lVert}{\rVert}%
 
@@ -67,11 +69,15 @@
 \newtheorem{theorem}{Theorem}[chapter]
 \newtheorem{corollary}{Corollary}[theorem]
 \newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{algorithm}{Algorithm}[chapter]
 \theoremstyle{definition}
 \newtheorem{definition}{Definition}[chapter]
 \theoremstyle{remark}
 \newtheorem*{remark}{Remark}
 
+% In proofs
+\theoremstyle{plain}
+\newtheorem*{lemma*}{Lemma}
 
 % Boxxes
 \usepackage[many,skins]{tcolorbox}
@@ -83,7 +89,7 @@
     \draw[black,line width=1pt] (frame.south east) -- ++(-1cm,0pt);
     \draw[black,line width=1pt] (frame.south east) -- ++(0pt,0.61cm);
 }}
-% Add box to proofs.
+% Add line on left side of proofs.
 \tcolorboxenvironment{proof}{
   blanker,
   before skip=20pt,
@@ -123,7 +129,7 @@
   \vspace{1.2cm}\\
   \textsc{\large Manuel Pfeuffer\footnote{\url{mnl.pfeuffer@gmail.com}, Matriculation number: 577668}}
   \vspace{0.1cm}\\
-  20th September 2021, Berlin
+  \today, Berlin
   \vspace{2.0cm}\\
     \includegraphics[width=0.4\textwidth]{graphics/hulogo.pdf}
   \vspace{0.5cm}\\

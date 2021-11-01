@@ -1,8 +1,8 @@
 As a starting point, it is important to establish a notational and mathematical framework for the treatment of planar shapes.
 While the restriction to the 2D case might seem a major one, it still covers all shape data extracted from e.g.\ imagery and is therefore very applicable in practice.
-The outline of a 2D object may be naturally represented by a planar curves $\beta : [0,1] \rightarrow \mathbb{R}^2$ with $\beta(t) = (x(t),\, y(t))^T$, where $x(t)$ and $y(t)$ are the scalar-valued \textit{coordinate functions}.
+The outline of a 2D object may be naturally represented by a planar curve $\beta : [0,1] \rightarrow \mathbb{R}^2$ with $\beta(t) = (x(t),\, y(t))^T$, where $x(t)$ and $y(t)$ are the scalar-valued \textit{coordinate functions}.
 Calculations in two dimensions, and in particular the derivation of the full Procrustes mean, are greatly simplified by using complex notation.
-Going forward, we will therefore identify $\mathbb{R}^2$ with $\mathbb{C}$ and always use complex notation when representing a planar curve
+Going forward, we will therefore identify $\mathbb{R}^2$ with $\mathbb{C}$ and always use complex notation when representing a planar curve:
 $$\beta : [0,1] \rightarrow \mathbb{C}, \quad \beta(t) = x(t) + i\, y(t).$$
 For reasons that will be discussed in Section \ref{theo:dist}, we furthermore assume the curves to be absolutely continuous or $\beta \in \mathcal{AC}([0,1], \mathbb{C})$.
 All considerations will be restricted to the case of open curves, with possible extensions to closed curves $\beta \in \mathcal{AC}(\mathbb{S}^1, \mathbb{C})$ discussed in Section \ref{app:closed} of the appendix.
@@ -20,24 +20,23 @@ As two equivalence classses are neccessarily either disjoint or identical, we ca
 When defining an equivalence class, one has to first consider how the individual transformations act on a planar curve with complex representation $\beta : [0,1] \rightarrow \mathbb{C}$.
 This is usually done using the notion of \textit{group actions} and \textit{product groups}, with the later desciribing multiple transformations acting at once.
 A brief introduction to group actions may be found in \cite[Chap.\ 3]{SrivastavaKlassen2016}.
+
 \begin{itemize}[leftmargin=0.75cm]
-  \item[1.]
-    The \emph{translation} group $\mathbb{C}$ acts on $\beta$ by $(\xi, \beta) \xmapsto{\text{Trl}} \beta + \xi$, for any $\xi \in \mathbb{C}$.
+  \item[1.] The \emph{translation} group $\mathbb{C}$ acts on $\beta$ by $(\xi, \beta) \xmapsto{\text{Trl}} \beta + \xi$, for any $\xi \in \mathbb{C}$.
     We can consider two curves as equivalent with respect to translation $\beta_1 \overset{\text{Trl}}{\backsim} \beta_2$, if there exists a complex scalar $\widetilde\xi \in \mathbb{C}$ so that $\beta_1 = \beta_2  + \widetilde\xi$.
     Then, for some function $\beta$, the related equivalence class with respect to translation is given by $[\beta]_{\text{Trl}} = \{\beta + \xi\, |\, \xi \in \mathbb{C}\}$.
-  \item[2.] 
-    The \emph{scaling} group $\mathbb{R}^+$ acts on $\beta$ by $(\lambda, \beta) \xmapsto{\text{Scl}} \lambda \beta$, for any $\lambda \in \mathbb{R}^+$.
+  \item[2.] The \emph{scaling} group $\mathbb{R}^+$ acts on $\beta$ by $(\lambda, \beta) \xmapsto{\text{Scl}} \lambda \beta$, for any $\lambda \in \mathbb{R}^+$.
     We define $\beta_1 \overset{\text{Scl}}{\backsim} \beta_2$, if there exists a scalar $\widetilde\lambda \in \mathbb{R}^+$ so that $\beta_1 = \widetilde\lambda \beta_2$.
     An equivalence class is $[\beta]_{\text{Scl}} = \{\lambda\beta\,|\, \lambda \in \mathbb{R}^+\}$.
-  \item[3.] 
-    The \emph{rotation} group $[0,2\pi]$ acts on $\beta$ by $(\theta, \beta) \xmapsto{\text{Rot}}  e^{i\theta} \beta$, for any $\theta \in [0,2\pi]$.
+  \item[3.] The \emph{rotation} group $[0,2\pi]$ acts on $\beta$ by $(\theta, \beta) \xmapsto{\text{Rot}}  e^{i\theta} \beta$, for any $\theta \in [0,2\pi]$.
     We define $\beta_1 \overset{\text{Rot}}{\backsim} \beta_2$, if there exists a $\widetilde\theta \in [0,2\pi]$ with $\beta_1 = e^{i\widetilde\theta} \beta_2$.
     An equivalence class is $[\beta]_{\text{Rot}} = \{e^{i\theta}\beta\,|\, \theta \in [0,2\pi]\}$.
-  \item[4.] 
-    The \emph{warping} group $\Gamma$ acts on $\beta$ by $(\gamma,\beta) \xmapsto{\text{Wrp}} \beta \circ \gamma$, for any $\gamma \in \Gamma$ with $\Gamma$ being the set of monotonically increasing and differentiable warping functions.
+  \item[4.] The \emph{warping} group $\Gamma$ acts on $\beta$ by $(\gamma,\beta) \xmapsto{\text{Wrp}} \beta \circ \gamma$, for any $\gamma \in \Gamma$ with $\Gamma$ being the set of monotonically increasing and differentiable warping functions.
     We define $\beta_1 \overset{\text{Wrp}}{\backsim} \beta_2$, if there exists a warping function $\widetilde\gamma \in \Gamma$ with $\beta_1 = \beta_2 \circ \widetilde\gamma$.
     An equivalence class is $[\beta]_{\text{Wrp}} = \{\beta \circ \gamma\,|\, \gamma \in \Gamma\}$.
 \end{itemize}
+
+\textbf{[TODO: Wording and sentence structure not super clear in this paragraph.]}
 In a next step, we can consider how these transformations act in concert and whether they \textit{commute}, that is, whether the order of applying the transformations changes outcomes.
 Consider for example the actions of the rotation and scaling product group $\mathbb{R}^+ \times [0,2\pi]$ given by $((\lambda, \theta), \beta) \xmapsto{\text{Scl} + \text{Rot}} \lambda e^{i\theta} \beta$.
 These clearly commute, because the order of applying rotation or scaling do not make a difference, as $\lambda(e^{i\theta}\beta) = e^{i\theta}(\lambda\beta)$.
@@ -45,10 +44,10 @@ However, the joint actions of scaling and translation do not commute, as $\lambd
 As the order of translating and rotating or scaling matters, one usually takes the translation to act on the already scaled and rotated curve.
 The joint action defined using this ordering is usually called an \textit{Euclidean similarity transformation}.
 
-\begin{definition}[Euclidean similarity transformation] 
-  We define an \emph{Euclidean similarity transformation} of a curve $\beta : [0,1] \rightarrow \mathbb{C}$ as the joint action of scaling, rotation, and translation by 
+\begin{definition}[Euclidean similarity transformation {\parencite[][62]{DrydenMardia2016}}] 
+  We define an \emph{Euclidean similarity transformation} of a curve $\beta : [0,1] \rightarrow \mathbb{C}$ as the joint action of scaling, rotation, and translation by
   $$((\xi, \lambda, \theta), \beta) \mapsto \lambda e^{i\theta} \beta + \xi,$$
-  with $\xi \in \mathbb{C}$, $\lambda \in \mathbb{R}^+$, and $\theta \in [0,2\pi]$ \parencite[see][62]{DrydenMardia2016}.
+  with $\xi \in \mathbb{C}$, $\lambda \in \mathbb{R}^+$, and $\theta \in [0,2\pi]$.
 \end{definition}
 
 \noindent With respect to the action of re-parametrization, we can note that it necessarily commutes with all Euclidean similarity transformations, as those only act on the image of $\beta$, while the former only acts on the parametrization.
@@ -57,15 +56,16 @@ Putting everything together, we can finally give a formal definition of the shap
 \begin{definition}[Shape]
   The \emph{shape} of an absolutely continous planar curve $\beta \in \mathcal{AC}([0,1], \mathbb{C})$ is given by its equivalence class with respect to all Euclidean similarity transformations and re-parametrisations
   $$ [\beta] = \left\{\lambda e^{i\theta}(\beta \circ \gamma) + \xi\,|\, \xi \in \mathbb{C},\, \lambda \in \mathbb{R}^+,\, \theta \in [0,2\pi],\, \gamma \in \Gamma\right\}. $$
-  The \emph{shape space} is then given by the corresponding quotient space 
-  $$\mathcal{AC}([0,1], \mathbb{C}) \big/ \Gamma \times \mathbb{C} \rtimes \left( \mathbb{R}^+ \times [0,2\pi] \right) = \left\{[\beta]\,|\,\beta \in \mathbb{C}^{[0,1]}\right\},$$
-  where the symbol \enquote{$\rtimes$} denotes a semi-direct product, i.e. the translation group acts \enquote{after} scaling and rotation. 
-  \textbf{[This is probably not super clear.]}
+  The \emph{shape space} $\mathcal{S}$ is then given by the corresponding quotient space 
+  $$\mathcal{S} = \mathcal{AC}([0,1], \mathbb{C}) \big/ \Gamma \times \mathbb{C} \rtimes \left( \mathbb{R}^+ \times [0,2\pi] \right) = \left\{[\beta]\,|\,\beta \in \mathcal{AC}([0,1],\, \mathbb{C})\}\right\},$$
+  where the symbol \enquote{$\rtimes$} denotes a semi-direct product, i.e. the translation group acting \enquote{after} scaling and rotation. 
+  \textbf{[This is probably not super clear?]}
 \end{definition}
 
 
 \section{The Elastic Full Procrustes Distance for Planar Curves}
 \label{theo:dist}
+\textbf{[TODO: Rewrite this motivation. Make approach to derivation more clear.]}
 Let us now turn to the calculatation of distances between the shapes of curves.
 As shapes are represented by certain equivalence classes, and are therefore elements of a non-Euclidean quotient space, calculating their distance is not straight-forward.
 A common approach is to \enquote{project} the distance calculation in shape space down into the underlying functional space.
@@ -82,24 +82,32 @@ However, this approach runs into problems, when considering whether all transfor
 As it turns out, neither re-parametrization nor scaling are distance preserving when using the $\mathbb{L}^2$-distance:
 For two equally re-parameterized curves $\widetilde\beta_{1,2} = \beta_{1,2} \circ \gamma$, their squared $\mathbb{L}^2$-distance is given by $\norm{\beta_1 \circ \gamma - \beta_2 \circ \gamma}^2 = \int_0^1 \norm{\beta_1(\gamma(t)) - \beta_2(\gamma(t))}^2 dt = \int_0^1 \norm{\beta_1(s) - \beta_2(s)}^2 \frac{1}{\dot\gamma(\gamma^{-1}(s))} ds$ with $s = \gamma(t)$.
 It follows that $\norm{\widetilde\beta_1 - \widetilde\beta_2} \neq \norm{\beta_1 - \beta_2}$, as in general $\dot\gamma(\gamma^{-1}(s)) \neq 1$.
-Likewise, it holds for equal re-scaling that $\norm{\lambda \beta_1 - \lambda \beta_2} = \abs\lambda\, \norm{\beta_1 - \beta_2} \neq \norm{\beta_1 - \beta_2}$.
-This has the consequence that the above optimization problem might simply be solved by $\lambda_1, \lambda_2 \rightarrow 0$, leading to $d([\beta_1], [\beta_2]) \rightarrow 0$ for any two curves $\beta_1$, $\beta_2$.
-Furthermore, optimizing over re-parametrization using the $\mathbb{L}^2$-distance has problems relating to the so called \textit{pinching effect} and \textit{inverse-inconsistency}, where the later means that aligning the parametrisation of one curve to another by $\inf_{\gamma \in \Gamma} \norm{\beta_1 - \beta_2 \circ \gamma}$ may yield different results than $\inf_{\gamma \in \Gamma} \norm{\beta_2 - \beta_1 \circ \gamma}$ \parencite[see][88]{SrivastavaKlassen2016}.
+Likewise, it holds for equal re-scaling that $\norm{\lambda \beta_1 - \lambda \beta_2} = \lambda\, \norm{\beta_1 - \beta_2} \neq \norm{\beta_1 - \beta_2}$.
+As one consequence the above optimization problem might simply be solved by $\lambda_1, \lambda_2 \rightarrow 0$, leading to $d([\beta_1], [\beta_2]) \rightarrow 0$ for any two curves $\beta_1$, $\beta_2$.
+Furthermore, optimizing over re-parametrization using the $\mathbb{L}^2$-distance has problems relating to the so called \textit{pinching effect} and \textit{inverse-inconsistency}, where the later means that aligning the parametrisation of one curve to another by $\inf_{\gamma \in \Gamma} \norm{\beta_1 - \beta_2 \circ \gamma}$ may yield different results than $\inf_{\gamma \in \Gamma} \norm{\beta_2 - \beta_1 \circ \gamma}$ \textbf{[TODO: Exact citations in this paragraph!]} \parencite[see][88]{SrivastavaKlassen2016}.
 
 A solution proposed in \cite{SrivastavaEtAl2011} is to ditch the $\mathbb{L}^2$-metric in favor of an \textit{elastic metric}, which is isometric with respect to re-parametrization.
 Calculation of this metric, the Fisher-Rao Riemannian metric \parencite{Rao1945}, can be greatly simplified by using the \textit{square-root-velocity} (SRV) framework, as the Fisher-Rao metric of two curves can be equivalently calculated as the $\mathbb{L}^2$-distance of their respective SRV curves.
 
-\begin{definition}[SRV function of a planar curve]
-  The \emph{SRV function} (SRVF) of an absolutely continuous planar curve $\beta \in \mathcal{AC}([0,1],\,\mathbb{C})$ is given by
-  $$ \quad q(t) = \frac{\dot{\beta}(t)}{\sqrt{|| \dot{\beta}(t) ||}} \quad \text{for} \,\, \dot{\beta}(t) \neq 0, \,\, \text{with} \,\, q \in \mathbb{L}^2([0,1], \mathbb{C}),$$
-  where the original curve $\beta$ can be re-constructed from its SRVF, up to translation, by $\beta(t) = \beta(0) + \int_0^t q(s) || q(s) || ds$.
+\begin{definition}[SRV function of a planar curve \parencite{SrivastavaEtAl2011}]
+  The \emph{SRV function} (SRVF) of an absolutely continuous planar curve $\beta \in \mathcal{AC}([0,1],\,\mathbb{C})$ is given by 
+  $$ \quad q(t) = 
+    \begin{cases}
+      \frac{\dot{\beta}(t)}{\sqrt{\norm{\dot{\beta}(t)}}} & \dot{\beta}(t) \neq 0 \\
+      0 & \dot{\beta}(t) = 0
+    \end{cases}\,, $$
+  where $q \in \mathbb{L}^2([0,1], \mathbb{C})$ and $\dot\beta(t) = \frac{\partial\beta(t)}{\partial t}$.
 \end{definition}
 
-\noindent As this representation makes use of derivatives, any curve $\beta$ that has a SRVF must fulfill some kind of differentiability constraint.
+\textbf{[TODO: Write more in detail about this being bijective between $\mathcal{AC}$ and $\mathbb{L}^2$]!}
+\begin{remark}
+The original curve $\beta$ can be re-constructed from its SRVF, up to translation, by $\beta(t) = \beta(0) + \int_0^t q(s) \norm{q(s)} ds$.
+\end{remark}
+As this representation makes use of derivatives, any curve $\beta$ that has a SRVF must fulfill some kind of differentiability constraint.
 Here it is enough to consider only curves that are absolutely continuous $\beta \in \mathcal{AC}([0,1],\, \mathbb{C})$.
 In particular, this means that the original curves do not have to be smooth but might also be piecewise linear \parencite[see][91]{SrivastavaKlassen2016}.
-The SRVFs are considered elements of a Hilbert space, which is given by $\mathcal{L}^2([0,1],\,\mathbb{C})$ equipped with the complex inner product $\langle \cdot, \cdot \rangle$ and corresponding norm $||\cdot||$.
-The complex inner product of $q,q' \in \mathcal{L}^2([0,1],\,\mathbb{C})$ is defined as
+The SRVFs are considered elements of a Hilbert space, which is given by $\mathbb{L}^2([0,1],\,\mathbb{C})$ equipped with the complex inner product $\langle \cdot, \cdot \rangle$ and corresponding norm $\norm\cdot$.
+The complex inner product of $q,q' \in \mathbb{L}^2([0,1],\,\mathbb{C})$ is defined as
 $$ \langle q, q' \rangle = \int_0^1 \overline{q(t)} q'(t) dt \,, $$
 with $\overline{z} = \operatorname{Re}(z) - i \operatorname{Im}(z)$ denoting the complex conjugate.
 
@@ -124,13 +132,7 @@ The result is irrespective of the order of applying the transformations.
     \text{iii.)} \,\, (\theta, q) \xmapsto{\text{Rot}} e^{i\theta} q,\quad
     \text{iv.)} \,\, (\gamma, q) \xmapsto{\text{Wrp}} (q \circ \gamma) \sqrt{\dot\gamma}.$$
 \end{remark}
-\noindent We can use this to identify the shape of a curve as the equivalence class of its respective SRVF modulo scaling, rotation, and warping, where we do not need to consider translation anymore.
-\begin{definition}[Shape (SRV)]
-  The \emph{shape} $[\beta]$ of an absolutely continuous, planar curve $\beta \in \mathcal{AC}([0,1],\, \mathbb{C})$ can be equivalently represented by the equivalence class $[q]$ of its SRV representation $q = \frac{\dot\beta(t)}{\sqrt{|\dot\beta(t)|}} \in \mathbb{L}^2([0,1],\,\mathbb{C})$ modulo scaling, rotation and re-parametrization
-  $$[q] = \left\{\sqrt\lambda e^{i\theta}(q \circ \gamma) \sqrt{\dot\gamma(t)} \,|\, \lambda \in \mathbb{R}^+,\, \theta \in [0,2\pi],\, \gamma
-  \in \Gamma\right\}.$$
-\end{definition}
-\noindent Going forward, we will now work in the SRV framework and use the elastic metric for distance calculations between shapes.
+Going forward, we will now work in the SRV framework and use the elastic metric for distance calculations between shapes.
 This means, instead of optimizing over the $\mathbb{L}^2$ distance between the original curves, we optimize over the $\mathbb{L}^2$ distance between their respective SRVFs.
 For two absolutely continuous curves $\beta_1, \beta_2 \in \mathcal{AC}([0,1],\,\mathbb{C})$ with respective SRV curves $q_1, q_2 \in \mathbb{L}^2([0,1],\,\mathbb{C})$ we might define the \textit{elastic} distance between their shapes as
 $$d([\beta_1], [\beta_2]) = 
@@ -138,91 +140,181 @@ $$d([\beta_1], [\beta_2]) =
 or when equivalently optimizing over all possible transformations as
 $$d([\beta_1], [\beta_2]) = 
   \inf_{\lambda_{1,2} \in \mathbb{R}^+,\,\theta_{1,2} \in [0,2\pi],\, \gamma_{1,2} \in \Gamma} \norm{ \sqrt{\lambda_1} e^{i\theta_1}(q_1 \circ \gamma_1) \sqrt{\dot\gamma_1} - \sqrt{\lambda_2} e^{i\theta_2}(q_2 \circ \gamma_2) \sqrt{\dot\gamma_2}}_{\mathbb{L}^2}\,.$$
+
 We can simplify the optimization, by considering that both rotation and warping act by isometries on the elastic metric, which means in practice it is enough to optimize over the rotation and warping of only one of the curves.
-For warping, we can reformulate the optimisation as a problem over the relative parametrisation between the curves, as $\inf_{\gamma_1,\gamma_2 \in \Gamma} \norm{q_1 \circ \gamma_1 - q_2 \circ \gamma_2} = \inf_{\gamma_1,\gamma_2 \in \Gamma} \norm{q_1 - (q_2 \circ (\gamma_2 \circ \gamma_1^{-1})) \sqrt{\dot{(\gamma_2 \circ \gamma_1^{-1})}}}= \,\,\,\,\inf_{\gamma \in \Gamma} \,\,\,\, \norm{q_1 - (q_2 \circ \gamma) \sqrt{\dot\gamma}}$.
+For warping, we can reformulate the optimization as a problem over the relative parametrisation between the curves, as $\inf_{\gamma_1,\gamma_2 \in \Gamma} \norm{(q_1 \circ \gamma_1) \sqrt{\dot\gamma_1} - (q_2 \circ \gamma_2) \sqrt{\dot\gamma_2}} = \inf_{\gamma_1,\gamma_2 \in \Gamma} \norm{q_1 - (q_2 \circ (\gamma_2 \circ \gamma_1^{-1})) \sqrt{\dot{(\gamma_2 \circ \gamma_1^{-1})}}}= \,\,\,\,\inf_{\gamma \in \Gamma} \,\,\,\, \norm{q_1 - (q_2 \circ \gamma) \sqrt{\dot\gamma}}$.
 And smilarly for rotation, we can optimize over the relative rotation between both curves, as
 $\inf_{\theta_1,\theta_2 \in [0,2\pi]} \norm{e^{i\theta_1}q_1 - e^{i\theta_2}q_2} = \inf_{\theta_1, \theta_2 \in [0,2\pi]} \norm{q_1 - e^{i(\theta_2 - \theta_1)}q_2} ) = \inf_{\theta \in [0,2\pi]} \norm{q_1 - e^{i\theta}q_2}$.
 Taken together these lead to
 $$d([\beta_1], [\beta_2]) = 
   \inf_{\lambda_{1,2} \in \mathbb{R}^+,\,\theta \in [0,2\pi],\, \gamma \in \Gamma} \norm{ \sqrt{\lambda_1}q_1 - \sqrt{\lambda_2} e^{i\theta}(q_2 \circ \gamma) \sqrt{\dot\gamma}}\,,$$
 which, however, still has the problem of not being isometric with respect to scaling.
+\textbf{[TODO: Rewrite! A distance cannot be isometric.]}
 
+\textbf{[TODO: Problem: Wenn $\norm{z_1}$, $\norm{z_2}$ nicht genau berechnet werden können?]} 
 A possible solution, mirroring the definition of the \emph{full Procrustes distance} for landmark data, is to work with the normalized representations $z = \frac{q}{\norm q}$, while only aligning the scaling of one of the curves.
-This leads to a distance that is isometric with respect to scaling, as for $\widetilde{q}_{1,2} = \lambda q_{1,2}$ it holds that $\norm{\widetilde z_1 - \widetilde z_2} = \norm{ \frac{\lambda q_1}{\norm{\lambda q_1}} - \frac{\lambda q_2}{\norm{\lambda q_2}}} \overset{\lambda \in \mathbb{R}^+}{=} \norm{z_1 - z_2}$, while also being inverse consistent, as $\inf_{\lambda \in \mathbb{R}^+} \norm{z_1 - \lambda z_2}^2 = \inf_{\lambda \in \mathbb{R}^+}\,\norm{z_1}^2 + \lambda^2 \norm{z_2}^2 - \lambda (\langle z_1, z_2 \rangle + \langle z_2, z_1 \rangle) = 1 + \lambda^2 - \lambda (\langle z_1, z_2 \rangle + \langle z_2, z_1 \rangle) = \inf_{\lambda \in \mathbb{R}^+} \norm{z_2 - \lambda z_1}^2$.
-We can finally take everything together, leading to a definition for the \emph{elastic full Procrustes distance}.
+This leads to a distance that is isometric with respect to scaling, as for $\widetilde{q}_{1,2} = \lambda q_{1,2}$ with $\lambda \in \mathbb{R}^+$ it holds that $\norm{\widetilde z_1 - \widetilde z_2} = \norm{ \frac{\lambda q_1}{\norm{\lambda q_1}} - \frac{\lambda q_2}{\norm{\lambda q_2}}} = \norm{z_1 - z_2}$, while also being inverse consistent, as $\inf_{\lambda \in \mathbb{R}^+} \norm{z_1 - \lambda z_2}^2 = \inf_{\lambda \in \mathbb{R}^+}\,\norm{z_1}^2 + \lambda^2 \norm{z_2}^2 - \lambda (\langle z_1, z_2 \rangle + \langle z_2, z_1 \rangle) \overset{\norm{z_{1,2}} = 1}{=} \inf_{\gamma \in \Gamma} \norm{z_2}^2 + \lambda^2 \norm{z_1}^2 - \lambda (\langle z_1, z_2 \rangle + \langle z_2, z_1 \rangle) = \inf_{\lambda \in \mathbb{R}^+} \norm{z_2 - \lambda z_1}^2$.
+We can finally take everything together and define an \emph{elastic full Procrustes distance}.
 \begin{definition}[Elastic full Procrustes distance]
   \label{def:dist}
   The \emph{elastic full Procrustes distance} between the shapes $[\beta_1]$, $[\beta_2]$ of two continuously differentiable planar curves $\beta_1$, $\beta_2 \in \mathcal{AC}([0,1],\mathbb{C})$  is given by 
     $$d_{EF}([\beta_1], [\beta_2]) = \inf_{\lambda \in \mathbb{R}^+,\, \theta \in
     [0,2\pi],\, \gamma \in \Gamma} \norm{z_1 - \lambda e^{i\theta} (z_2 \circ \gamma) \sqrt{\dot\gamma}}\, $$
-    with normalized SRV representation $z_{1,2} = \frac{q_{1,2}}{\norm{q_{1,2}}} \in \mathbb{L}^2([0,1], \mathbb{C})$.
+    with normalized SRV representation $z_{i} = \frac{q_{i}}{\norm{q_{i}}} \in \mathbb{L}^2([0,1], \mathbb{C})$, where $q_i$ is the SRVF of $\beta_i$, $i = 1,2$.
 \end{definition}
 \begin{remark}
   If the original curve $\beta$ is of unit length $L[\beta] = \int_0^1 \abs{\dot\beta(t)}dt = 1$, the SRV curve $q = \frac{\dot\beta}{\norm{\dot\beta}}$ will be automatically normalized, as $ \norm{q} = \sqrt{ \int_0^1 |q(t)|^2 \, dt} = \sqrt{\int_0^1 |\dot{\beta}(t)| \, dt} = 1$.
 \end{remark}
 
-First, we consider the optimisation over rotation and scaling.
-For a fixed $\gamma \in \Gamma$, the optimisation problem in Definition \ref{def:dist} mirrors the optimisation problem of the full Procrustes distance for landmark data, where an explicit solution is known in the planar case \parencite[see][Chapter~8]{DrydenMardia2016}.
+\textbf{[TODO: Make duality of approach more explicit!]}
+To calculate the distance, we need to solve the joint optimization problem over $\Gamma \times \mathbb{R}^+ \times [0,2\pi]$.
+For a fixed $\gamma \in \Gamma$, the optimization problem in Definition \ref{def:dist} mirrors the full Procrustes distance for landmark data, where an explicit solution is known in the planar case \parencite[see][Chapter~8]{DrydenMardia2016}.
+Likewise, for fixed rotation $\theta \in [0,2\pi]$ and scaling $\lambda \in \mathbb{R}^+$, there are known optimization techniques dealing with re-parametrisation.
+\begin{equation*}
+  (\lambda^*,\, \theta^*,\, \gamma^*) = \argmin_{\lambda \in \mathbb{R}^+,\, \theta \in [0,2\pi],\, \gamma \in \Gamma} \norm{z_1 - \lambda e^{i\theta} (z_2 \circ \gamma) \sqrt{\dot\gamma}}
+\end{equation*}
+Here, using one parameter $\omega = \lambda e^{i\theta} \in \mathbb{C}$ for rotation and scaling can simplify notation.
+The rotation and scaling parameters can always be recovered by $\lambda = \abs{\omega}$ and $\theta = \arg(\omega)$.
+\begin{equation}
+  \label{eq:argmin}
+  (\omega^*,\, \gamma^*) = \argmin_{\omega \in \mathbb{C},\, \gamma \in \Gamma} \norm{z_1 - \omega (z_2 \circ \gamma) \sqrt{\dot\gamma}}
+\end{equation}
+
+The usual strategy is to optimize over the sets of parameters individually and then to iterate through both solutions.
+\textbf{[TODO: Citation, write more here!]}
+Let us first consider the optimization with respect to rotation and scaling.
+For fixed $\gamma \in \Gamma$ with $\widetilde z_2 = (z_2 \circ \gamma) \sqrt{\dot\gamma}$ we can write Eq.\ \ref{eq:argmin} as
+\begin{equation}
+  \label{eq:argmin_rot}
+  \omega^* = \argmin_{\omega \in \mathbb{C}}\,\, \norm{z_1 - \omega \widetilde z_2},
+\end{equation}
+which can be solved analytically.
 
 \begin{lemma}
-  The optimisation problem in Definition \ref{def:dist} can be reduced to
-  $$ d_{EF}([\beta_1],[\beta_2]) = \inf_{\gamma \in \Gamma} \sqrt{ 1 - \langle z_1, (z_2 \circ \gamma) \sqrt{\dot\gamma} \rangle \langle (z_2 \circ \gamma) \sqrt{\dot\gamma}, z_1 \rangle }$$
+  \label{lem:dist}
+  \begin{enumerate}[label=\emph{\roman*.)}]
+    \item For a fixed $\gamma \in \Gamma$, the optimal scaling and rotation solving Eq.\ \ref{eq:argmin_rot} is 
+      $$ \omega^* = \langle \widetilde z_2,\, z_1 \rangle = \langle (z_2 \circ \gamma) \sqrt{\dot\gamma},\, z_1 \rangle$$
+    \item The optimization problem in Definition \ref{def:dist} can then be reduced to
+      $$ d_{EF}([\beta_1],[\beta_2]) = \inf_{\gamma \in \Gamma} \sqrt{ 1 - \langle z_1, (z_2 \circ \gamma) \sqrt{\dot\gamma} \rangle \langle (z_2 \circ \gamma) \sqrt{\dot\gamma}, z_1 \rangle }$$
+  \end{enumerate}
   \begin{proof}
   See \ref{app:deriv-full-proc-dist} in the appendix.
   \end{proof}
 \end{lemma}
+\begin{remark}
+  For fixed $\gamma \in \Gamma$, we can use the first part of Lemma \ref{lem:dist} to calculate the optimal rotation and scaling alignment of $\widetilde z_2 = (z_2 \circ \gamma) \sqrt{\dot\gamma}$ onto $z_1$. The alignment $\widetilde z_2^P = \langle \widetilde z_2,\, z_1 \rangle \, \widetilde z_2$ is called the \emph{Procrustes fit} of $\widetilde z_2$ onto $z_1$. The second part of Lemma \ref{lem:dist} will be useful for mean calculation in the next section.
+\end{remark}
+Given the current $\omega \in \mathbb{C}$ with $z_2^P = \omega z_2$, the optimization with respect to re-parametrization can be written as
+\begin{equation}
+  \label{eq:argmin_wrp}
+  \gamma^* = \argmin_{\gamma \in \Gamma}\,\, \norm{z_1 - (z_2^P \circ \gamma) \sqrt{\dot\gamma}}.
+\end{equation}
+This is a well known problem and usually solved numerically by minimizing a cost function $H[\gamma] = \int_0^1 \norm{z_1(t) - z_2^P\left( \gamma(t) \right) \sqrt{\dot\gamma(t)}}\, dt$ using a dynamic programming algorithm (DPA) or gradient based methods \parencite[see][]{SrivastavaEtAl2011}.
+In this thesis we will use the methods laid out in \cite{Steyer2021}, for solving Eq.\ \ref{eq:argmin_wrp} in the setting of sparse and irregularly sampled curves.
+
+\paragraph{Anmerkung für Lisa}
+Ich habe mich noch gefragt ob man anstatt Iteration über Eq.\ \ref{eq:argmin_rot} und Eq.\ \ref{eq:argmin_wrp} die Distanz in Lemma \ref{lem:dist} ii.) auch direkter optimieren kann.
+\begin{align*}
+  \gamma^* = & \argmin_{\gamma \in \Gamma} \sqrt{1 - \langle z_1, \widetilde z_2 \rangle \langle \widetilde z_2, z_1 \rangle } \\
+    = & \argmax_{\gamma \in \Gamma} \langle z_1, \widetilde z_2 \rangle \langle \widetilde z_2, z_1 \rangle \\
+    = & \argmax_{\gamma \in \Gamma} \int_0^1 \int_0^1
+    \overline{z_1(t)} \underbrace{\widetilde z_2(t) \overline{\widetilde z_2(s)}}_{\coloneqq \, {\widetilde C}(s,t)} z_1(s) \, dt ds \\
+    = & \argmax_{\gamma \in \Gamma} \langle \widetilde C \, z_1, z_1 \rangle
+\end{align*}
+Mit $\widetilde C(s,t)$ der Kovarianz-Funktion von $\widetilde z_2 = (z_2 \circ \gamma) \sqrt{\dot\gamma}$.
+Habe das jetzt nicht weiter verfolgt (weil Zeit), aber vielleicht ist das ganz interessant?
+Man kann das glaube ich auch umschreiben mit $\breve z_1 = (z_1 \circ \gamma^{-1}) \sqrt{\dot{\gamma^{-1}}}$ als $\argmax_{\gamma \in \Gamma} \langle C \, \breve z_1, \breve z_1 \rangle$.
+
+\textbf{[TODO: Explain iterative procedure in abit more detail! Basically as in \cite{SrivastavaEtAl2011}.]}
 
 
-\newpage
 \section{The Elastic Full Procrustes Mean for Planar Curves}
+We now want to calculate shape means for a random sample of planar curves.
+Again, we assume all curves to be absolutely continous $\beta_i \in \mathcal{AC}([0,1],\, \mathbb{C})$ with corresponding SRV curves $q_i \in \mathbb{L}^2([0,1],\, \mathbb{C})$, $i=1,\dots,N$.
+As we want to take into account shape invariance in the mean calculation, we cannot simply use sums or integrals to calculate a sample mean shape.
+Instead, we can use a more general concept for mean calculation, where the mean is defined as a minimizer over the sum of squared distances to each observation, for choice of a sensible distance in the space of interest.
+If the resulting mean is a global minimum, it is usually called a \enquote{sample Fr\'echet mean} \parencite{Frechet1948}, if it is a local minimum a \enquote{sample Karcher mean} \parencite{Karcher1977} \parencite[see][111]{DrydenMardia2016}.
 
-\begin{definition}[Full Procrustes mean]
-    The \emph{full Procrustes mean} shape for a sample of landmark
-    configurations $X_i$ ($i = 1,\dots,n$) is then given by the equivalence
-    class [$\hat\mu_F$] of a landmark configuration that minimizes the sum of
-    squared full Procrustes distances
-    $$\hat{\mu}_F = \arginf_{\mu} \sum_{i=1}^n d_F([\mu], [X_i])^2, $$
-    where $\mu$ is assumed centered and normalized
-    \parencites[see][71,114]{DrydenMardia2016}.
+\begin{definition}[Sample elastic full Procrustes mean]
+  \label{def:mean}
+  For a set of curves $\beta_i \in \mathcal{AC}([0,1],\, \mathbb{C})$, $i = 1,\dots,N$,  their \emph{sample elastic full Procrustes mean} is given by the minimizing shape $\hat{[\mu]}$ with
+  $$ \hat{[\mu]} = \arginf_{[\mu] \in \mathcal{S}} \sum_{i=1}^N d_{EF}([\mu], [\beta_i])^2\,,$$
+  where $\mathcal{S} = \left\{ [\beta] : \beta \in \mathcal{AC}([0,1],\,\mathbb{C}) \right\}$ is the shape space.
 \end{definition}
 
-Let $\beta$ be a continuous planar curve.
-It can be represented in a parameterized form in $\mathbb{R}^2$ as
-$$ \beta : [0,1] \rightarrow \mathbb{R}^2,\quad \beta(t) = ( x(t), y(t)) \,, $$
-where $x, y$ are scalar-valued \textit{coordinate functions} of $\beta$, parametrized by $t$.
-We can equivalently represent a planar curve using complex numbers as
-$$ \beta : [0,1] \rightarrow \mathbb{C},\quad \beta(t) = x(t) + iy(t) \,, $$
-with the added benefit that complex notation often simplifies calculations in the 2D case.
+Instead of working with equivalence classes as in Def. \ref{def:mean}, it is often simpler to work with a specific element $\hat\mu \in \hat{[\mu]}$, that acts as a \enquote{representation} of the sample mean shape.
+One possibility is to use a representation that is of unit-length and starts at the origin, so that $L[\hat\mu] = \int_0^1 \norm{\dot{\hat\mu}(t)}\, dt = 1$ and $\hat\mu(0) = 0$.
+This is an attractive choice when working in the SRV framework, as we do not have to worry about reconstructing translation when calculating $\hat\mu$ from its respective SRV curve $\hat\mu_q$ by $\hat\mu(t) = \hat\mu(0) + \int_0^t \hat\mu_q(s) \norm{\hat\mu_q(s)}\,ds$.
+Another possibility would be to use a unit-length representation that is centered, so that $\abs{\int_0^1 \hat\mu(t)\, dt} = 0$, which may be achieved by setting $\hat\mu(0) = \int_0^1 \int_0^t \hat\mu_q(s) \norm{ \hat\mu_q(s)}\,ds\,dt$ when reconstructing $\hat\mu$ from $\hat\mu_q$.
+From the point of shape analysis, the choice of representation does not make a difference, as both mean curves are elements of $\hat{[\mu]}$ and therefore have the same shape.
+However, the distinction becomes important when the estimated mean curve $\hat\mu$ is used in concert with other curves, for example when visualizing multiple curves or when comparing multiple class mean shapes, as those do not typically share the same center or starting point.
+Differences between both representations will be explored using empirical data of tounge shapes in Section \ref{sec:tounge}.
 
-For a set of planar curves $\beta_1,\dots,\beta_n : [0,1] \rightarrow \mathbb{C}$, either centered with $\langle \beta_i, \mathbb{1} \rangle$ or with no relative translation to each other, the \textit{full Procrustes mean} $\hat{\mu}$ is then defined as the curve minimizing the sum of squared \textit{full Procrustes distances} from each $\beta_i$ to an unknown unit size mean configuration $\mu$, that is
+Note that we can always construct $\hat\mu$ (and therefore $\hat{[\mu]}$) from $\hat\mu_q$ by integration.
+Turning back to the actual mean calculation, we can therefore use the Def. \ref{def:dist} to reformulate the optimization problem in Def. \ref{def:mean} on SRV level, where we now optimize over possible normalized SRV representations $\mu_q$ of the mean shape $[\mu]$. 
+$$ \hat\mu_q = \argmin_{\mu_q \in \mathbb{L}^2:\,\norm{\mu_q} = 1}\,\,
+  \sum_{i=1}^N \, \left( \inf_{\omega_i \in \mathbb{C}, \gamma_i \in \Gamma} \,
+    \norm{\mu_q - \omega_i (z_i \circ \gamma_i) \sqrt{\dot\gamma_i}} \right)^2 $$
+Here, $z_i = \frac{q_i}{\norm{q_i}}$ are the observed normalized SRV curves, $\omega_i$ the rotation and scaling alignment to $\mu_q$ and $\gamma_i$ the re-parametrisation alignment to $\mu_q$.
+We can further simplify this by removing the optimization over $\omega_i$ using Lemma \ref{lem:dist} ii.
 \begin{align*}
-    \hat{\mu} =& \argmin_{\mu:[0,1]\rightarrow\mathbb{C}} \sum_{i=1}^n d^2_F(\mu,\beta_i)
-    \quad\text{s.t.}\,\, ||\mu|| = 1 \\
-    =& \argmin_{\mu:[0,1]\rightarrow\mathbb{C}} \sum_{i=1}^n 1 - \frac{\langle \mu, \beta_i \rangle \langle \beta_i, \mu \rangle}{\langle \mu, \mu \rangle \langle \beta_i, \beta_i \rangle}
-    \quad\text{s.t.}\,\, ||\mu|| = 1
+  \hat\mu_q = &\, \argmin_{\mu_q \in \mathbb{L}^2:\,\norm{\mu_q} = 1}\,\,
+    \sum_{i=1}^N \,\inf_{\gamma_i \in \Gamma}\, \left(1 - \langle \mu_q,\,(z_i \circ \gamma_i) \sqrt{\dot\gamma_i} \rangle \langle (z_i \circ \gamma_i) \sqrt{\dot\gamma_i},\, \mu_q\rangle \right) \\
+  \hat\mu_q = &\, \argmax_{\mu_q \in \mathbb{L}^2:\,\norm{\mu_q} = 1}\,\,
+    \sum_{i=1}^N \,\sup_{\gamma_i \in \Gamma}\, \langle \mu_q,\,(z_i \circ \gamma_i) \sqrt{\dot\gamma_i} \rangle \langle (z_i \circ \gamma_i) \sqrt{\dot\gamma_i},\, \mu_q\rangle \\
+  \hat\mu_q = &\, \argmax_{\mu_q \in \mathbb{L}^2:\,\norm{\mu_q} = 1}\,\,
+    \sum_{i=1}^N \,\sup_{\gamma_i \in \Gamma}\, \left\langle \mu_q,\,(\gamma_i,z_i) \right\rangle \left\langle (\gamma_i, z_i), \mu_q \right\rangle
 \end{align*}
-which we can be further simplified by normalizing $\beta_i := \frac{\beta_i}{|| \beta_i ||}$ and using $\langle \mu, \mu \rangle = 1$
-$$ \hat{\mu} = \argmax_{\mu:[0,1]\rightarrow\mathbb{C}} \sum_{i=1}^n \langle \mu, \beta_i \rangle \langle \beta_i, \mu \rangle \quad\text{s.t.}\,\, ||\mu|| = 1. $$
-The expression for $d^2_F(\mu,\beta_i)$ in the case of planar curves is derived in appendix \ref{app:deriv-full-proc-dist}.
+We end up with a two step optimization problem consisting of an outer optimization over $\mu_q$ and an inner optimization over the set $\left\{\gamma_i\right\}_{i=1,\dots,N}$.
+Similarly to the approaches discussed in \cite{SrivastavaKlassen2016} and to \cite{Steyer2021}, we solve this by \emph{template based alignment} \parencite[see e.g.][271]{SrivastavaKlassen2016}.
+In a first step the mean $\hat\mu_q$ is estimated while keeping the parametrisations fixed, after which the $\gamma_i$ are updated by pairwise warping-alignment between $z_i$ and $\hat\mu_q$, which is usually achieved by DPA or a gradient based approach.
+Both steps are iterated until the mean shape has converged.
+\textbf{[TODO: Noch genauer auf warping alignment step eingehen -> muss ja erstmal auch procrustes fit berechnen um warping alignen zu können.]}
 
-
-
-Consider a set of planar SRV curves $q_1,\dots,q_n : [0,1] \rightarrow \mathbb{C}$ of unit length $||q_i|| = 1$ for all $i$.
-The \textit{full Procrustes mean} $\hat{\mu}$ is given by
+Let us now consider the outer optimization problem for a fixed set of warping function $\{\gamma_i^*\}_{i=1,\dots,N}$ where we denote the warping aligned normalized SRV curves $(\gamma_i^*, z_i)$ as $\widetilde{z}_i$.
+Note that if no warping alignment has happened yet, we can always set $\gamma_i^*(t) = t$ for all $i=1,\dots,N$ as a starting value.
+The problem we have to solve is:
 \begin{align*}
-    \hat{\mu} =& \argmax_{\mu:[0,1]\rightarrow\mathbb{C}} \sum_{i=1}^n \langle \mu, q_i \rangle \langle q_i, \mu \rangle
-    \quad\text{s.t.}\,\, ||\mu|| = 1 \\
-    =& \argmax_{\mu:[0,1]\rightarrow\mathbb{C}} \sum_{i=1}^n
-    \int_0^1 \overline{\mu(t)} q_i(t) \, dt \int_0^1 \overline{q_i(s)} \mu(s) \, ds
-    \quad\text{s.t.}\,\, ||\mu|| = 1 \\
-    =& \argmax_{\mu:[0,1]\rightarrow\mathbb{C}}  \int_0^1 \int_0^1
-    \overline{\mu(t)} \underbrace{\left( \sum_{i=1}^n q_i(t) \overline{q_i(s)} \right)}_{\coloneqq \, n \hat{C}(s,t)} \mu(s) \, dt ds
-    \quad\text{s.t.}\,\, ||\mu|| = 1 \\
-    =& \argmax_{\mu:[0,1]\rightarrow\mathbb{C}} \int_0^1
-    \overline{\mu(t)} \int_0^1 \hat{C}(s,t) \mu(s) \, ds dt
-    \quad\text{s.t.}\,\, ||\mu|| = 1
+  \hat\mu_q = &\, \argmax_{\mu_q \in \mathbb{L}^2:\,\norm{\mu_q} = 1}\,\,
+    \sum_{i=1}^N \, \left\langle \mu_q,\, \widetilde z_i \right\rangle \left\langle \widetilde z_i,\, \mu_q \right\rangle \\
+  \hat\mu_q = &\, \argmax_{\mu_q \in \mathbb{L}^2:\,\norm{\mu_q} = 1}\,\,
+    \sum_{i=1}^N \, \int_0^1 \int_0^1 \overline{\mu_q (s)} \widetilde z_i(s) \overline{\widetilde z_i(t)} \mu_q(t) \,ds\,dt \\
+  \hat\mu_q = &\, \argmax_{\mu_q \in \mathbb{L}^2:\,\norm{\mu_q} = 1}\,\,
+    \int_0^1 \int_0^1 \overline{\mu_q (s)} \left( \sum_{i=1}^N\, \widetilde z_i(s) \overline{ \widetilde z_i(t)} \right) \mu_q(t) \,ds\,dt
 \end{align*}
-with the solution given by the eigenfunction corresponding to the largest eigenvector of the complex empirical covariance function $\hat{C}(s,t) = n^{-1} \sum_{i=1}^n q_i(t) \overline{q_i(s})$.
+We can identify the inner term as proportional to a sample estimator $\check{C}(s,t) = \frac{1}{N} \sum_{i=1}^N z_i(s) \overline{z_i(t)}$ of the population covariance surface $C(s,t) = \mathbb{E}[z(s) \overline{z(t)}]$, when noting that $\mathbb{E}[z(t)] = 0$ for all $t \in [0,1]$ due to rotational symmetry.
+\textbf{[TODO: Hier wird die Notation etwas unsauber. Man hat hier ja einen Cov. Estimator aus den "gewarpten" Kurven. Vielleicht müsste man sich hier nicht nochmal kurz Gedanken machen wie $C(s,t)$ eigentlich aussieht, wenn man berücksichtigt, dass die $z(t)$ auch random gewarpt sind. Vielleicht ist's auch egal.]}
+$$ \hat\mu_q = \, \argmax_{\mu_q \in \mathbb{L}^2:\,\norm{\mu_q} = 1}\,\,
+    N\cdot\int_0^1 \int_0^1 \overline{\mu_q (s)} \check C(s,t) \mu_q(t) \,ds\,dt $$
+By replacing $\check C(s,t)$ by its expectation $C(s,t)$, we can analogously formulate an estimator on the population level.
+$$ \hat\mu_q = \, \argmax_{\mu_q \in \mathbb{L}^2:\,\norm{\mu_q} = 1}\,\,
+    \int_0^1 \int_0^1 \overline{\mu_q (s)} C(s,t) \mu_q(t) \,ds\,dt $$
 
+We can rewrite this again as a functional scalar product by considering the \emph{covariance operator} $C$ with $C\mu_q = \int_0^1 C(\cdot,t) \mu_q(t) dt$ \parencite[see][153]{RamsaySilverman2005}.
+$$ \hat\mu_q = \, \argmax_{\mu_q \in \mathbb{L}^2,\,\norm{\mu_q} = 1}\,\,
+    \left\langle \mu_q, C\mu_q \right\rangle $$
+This is a well known problem in the context of functional principal component analysis (FPCA).
+From $\overline{C(s,t)} = \overline{\mathbb{E}[z(s)\overline{z(t)}]} = \mathbb{E}[z(t)\overline{z(s)}] = C(t,s)$ it follows that $\left\langle \mu_q, C \mu_q \right\rangle = \left\langle C \mu_q, \mu_q \right\rangle$ and therefore that $C$ is a \emph{self-adjoint} operator.
+\textbf{[TODO: Nicht sicher hier wegen Notation $C(s,t)$ vs. $C$.]}
+The optimization problem then reduces to an eigenfunction problem 
+$$ Cu = \lambda u \quad \Leftrightarrow \quad \int_0^1 C(s, t) u(t)\, dt = \lambda u(s)\,,$$
+where $\lambda = \left\langle \mu_q,\, C \mu_q \right\rangle$ is the target function to maximize.
+For normalized eigenfunctions $u_1, u_2,\,\dots$ and corresponding eigenvalues $\lambda_1 \geq \lambda_2 \geq \dots$ of $C(s,t)$, the solution $\hat\mu_q(t)$ is given by the leading normalized eigenfunction $u_1(t)$ of $C(s,t)$ \parencite[see][153,397]{RamsaySilverman2005}.
 
+\begin{algorithm}[Sample elastic full Procrustes mean]
+  \label{algo:mean}
+  Let $\left\{\beta_i\right\}_{i=1,\dots,N}$ be a sample of planar curves with corresponding SRV curves $\left\{ q_i \right\}_{i=1,\dots,N}$.
+  Calculate $\norm{q_i}$ for all $i=1,\dots,N$ and let $z_i = \frac{q_i}{\norm{q_i}}$.
+  Set $\gamma_i^0 = t$ for all $i=1,\dots,N$ as the initial parametrisation alignment.
+  Set $k = 0$. 
+  \begin{enumerate}
+    \item For $i=1,\dots,N$: Set $z_i^k(t) = z_i\left(\gamma^k_i(t)\right) \cdot \sqrt{\dot\gamma_i^k(t)}$.
+    \item Find an estimate $\hat{C}^k(s,t)$ of $C(s,t) = \mathbb{E}[z(s)\overline{z(t)}]$.
+    \item Set $\mu_q^k$ as the leading normalized eigenfunction of $\hat{C}^k(s,t)$. \emph{\textbf{Stop}} if $\mu_q^k$ is close to $\mu_q^{k-1}$.
+    \item For $i=1,\dots,N$: Calculate the optimal rotation and scaling alignment $\omega^k_i = \left\langle z_i^k,\, \mu_q^k \right\rangle$.
+    \item For $i=1,\dots,N$: Solve $\gamma_i^{k+1} = \argmin_{\gamma \in \Gamma} \norm{\mu_q^k - (\omega_i^k \cdot z_i \circ \gamma ) \sqrt{\dot\gamma}}$.
+    \item Set $k = k+1$ and return to Step 1.
+  \end{enumerate}
+\end{algorithm}
 

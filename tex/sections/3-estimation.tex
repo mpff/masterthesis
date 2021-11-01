@@ -1,15 +1,26 @@
+\textbf{[TODO: Explain the problem!]}
+Algorithm \ref{algo:mean} shows an idealized version of the elastic full Procrustes mean estimation, where it is assumed that each curve $\beta_i$ is fully observed.
+This is not the case in practice, as each observation $\beta_i$ is usually itself only observed at a finite number of discrete points $\beta_i(t_{i1}), \dots, \beta_i(t_{im_i})$.
+Additionally, the number of observed points per curve $m_i$ might be quite small and the points do not need to follow a common sampling scheme across all curves, a setting which is respectively known as \emph{sparse} and \emph{irregular}.
+In this section an estimation strategy for dealing with sparse and irregular observations is proposed.
 
-
-\section{Efficient Estimation using Hermitian Covariance Smoothing}
-Consider the following model for independent curves
-\begin{equation}
-    Y_i(t_{ij}) = \mu(t_{ij}, \mathbf{x}_i) + E_i(t_{ij}) + \epsilon(t_{ij}),
-    \quad j = 1,\dots,D_i, \, i = 1,\dots,n,
-\end{equation}
-\textbf{[Fast symmetric additive cov smoothing, skew-symmetry, population vs. sample, etc.]}
+\section{Sparse Treatment of SRV curves}
+A natural first consideration might be how to calculate a SRV curve from sparse observations.
+Following \cite{Steyer2021} we may treat a discretely observed curve $\beta$ as piecewise linear between its observed corners. 
+As usually only the image $\beta(t_1),\dots,\beta(t_m)$ but not the parametrisation $t_1,\dots,t_m$ is observed, it is necessary to construct an initial parametrsiation.
+A natural choice might be an \emph{arc-length-parametrisation}, where we set $t_j = \frac{l_j}{l}$ with $l_j = \sum_{k=1}^{j-1} \abs{\beta(t_{k+1}) - \beta(t_k)}$ the polygon-length up to point $j$ for $j \leq 2$, $l_1 = 0$ and $l_m = l$.
+Considering the discrete derivative $\Delta \beta \bigg\rvert_{[t_j, t_{j+1}]} = \frac{\beta(t_{j+1}) - \beta(t_{j})}{t_{j+1} - t_j}$i, the corresponding SRV curve $q$ can then be treated as piecewise constant $q\bigg\rvert_{[t_{j},t_{j+1}]} = q_j$ with $q_j = \Delta \beta \bigg\rvert_{[t_j, t_{j+1}]} \middle/ \sqrt{\norm{\Delta \beta \bigg\rvert_{[t_j, t_{j+1}]}}} $ the discrete \emph{square-root-velocity} of $\beta$ between the corners $\beta(t_j)$ and $\beta(t_{j+1})$, $j=1,\dots,m-1$.
 
 
 \section{Estimating the Full Procrustes Mean in a Fixed Basis}
+\textbf{[TODO: Explain smoothing!]} 
+
+
+\textbf{[TODO: Motivate b-spline basis! Lisa?]}
+
+\textbf{[TODO: Derivation in a fixed basis]}
+
+\begin{comment}
 To avoid having to sample the estimated covariance surface $\hat{C}(s,t)$ on a large grid when calculating its leading eigenfunction, it might be preferable to calculate this eigenfunction from the vector of basis coefficients directly.
 After choosing a basis representation $b = (b_1, \dots, b_k)$ with $b_j : \mathbb{R} \rightarrow \mathbb{R}$ real-valued basis functions, we want to estimate complex coefficients $\theta_j \in \mathbb{C}$ so that the Full Procrustes mean of SRV curves is given by $\hat{\mu}(t) = \sum_{j=1}^k \hat{\theta}_j b_j(t) = b^T \hat{\theta}$:
 \begin{align*}
@@ -49,7 +60,30 @@ One may solve this by using Lagrange optimization with the Langrangian
   \mathcal{L}(\theta,\lambda) =& \, \theta^H G \hat{\Xi} G \theta - \lambda ( \theta^H G \theta - 1)
 \end{align*}
 
+\end{comment}
+
+
+
+\section{Efficient Estimation using Hermitian Covariance Smoothing}
+
+\textbf{[TODO: Explain estimator, GLM, hermitioan!]}
+
+\textbf{[Fast symmetric additive cov smoothing, skew-symmetry, population vs. sample, etc.]}
+
+\textbf{[TODO: Distances vs Means! Compound estimators vs singleton estimates.]}
+
+
+
+\begin{comment}
+Consider the following model for independent curves
+\begin{equation}
+    Y_i(t_{ij}) = \mu(t_{ij}, \mathbf{x}_i) + E_i(t_{ij}) + \epsilon(t_{ij}),
+    \quad j = 1,\dots,D_i, \, i = 1,\dots,n,
+\end{equation}
+\end{comment}
 
 
 \section{Numerical Integration of the Procrustes Fits}
+
+\textbf{[TODO: Derivation as with Lisa.]}
 

@@ -1,77 +1,31 @@
-\section{Additional Proofs and Derivations}
+\section{Proofs and Derivations}
 
-\subsection{Derivation of the Full Procrustes Distance for Functional Data}
+\subsection{Derivation of Lemma \ref{lem:dist}}
 \label{app:deriv-full-proc-dist}
-Consider two curves $\beta_1, \beta_2 : [0,1] \rightarrow \mathbb{C}$ with $\langle \beta_1, \mathbb{1} \rangle = \langle \beta_2, \mathbb{1} \rangle = 0$ where $\mathbb{1}$ is the constant function $\mathbb{1}(t) = 1$ for all $t \in [0,1]$.
-Then $\beta_1$ and $\beta_2$ can be considered to be centered as
-$$ \langle \beta_1, \mathbb{1} \rangle
-= \int_0^1 \bar{\beta_1}(t)\mathbb{1}(t)dt\\
-= \int_0^1 \bar{\beta_1}(t)dt
-= \int_0^1 (y(t) + i x(t))dt
-= \underbrace{\int_0^1 y(t)dt}_{\stackrel{!}{=}0} + i \underbrace{\int_0^1 x(t)dt}_{\stackrel{!}{=}0} = 0 $$
-
-Then the full procrustes distance of $\beta_1, \beta_2$ is given by their minimum distance controlling for translation $\gamma \in \mathbb{C}$, and scaling and rotation $\omega = b e^{i\theta} \in \mathbb{C}$:
-\begin{align*}
-    d_F^2 =& \min_{\omega,\gamma \in \mathbb{C}} ||\beta_1 - \gamma \mathbb{1} - \omega \beta_2 ||^2 \\
-    =& \min_{\omega,\gamma \in \mathbb{C}} \langle\beta_1 - \gamma \mathbb{1} - \omega \beta_2, \beta_1 - \gamma \mathbb{1} - \omega \beta_2 \rangle \\
-    =& \min_{\omega,\gamma \in \mathbb{C}}
-    \langle \beta_1 - \omega \beta_2, \beta_1 - \omega \beta_2 \rangle
-    - \underbrace{\langle \beta_1, \gamma \mathbb{1} \rangle}_{=\,0}
-    - \underbrace{\langle \gamma \mathbb{1}, \beta_1 \rangle}_{=\,0}
-    + \underbrace{\langle \gamma \mathbb{1}, \omega \beta_2 \rangle}_{=\,0}
-    + \underbrace{\langle \omega \beta_2, \gamma \mathbb{1} \rangle}_{=\,0}
-    + \underbrace{\langle \gamma \mathbb{1}, \gamma \mathbb{1} \rangle}_{=||\gamma \mathbb{1}||^2} \\
-    \stackrel{\gamma=0}{=}& \min_{\omega \in \mathbb{C}}\,
-    \langle \beta_1, \beta_1 \rangle
-    + \langle \omega \beta_2, \omega \beta_2 \rangle
-    - \langle \beta_1, \omega \beta_2 \rangle
-    - \langle \omega \beta_2, \beta_1 \rangle \\
-    =& \min_{\omega \in \mathbb{C}}\,
-    \langle \beta_1, \beta_1 \rangle
-    + |\omega|^2 \langle \beta_2, \beta_2 \rangle
-    - \omega \langle \beta_1, \beta_2 \rangle
-    - \overline{\omega} \langle \beta_2, \beta_1 \rangle
-\end{align*}
-To find $\omega \in \mathbb{C}$ that minimizes $||\beta_1 - \omega \beta_2||^2$ we first consider the part of the problem dependent on $\theta$. We need to solve
-$$ \min_{\omega \in \mathbb{C}}
-- \omega \langle \beta_1, \beta_2 \rangle
-- \overline{\omega} \langle \beta_2, \beta_1 \rangle  =
-\max_{\omega \in \mathbb{C}}
-\omega \langle \beta_1, \beta_2 \rangle
-+ \overline{\omega} \langle \beta_2, \beta_1 \rangle $$
-by using $\omega = b e^{i\theta}$ and $\langle \beta_1, \beta_2 \rangle = a e^{i\phi}$:
-\begin{align*}
-    \max_{\omega \in \mathbb{C}}
-    \omega \langle \beta_1, \beta_2 \rangle
-    + \overline{\omega} \langle \beta_2, \beta_1 \rangle
-    =& \max_{b \in \mathbb{R}^+, \theta \in [0,2\pi]}
-    b e^{i\theta} a e^{i\phi} + b e^{-i\theta} a e^{-i\phi} \\
-    =& \max_{b \in \mathbb{R}^+, \theta \in [0,2\pi]}
-    b e^{i\theta} a e^{i\phi} + b e^{-i\theta} a e^{-i\phi} \\
-    =& \max_{b \in \mathbb{R}^+, \theta \in [0,2\pi]}
-    2 b a \cos\left(\theta +\phi\right)\\
-    \stackrel{\theta = -\phi}{=}& \max_{b \in \mathbb{R}^+}
-    2 b a
-\end{align*}
-and using $\theta = -\phi$ the original mimization problem therefore simplifies to
-\begin{align*}
-    d_F^2 =&
-    \min_{b \in \mathbb{R}^+}\,
-    \langle \beta_1, \beta_1 \rangle
-    + b^2 \langle \beta_2, \beta_2 \rangle
-    - 2 b a \\
-    \frac{\partial d_F^2}{\partial b} =& \,
-    2 b \langle \beta_2, \beta_2 \rangle - 2a \stackrel{!}{=} 0 \\
-    \Rightarrow \quad & b = \frac{a}{\langle \beta_2, \beta_2 \rangle}
-\end{align*}
-And for the \textit{full Procrustes distance} it follows that
-$$ d_F^2
-= \langle \beta_1, \beta_1 \rangle - \frac{a^2}{\langle \beta_2, \beta_2 \rangle}
-= \langle \beta_1, \beta_1 \rangle - \frac{ \langle \beta_1, \beta_2 \rangle \langle \beta_2, \beta_1 \rangle}{\langle \beta_2, \beta_2 \rangle}$$
-As this expression is not symmetric in $\beta_1$ and $\beta_2$ we can take the curves to be of unit length with $\tilde{\beta}_j = \frac{\beta_j}{||\beta_j||}$, $j=1,2$ with $||\beta_j|| = \sqrt{\langle \beta_j, \beta_j \rangle}$, so that $\langle \tilde\beta_1, \tilde\beta_1 \rangle = \langle \tilde\beta_2, \tilde\beta_2 \rangle = 1$ and obtain a suitable measure of distance:
-$$ d_F = \sqrt{1 - \langle \tilde\beta_1, \tilde\beta_2 \rangle
-\langle \tilde\beta_2, \tilde\beta_1 \rangle}
-= \sqrt{1 - \frac{ \langle \beta_1, \beta_2 \rangle \langle \beta_2, \beta_1 \rangle}{\langle \beta_1, \beta_1 \rangle \langle \beta_2, \beta_2 \rangle}}$$
+\textbf{[TODO: Make dependence on $\gamma$ explicit!]}
+\begin{proof}
+  Start with ii.).
+  Let $\widetilde z_2 = (\gamma, z_2) = (z_2 \circ \gamma) \sqrt{\dot\gamma}$, then optimise $d_{EF}([\beta_1],[\beta_2])^2$ over rotation and scaling, keeping $\gamma$ fixed.
+  \begin{align*}
+    d_{EF}([\beta_1],[\beta_2])^2 
+      = & \inf_{\lambda \in \mathbb{R}^+,\, \theta \in [0,2\pi],\, \gamma \in \Gamma} \norm{z_1 - \lambda e^{i\theta} \widetilde z_2}^2 \\
+      = & \inf_{\gamma \in \Gamma} \left( \inf_{\lambda \in \mathbb{R}^+,\, \theta \in [0,2\pi]} \langle z_1 - \lambda e^{i\theta} \widetilde z_2, z_1 - \lambda e^{i\theta} \widetilde z_2 \rangle \right) \\
+      = & \inf_{\gamma \in \Gamma} \left( \inf_{\lambda \in \mathbb{R}^+,\, \theta \in [0,2\pi]} \norm{z_1}^2 + \lambda^2 \norm{\widetilde z_2}^2 - \lambda ( e^{i\theta} \langle z_1, \widetilde z_2 \rangle + e^{-i\theta} \langle \widetilde z_2, z_1 \rangle ) \right) 
+  \end{align*}
+  As $\langle z_1, \widetilde z_2 \rangle \in \mathbb{C}$, define $\langle z_1, \widetilde z_2 \rangle = \kappa_\gamma e^{i\phi_\gamma}$, where $(\cdot)_\gamma$ denotes the dependence on $\gamma$. Furthermore, use $\norm{z_{1,2}} = 1$, which implies $\norm{\widetilde z_2} = 1$, as re-parametrisation is norm-preserving, when using the elastic metric.
+  \begin{align*}
+    \dots\quad
+     = & \inf_{\gamma \in \Gamma} \left( \inf_{\lambda \in \mathbb{R}^+,\, \theta \in [0,2\pi]} 1 + \lambda^2  - \lambda ( e^{i\theta} \kappa_\gamma e^{i\phi_\gamma} + e^{-i\theta} \kappa_\gamma e^{-i\phi_\gamma} ) \right) \\
+     = & \inf_{\gamma \in \Gamma} \left( \inf_{\lambda \in \mathbb{R}^+,\, \theta \in [0,2\pi]} 1 + \lambda^2  - \lambda \kappa_\gamma \left( e^{i(\theta + \phi_\gamma)} + e^{-i (\theta + \phi_\gamma)} \right) \right) \\
+     = &  \inf_{\gamma \in \Gamma} \left( \inf_{\lambda \in \mathbb{R}^+} 1 + \lambda^2  - \sup_{\theta \in [0,2\pi]} 2 \lambda \kappa_\gamma \cos{(\theta + \phi_\gamma)} \right) \\
+     \overset{\theta = -\phi_\gamma}{=} & \inf_{\gamma \in \Gamma} \left( \inf_{\lambda \in \mathbb{R}^+} 1 + \lambda^2  - 2 \lambda \kappa_\gamma \right) 
+  \end{align*}
+  From $\frac{\partial}{\partial\lambda}\left( 1 + \lambda^2 - 2\lambda\kappa_\gamma \right) = 2\lambda - 2\kappa_\gamma \overset{!}{=} 0$ it follows that $\lambda = \kappa_\gamma$.
+  $$\dots\quad = \inf_{\gamma \in \Gamma} \left( 1 + \kappa^2_\gamma  - 2 \kappa^2_\gamma \right) = \inf_{\gamma \in \Gamma} \left( 1 - \kappa^2_\gamma \right)$$
+  \textbf{[TODO: Make this part clearer!]}
+  Lemma \ref{lem:dist} ii.) follows from $\kappa^2_\gamma = \abs{\langle z_1, \widetilde z_2 \rangle}^2 = \langle z_1, \widetilde z_2 \rangle \langle \widetilde z_2, z_1 \rangle$ and $\widetilde z_2 = (z_2 \circ \gamma) \sqrt{\dot\gamma}$.
+  Lemma \ref{lem:dist} i.) follows from $\lambda e^{i\theta} = \kappa_\gamma e^{-i\phi_\gamma} = \overline{\langle z_1, \widetilde z_2 \rangle}$.
+\end{proof}
 
 
 \section{Discussion of Possible Extensions to Closed Curves}
