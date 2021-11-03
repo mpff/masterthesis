@@ -1,28 +1,87 @@
-\textbf{[TODO: Explain the problem!]}
-Algorithm \ref{algo:mean} shows an idealized version of the elastic full Procrustes mean estimation, where it is assumed that each curve $\beta_i$ is fully observed.
+Alg. \ref{algo:mean} shows an idealized version of the elastic full Procrustes mean estimation, where it is assumed that each curve $\beta_i$ is fully observed.
 This is not the case in practice, as each observation $\beta_i$ is usually itself only observed at a finite number of discrete points $\beta_i(t_{i1}), \dots, \beta_i(t_{im_i})$.
 Additionally, the number of observed points per curve $m_i$ might be quite small and the points do not need to follow a common sampling scheme across all curves, a setting which is respectively known as \emph{sparse} and \emph{irregular}.
-In this section an estimation strategy for dealing with sparse and irregular observations is proposed.
 
-\section{Sparse Treatment of SRV curves}
-A natural first consideration might be how to calculate a SRV curve from sparse observations.
-Following \cite{Steyer2021} we may treat a discretely observed curve $\beta$ as piecewise linear between its observed corners. 
-As usually only the image $\beta(t_1),\dots,\beta(t_m)$ but not the parametrisation $t_1,\dots,t_m$ is observed, it is necessary to construct an initial parametrsiation.
-A natural choice might be an \emph{arc-length-parametrisation}, where we set $t_j = \frac{l_j}{l}$ with $l_j = \sum_{k=1}^{j-1} \abs{\beta(t_{k+1}) - \beta(t_k)}$ the polygon-length up to point $j$ for $j \leq 2$, $l_1 = 0$ and $l_m = l$.
-Considering the discrete derivative $\Delta \beta \bigg\rvert_{[t_j, t_{j+1}]} = \frac{\beta(t_{j+1}) - \beta(t_{j})}{t_{j+1} - t_j}$i, the corresponding SRV curve $q$ can then be treated as piecewise constant $q\bigg\rvert_{[t_{j},t_{j+1}]} = q_j$ with $q_j = \Delta \beta \bigg\rvert_{[t_j, t_{j+1}]} \middle/ \sqrt{\norm{\Delta \beta \bigg\rvert_{[t_j, t_{j+1}]}}} $ the discrete \emph{square-root-velocity} of $\beta$ between the corners $\beta(t_j)$ and $\beta(t_{j+1})$, $j=1,\dots,m-1$.
+Following the steps laid out in Alg. \ref{algo:mean}, this section proposes a mean estimation strategy for dealing with sparse and irregular observations.
+In a first step, the construction of SRV and warped SRV curves from discrete (and possibly sparse) observations will be shown in Section \ref{sec:discrete}.
+Section \ref{sec:cov} discusses efficient estimation of the complex covariance surface $C(s,t)$ from sparse observations.
+In Section \ref{sec:mean_basis} the calculation of the leading eigenfunction $u_1$ of $C(s,t)$ in a fixed basis will be shown.
+Section \ref{sec:pfit} deals with the estimation of the scalar product $\omega = \langle z, \mu_q \rangle$, which gives the optimal rotation and scaling alignment.
+Note that the final warping alignment step in Alg. \ref{algo:mean} can be solved by using methods for warping alignment of sparse and irregular curves provided in \cite{Steyer2021}.
+
+
+\section{Discrete Treatment of SRV Curves}
+\label{sec:discrete}
+A natural first consideration might be how to calculate SRV curves from sparse observations.
+We defined the SRV curve of a function $\beta \in \mathcal{AC}([0,1],\,\mathbb{C})$ as $q = \frac{\dot\beta}{\sqrt{\norm{\dot\beta}}}$ (for $\dot\beta \neq 0$).
+This means that if we want to calculate the SRV curve, we have to calculate the derivative of $\beta$.
+As we never observe the whole function $\beta$ but only a set discrete points $\beta(t_1),\dots,\beta(t_m)$, this is already not straight forward, as we cannot simply calculate a pointwise derivative.
+However, following \cite{Steyer2021}, we treat a discretely observed curve $\beta$ as piecewise linear between its observed corners $\beta(t_1),\dots,\beta(t_m)$, which allows us to calculate a piecewise constant derivative on the intervalls $[t_j,\,t_{j+1}]$, $j=1,\dots,m-1$.
+Let us first consider the case of unwarped observations.
+
+\textbf{[TODO: Eventuell den ganzen Part mit den piecewise-constant curves streichen. Am ende wird sowieso nur die Mittelwert-Approximation benutzt.]}
+
+\paragraph{Initial parameterization}
+Usually only the image $\beta(t_1),\dots,\beta(t_m)$, but not the parametrisation $t_1,\dots,t_m$, is observed.
+Therefore it is first necessary to construct an initial parameterisation.
+A common choice is the \emph{arc-length-parametrisation}, where we set $t_j = \frac{l_j}{l}$ with $l_j = \sum_{k=1}^{j-1} \abs{\beta(t_{k+1}) - \beta(t_k)}$ the polygon-length up to point $j$ for $j \leq 2$, $l_1 = 0$ and $l_m = l$.
+
+\paragraph{Piecewise-constant SRV curve} 
+Consider the discrete derivative $\Delta \beta \big\rvert_{[t_j, t_{j+1}]} = \frac{\beta(t_{j+1}) - \beta(t_{j})}{t_{j+1} - t_j}$, which assumes that $\beta$ is linear between its observed corners. 
+The corresponding SRV curve $q$ can then be treated as piecewise constant $q\big\rvert_{[t_{j},t_{j+1}]} = q_j$ with $q_j = \Delta \beta \big\rvert_{[t_j, t_{j+1}]} \Big/ \sqrt{\norm{\Delta \beta \big\rvert_{[t_j, t_{j+1}]}}} = \frac{\beta(t_{j+1}) - \beta(t_j)}{\sqrt{t_{j+1} - t_j} \cdot \sqrt{\norm{\beta(t_{j+1}) - \beta(t_j)}}}$ the discrete \emph{square-root-velocity} of $\beta$ between the corners $\beta(t_j)$ and $\beta(t_{j+1})$.
+
+\paragraph{Approximate discrete SRV curve} As shown in \cite{Steyer2021} (cf.\ Fig.\ 3), treating the SRV curves as piecewise-constant functions can lead to overfitting, where the mean shape is estimated too polygon-like.
+As an alternative they propose to approximate the derivative, by assuming that it attains the value of the discrete derivative $\Delta \beta \big\rvert_{[t_j,t_{j+1}]}$ at the center $s_j = \frac{t_{j+1} - t_j}{2}$ of the interval $[t_j, t_{j+1}]$.
+Using this, we can construct \enquote{approximate observations} $q(s_j) \approx q_j$ of the SRV curve $q$.
+
+\paragraph{Normalization}
+We can approximate the normalized SRV curve $z$ using the polygon-length $l$ of $\beta$ by $z_j = q_j \big/ \sqrt{l}$.
+
+\paragraph{} 
+\textbf{[TODO: Nochmal überlegen mit $\gamma^{-1}$ und $\gamma$. Gerade ist das hier glaube ich falsch.]}
+Let us now consider a warping function $\gamma$.
+The warped discrete derivative is given by $\Delta (\beta \circ \gamma) \big\rvert_{[\gamma(t_j), \gamma(t_{j+1})]} = \frac{\beta(\gamma(t_{j+1})) - \beta(\gamma(t_{j}))}{\gamma(t_{j+1}) - \gamma(t_j)}$.
+The corresponding warped SRV curve is then given by  $(q \circ \gamma) \sqrt{\dot\gamma} \big\rvert_{[\gamma(t_j), \gamma(t_{j+1})]} = \frac{\beta(\gamma(t_{j+1})) - \beta(\gamma(t_j))}{\sqrt{\gamma(t_{j+1}) - \gamma(t_j)} \cdot \sqrt{\norm{\beta(\gamma(t_{j+1})) - \beta(\gamma(t_j))}}}$.
+\textbf{[TODO: Das hier zuende formulieren.]}
+
+
+
+\section{Efficient Estimation using Hermitian Covariance Smoothing}
+\label{sec:cov}
+
+We want to estimate $C(s,t) = \mathbb{E}[z(s)\overline{z(t)}]$ given approximate observations of the normalized SRV curves $z_i(s_{ij})$, with $j = 1,\dots,m_i-1$ and $i=1,\dots,N$, where $m_i$ denotes the number of observed points per curve.
+Following \textbf{[TODO: Cite]}, we can treat this estimation as a smoothing problem, by constructing responses $y_{ijk} = z_i(s_{ij}) \overline{z_i(s_{ik})}$ and treating the pairs $s_{ij}$, $s_{ik}$ as covariates $s$ and $t$.
+Smooothing the responses $y_{ijk}$ gives an estimate $\hat C(\cdot, \cdot)$ of $C(s,t)$, as each response has expectation $\mathbb{E}[y_{ijk}] = C(s_{ij},s_{ik})$. 
+A popular approach \textbf{[TODO: Cite]} is to carry out the smoothing in a \emph{tensor product spline} basis 
+$$ C(s,t) = b(s)^T \Xi b(t) $$
+where $b(s) = (b_1(s),\dots,b_K(s))$ denotes the vector of a spline basis and $\Xi$ is a $K \times K$ coefficient matrix to be estimated.
+As $C(s,t)$ is complex, we restrict the spline basis to be real-valued with $b_k : \mathbb{R} \rightarrow \mathbb{R}$ for $k = 1,\dots,K$ and the coefficient matrix to be complex-valued with $\Xi \in \mathbb{C}^{K \times K}$, without loss of generality.
+
+
+Considering the symmetry properties of the covariance surface allows for more efficient estimation, as shown in \cite{CederbaumScheiplGreven2018} for real valued, symmetric covariance surfaces, by considering every unique pair $s_{ij}$,$s_{ik}$ only once.
+In the complex case, the covariance surface is hermitian with $C(s,t) = \overline{C(t,s)}$, which means we can decompose the estimation into two seperate regression problems over the symmetric real and skew-symmetric imaginary parts of $C(s,t)$.
+$$\mathbb{E}[\Re(y)] = b(s)^T \Xi_{\Re} b(t)$$
+$$\mathbb{E}[\Im(y)] = b(s)^T \Xi_{\Im} b(t)$$
+with $\Xi_\Re, \Xi_\Im \in \mathbb{R}^{K\times K}$ and $\Xi = \Xi_\Re + i \Xi_\Im$, under the constraints that $\Xi_\Re^T = \Xi_\Re$ and $\Xi_\Im^T = - \Xi_\Im$.
+In this thesis I estimate $\Xi_\Re$ and $\Xi_\Im$ using the \texttt{R} \parencite{Rcore} package \texttt{mgcv} \parencite{Wood2017}.
+For efficient estimation, two \texttt{mgcv} smooths from the package \texttt{sparseFLMM} \parencite{sparseFLMM} are used, which implement and generalize the approach proposed by \cite{CederbaumScheiplGreven2018} for symmetric and skew-symmetric tensor product p-splines.
+\textbf{[TODO: Erklärung p-splines?]
 
 
 \section{Estimating the Full Procrustes Mean in a Fixed Basis}
+\label{sec:mean_basis}
+
 \textbf{[TODO: Explain smoothing!]} 
+Although observations might be sparse and irregular, we want to model the mean as a whole function.
+In FDA this is usally achieved by estimating the mean function using a specific set of \emph{basis functions} $b_1, \dots, b_K$ that are chosen so that the mean can be approximated arbitrarily well as a linear combination
+$$\mu(t) = \sum_{k=1}^K \theta_k b_k(t), $$
+as long as $K$ is large enough \parencite[see][Ch.\ 3]{RamsaySilverman2005}.
+As we are dealing with complex valued functions, we use complex coefficients $\theta_k \in \mathbb{C}$ with real valued basis functions.
+
+\textbf{[TODO: Motivate b-spline basis using Lisa's paper!]}
 
 
-\textbf{[TODO: Motivate b-spline basis! Lisa?]}
-
-\textbf{[TODO: Derivation in a fixed basis]}
-
-\begin{comment}
-To avoid having to sample the estimated covariance surface $\hat{C}(s,t)$ on a large grid when calculating its leading eigenfunction, it might be preferable to calculate this eigenfunction from the vector of basis coefficients directly.
-After choosing a basis representation $b = (b_1, \dots, b_k)$ with $b_j : \mathbb{R} \rightarrow \mathbb{R}$ real-valued basis functions, we want to estimate complex coefficients $\theta_j \in \mathbb{C}$ so that the Full Procrustes mean of SRV curves is given by $\hat{\mu}(t) = \sum_{j=1}^k \hat{\theta}_j b_j(t) = b^T \hat{\theta}$:
+After choosing a basis representation,  we want to estimate complex coefficients $\theta_j \in \mathbb{C}$ so that the Full Procrustes mean of SRV curves is given by $\hat{\mu}(t) = \sum_{j=1}^k \hat{\theta}_j b_j(t) = b^T \hat{\theta}$:
 \begin{align*}
     \hat{\mu} =& \argmax_{\theta : ||b^T\theta||=1} \sum_{i=1}^n \langle b^T\theta, q_i \rangle \langle q_i, b^T\theta \rangle \\
     =& \argmax_{\theta : ||b^T\theta||=1} \sum_{k,l} \sum_{i=1}^n \langle b_k \theta_k, q_i \rangle \langle q_i, b_l \theta_l \rangle \\
@@ -60,30 +119,10 @@ One may solve this by using Lagrange optimization with the Langrangian
   \mathcal{L}(\theta,\lambda) =& \, \theta^H G \hat{\Xi} G \theta - \lambda ( \theta^H G \theta - 1)
 \end{align*}
 
-\end{comment}
-
-
-
-\section{Efficient Estimation using Hermitian Covariance Smoothing}
-
-\textbf{[TODO: Explain estimator, GLM, hermitioan!]}
-
-\textbf{[Fast symmetric additive cov smoothing, skew-symmetry, population vs. sample, etc.]}
-
-\textbf{[TODO: Distances vs Means! Compound estimators vs singleton estimates.]}
-
-
-
-\begin{comment}
-Consider the following model for independent curves
-\begin{equation}
-    Y_i(t_{ij}) = \mu(t_{ij}, \mathbf{x}_i) + E_i(t_{ij}) + \epsilon(t_{ij}),
-    \quad j = 1,\dots,D_i, \, i = 1,\dots,n,
-\end{equation}
-\end{comment}
 
 
 \section{Numerical Integration of the Procrustes Fits}
+\label{sec:pfit}
 
 \textbf{[TODO: Derivation as with Lisa.]}
 

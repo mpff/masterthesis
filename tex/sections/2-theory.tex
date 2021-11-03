@@ -257,7 +257,7 @@ $$ \hat\mu_q = \argmin_{\mu_q \in \mathbb{L}^2:\,\norm{\mu_q} = 1}\,\,
   \sum_{i=1}^N \, \left( \inf_{\omega_i \in \mathbb{C}, \gamma_i \in \Gamma} \,
     \norm{\mu_q - \omega_i (z_i \circ \gamma_i) \sqrt{\dot\gamma_i}} \right)^2 $$
 Here, $z_i = \frac{q_i}{\norm{q_i}}$ are the observed normalized SRV curves, $\omega_i$ the rotation and scaling alignment to $\mu_q$ and $\gamma_i$ the re-parametrisation alignment to $\mu_q$.
-We can further simplify this by removing the optimization over $\omega_i$ using Lemma \ref{lem:dist} ii.
+We can further simplify this by solving the optimization over $\omega_i$ using Lemma \ref{lem:dist} ii.
 \begin{align*}
   \hat\mu_q = &\, \argmin_{\mu_q \in \mathbb{L}^2:\,\norm{\mu_q} = 1}\,\,
     \sum_{i=1}^N \,\inf_{\gamma_i \in \Gamma}\, \left(1 - \langle \mu_q,\,(z_i \circ \gamma_i) \sqrt{\dot\gamma_i} \rangle \langle (z_i \circ \gamma_i) \sqrt{\dot\gamma_i},\, \mu_q\rangle \right) \\
@@ -288,29 +288,34 @@ We can identify the inner term as proportional to a sample estimator $\check{C}(
 $$ \hat\mu_q = \, \argmax_{\mu_q \in \mathbb{L}^2:\,\norm{\mu_q} = 1}\,\,
     N\cdot\int_0^1 \int_0^1 \overline{\mu_q (s)} \check C(s,t) \mu_q(t) \,ds\,dt $$
 By replacing $\check C(s,t)$ by its expectation $C(s,t)$, we can analogously formulate an estimator on the population level.
+\textbf{[TODO: Notation?]}
 $$ \hat\mu_q = \, \argmax_{\mu_q \in \mathbb{L}^2:\,\norm{\mu_q} = 1}\,\,
     \int_0^1 \int_0^1 \overline{\mu_q (s)} C(s,t) \mu_q(t) \,ds\,dt $$
 
-We can rewrite this again as a functional scalar product by considering the \emph{covariance operator} $C$ with $C\mu_q = \int_0^1 C(\cdot,t) \mu_q(t) dt$ \parencite[see][153]{RamsaySilverman2005}.
-$$ \hat\mu_q = \, \argmax_{\mu_q \in \mathbb{L}^2,\,\norm{\mu_q} = 1}\,\,
-    \left\langle \mu_q, C\mu_q \right\rangle $$
+We can rewrite this again as a functional scalar product by considering the \emph{covariance operator} $C$ with $(C\mu_q)(s) = \int_0^1 C(s,t) \mu_q(t) dt$ \parencite[see][153]{RamsaySilverman2005}.
+\begin{equation}
+  \label{eq:quadr_opt}
+  \hat\mu_q = \, \argmax_{\mu_q \in \mathbb{L}^2,\,\norm{\mu_q} = 1}\,\,
+    \left\langle \mu_q, C\mu_q \right\rangle
+\end{equation}
 This is a well known problem in the context of functional principal component analysis (FPCA).
 From $\overline{C(s,t)} = \overline{\mathbb{E}[z(s)\overline{z(t)}]} = \mathbb{E}[z(t)\overline{z(s)}] = C(t,s)$ it follows that $\left\langle \mu_q, C \mu_q \right\rangle = \left\langle C \mu_q, \mu_q \right\rangle$ and therefore that $C$ is a \emph{self-adjoint} operator.
 \textbf{[TODO: Nicht sicher hier wegen Notation $C(s,t)$ vs. $C$.]}
 The optimization problem then reduces to an eigenfunction problem 
 $$ Cu = \lambda u \quad \Leftrightarrow \quad \int_0^1 C(s, t) u(t)\, dt = \lambda u(s)\,,$$
 where $\lambda = \left\langle \mu_q,\, C \mu_q \right\rangle$ is the target function to maximize.
+\textbf{[TODO: Nochmal überprüfen ob das so stimmt. Evtl. complex conjugate irgendwo?]}
 For normalized eigenfunctions $u_1, u_2,\,\dots$ and corresponding eigenvalues $\lambda_1 \geq \lambda_2 \geq \dots$ of $C(s,t)$, the solution $\hat\mu_q(t)$ is given by the leading normalized eigenfunction $u_1(t)$ of $C(s,t)$ \parencite[see][153,397]{RamsaySilverman2005}.
 
 \begin{algorithm}[Sample elastic full Procrustes mean]
   \label{algo:mean}
   Let $\left\{\beta_i\right\}_{i=1,\dots,N}$ be a sample of planar curves with corresponding SRV curves $\left\{ q_i \right\}_{i=1,\dots,N}$.
-  Calculate $\norm{q_i}$ for all $i=1,\dots,N$ and let $z_i = \frac{q_i}{\norm{q_i}}$.
+  Let $z_i = \frac{q_i}{\norm{q_i}}$.
   Set $\gamma_i^0 = t$ for all $i=1,\dots,N$ as the initial parametrisation alignment.
   Set $k = 0$. 
   \begin{enumerate}
     \item For $i=1,\dots,N$: Set $z_i^k(t) = z_i\left(\gamma^k_i(t)\right) \cdot \sqrt{\dot\gamma_i^k(t)}$.
-    \item Find an estimate $\hat{C}^k(s,t)$ of $C(s,t) = \mathbb{E}[z(s)\overline{z(t)}]$.
+    \item Estimate $C(s,t) = \mathbb{E}[z(s)\overline{z(t)}]$ from $\left\{z_i^k\right\}_{i=1,\dots,N}$. Call this estimate $\hat{C}^k(s,t)$.
     \item Set $\mu_q^k$ as the leading normalized eigenfunction of $\hat{C}^k(s,t)$. \emph{\textbf{Stop}} if $\mu_q^k$ is close to $\mu_q^{k-1}$.
     \item For $i=1,\dots,N$: Calculate the optimal rotation and scaling alignment $\omega^k_i = \left\langle z_i^k,\, \mu_q^k \right\rangle$.
     \item For $i=1,\dots,N$: Solve $\gamma_i^{k+1} = \argmin_{\gamma \in \Gamma} \norm{\mu_q^k - (\omega_i^k \cdot z_i \circ \gamma ) \sqrt{\dot\gamma}}$.
