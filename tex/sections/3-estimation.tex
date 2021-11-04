@@ -19,8 +19,6 @@ As we never observe the whole function $\beta$ but only a set discrete points $\
 However, following \cite{Steyer2021}, we treat a discretely observed curve $\beta$ as piecewise linear between its observed corners $\beta(t_1),\dots,\beta(t_m)$, which allows us to calculate a piecewise constant derivative on the intervalls $[t_j,\,t_{j+1}]$, $j=1,\dots,m-1$.
 Let us first consider the case of unwarped observations.
 
-\textbf{[TODO: Eventuell den ganzen Part mit den piecewise-constant curves streichen. Am ende wird sowieso nur die Mittelwert-Approximation benutzt.]}
-
 \paragraph{Initial parameterization}
 Usually only the image $\beta(t_1),\dots,\beta(t_m)$, but not the parametrisation $t_1,\dots,t_m$, is observed.
 Therefore it is first necessary to construct an initial parameterisation.
@@ -38,10 +36,14 @@ Using this, we can construct \enquote{approximate observations} $q(s_j) \approx 
 We can approximate the normalized SRV curve $z$ using the polygon-length $l$ of $\beta$ by $z_j = q_j \big/ \sqrt{l}$.
 
 \paragraph{} 
+\textbf{[TODO: Eventuell den ganzen Part mit den piecewise-constant curves streichen. Am ende wird sowieso nur die Mittelwert-Approximation benutzt.]}
+
 \textbf{[TODO: Nochmal überlegen mit $\gamma^{-1}$ und $\gamma$. Gerade ist das hier glaube ich falsch.]}
+
 Let us now consider a warping function $\gamma$.
 The warped discrete derivative is given by $\Delta (\beta \circ \gamma) \big\rvert_{[\gamma(t_j), \gamma(t_{j+1})]} = \frac{\beta(\gamma(t_{j+1})) - \beta(\gamma(t_{j}))}{\gamma(t_{j+1}) - \gamma(t_j)}$.
 The corresponding warped SRV curve is then given by  $(q \circ \gamma) \sqrt{\dot\gamma} \big\rvert_{[\gamma(t_j), \gamma(t_{j+1})]} = \frac{\beta(\gamma(t_{j+1})) - \beta(\gamma(t_j))}{\sqrt{\gamma(t_{j+1}) - \gamma(t_j)} \cdot \sqrt{\norm{\beta(\gamma(t_{j+1})) - \beta(\gamma(t_j))}}}$.
+
 \textbf{[TODO: Das hier zuende formulieren.]}
 
 
@@ -65,64 +67,77 @@ $$\mathbb{E}[\Im(y)] = b(s)^T \Xi_{\Im} b(t)$$
 with $\Xi_\Re, \Xi_\Im \in \mathbb{R}^{K\times K}$ and $\Xi = \Xi_\Re + i \Xi_\Im$, under the constraints that $\Xi_\Re^T = \Xi_\Re$ and $\Xi_\Im^T = - \Xi_\Im$.
 In this thesis I estimate $\Xi_\Re$ and $\Xi_\Im$ using the \texttt{R} \parencite{Rcore} package \texttt{mgcv} \parencite{Wood2017}.
 For efficient estimation, two \texttt{mgcv} smooths from the package \texttt{sparseFLMM} \parencite{sparseFLMM} are used, which implement and generalize the approach proposed by \cite{CederbaumScheiplGreven2018} for symmetric and skew-symmetric tensor product p-splines.
-\textbf{[TODO: Erklärung p-splines?]
+\textbf{[TODO: Erklärung p-splines?]}
+\textbf{[TODO: Motivate b-spline/p-spline basis using Lisa's paper?]}
+\textbf{[TODO: REML?]}
 
 
-\section{Estimating the Full Procrustes Mean in a Fixed Basis}
+\section{Estimating the Elastic Full Procrustes Mean in a Fixed Basis}
 \label{sec:mean_basis}
+To estimate the elastic full Procrustes Mean, we have to solve a functional eigenvalue problem on the estimated covariance surface $\hat{C}(s,t) = b(s)^t \hat\Xi b(t)$.
+This may be achieved by evaluating $\hat{C}(s,t)$ on a dense grid and performing an eigendecomposition on the matrix of evaluations \textbf{[TODO: Cite]}.
+Alternatively, we can estimate the mean directly in some basis $b(s) = (b_1(s),\dots,b_K(s))$, where a natural choice might be to evaluate mean and covariance surface in the same basis, i.e. $\mu_q(s) = b(s)^T \theta$.
 
-\textbf{[TODO: Explain smoothing!]} 
-Although observations might be sparse and irregular, we want to model the mean as a whole function.
-In FDA this is usally achieved by estimating the mean function using a specific set of \emph{basis functions} $b_1, \dots, b_K$ that are chosen so that the mean can be approximated arbitrarily well as a linear combination
-$$\mu(t) = \sum_{k=1}^K \theta_k b_k(t), $$
-as long as $K$ is large enough \parencite[see][Ch.\ 3]{RamsaySilverman2005}.
-As we are dealing with complex valued functions, we use complex coefficients $\theta_k \in \mathbb{C}$ with real valued basis functions.
+Remember that the elastic full Procrustes mean (for fixed warping) is given by the solution to the optimization problem
+$$ \hat\mu_q = \, \argmax_{\mu_q \in \mathbb{L}^2:\,\norm{\mu_q} = 1}\,\,
+   \int_0^1 \int_0^1 \overline{\mu_q (s)} C(s,t) \mu_q(t) \,ds\,dt\,\,. $$
+Given an estimate of the covariance surface $\hat{C}(s,t) = b(s)^T \hat\Xi b(t)$, the mean estimation then reduces to estimating the vector of coefficients $\theta = (\theta_1, \dots, \theta_K) \in \mathbb{C}^K$ with
+\begin{align*}
+  \hat\theta& \, = \, \argmax_{\theta \in \mathbb{C}^K:\,\norm{b^T\theta} = 1}\,\,
+    \int_0^1 \int_0^1 \theta^H b(s) b(s)^T \hat\Xi b(t) b(t)^T \theta \,ds\,dt \\
+  &\, = \, \argmax_{\theta \in \mathbb{C}^K:\,\norm{b^T\theta} = 1}\,\,
+    \theta^H \left( \int_0^1 b(s) b(s)^T \,ds \right) \hat\Xi \left( \int_0^1 b(t) b(t)^T \,dt\right) \theta \\
+  &\, = \, \argmax_{\theta \in \mathbb{C}^K:\,\theta^H G \theta = 1}\,\,
+    \theta^H G \hat\Xi G \theta 
+\end{align*}
+where $(\cdot)^H = \overline{(\cdot)}^T$ denotes the conjugate transpose and $G$ is the $K \times K$ Gram matrix with entries given by the basis products $g_{ij} = \langle b_i, b_j \rangle$.
+In the special case of an orthonormal basis with $\langle b_i, b_j \rangle = \delta_{ij}$ the Gram matrix is an identity matrix, however, this is not the case for many basis representations such as the b-spline basis.
 
-\textbf{[TODO: Motivate b-spline basis using Lisa's paper!]}
-
-
-After choosing a basis representation,  we want to estimate complex coefficients $\theta_j \in \mathbb{C}$ so that the Full Procrustes mean of SRV curves is given by $\hat{\mu}(t) = \sum_{j=1}^k \hat{\theta}_j b_j(t) = b^T \hat{\theta}$:
+We have reduced the functional eigenvalue problem to a multivariate eigenvalue problem over the covariance coefficient matrix.
+We might solve this using Lagrange optimization with the following Langrangian:
+\begin{equation*}
+  \mathcal{L}(\theta,\lambda) = \, \theta^H G \hat{\Xi} G \theta - \lambda ( \theta^H G \theta - 1)
+\end{equation*}
+Taking into account that we identified $\mathbb{R}^2$ with $\mathbb{C}$ we can split everything into real and imaginary parts and optimize with respect to $\Re(\theta)$ and $\Im(\theta)$ seperately, to avoid having to take complex derivatives.
+Using $\theta = \theta_\Re + i \theta_\Im$ and $\hat{\Xi} = \hat\Xi_\Re + i \hat\Xi_\Im$ we can write
 \begin{align*}
-    \hat{\mu} =& \argmax_{\theta : ||b^T\theta||=1} \sum_{i=1}^n \langle b^T\theta, q_i \rangle \langle q_i, b^T\theta \rangle \\
-    =& \argmax_{\theta : ||b^T\theta||=1} \sum_{k,l} \sum_{i=1}^n \langle b_k \theta_k, q_i \rangle \langle q_i, b_l \theta_l \rangle \\
-    =& \argmax_{\theta : ||b^T\theta||=1} \sum_{k,l} \bar{\theta}_k \theta_l \sum_{i=1}^n \langle b_k, q_i \rangle \langle q_i, b_l \rangle \\
-    =& \argmax_{\theta : ||b^T\theta||=1} \theta^H S \theta \\
+  \mathcal{L}(\theta_\Re,\theta_\Im,\lambda) & = \, 
+    (\theta_\Re^T - i \theta_\Im^T) G ( \hat{\Xi}_\Re + i \hat\Xi_\Im ) G ( \theta_\Re + i \theta_\Im )
+    - \lambda \left( (\theta_\Re^T - i \theta_\Im^T ) G (\theta_\Re + i \theta_\Im) - 1 \right) \\
+  & = \, \theta_\Re^T G \hat\Xi_\Re G \theta_\Re 
+    + i \theta_\Re^T G \hat\Xi_\Im G \theta_\Re 
+    + \theta_\Im^T G \hat\Xi_\Im G \theta_\Re
+    - \theta_\Re^T G \hat\Xi_\Im G \theta_\Im \\
+  & \qquad  + \theta_\Im^T G \hat\Xi_\Re G \theta_\Im
+    + i \theta_\Im^T G \hat\Xi_\Im G \theta_\Im 
+    + \lambda \left( \theta_\Re^T G \theta_\Re + \theta_\Im^T G \theta_\Im - 1 \right)
 \end{align*}
-where the matrix $S = \left\{ \sum_{i=1}^n \langle b_k, q_i \rangle \langle q_i, b_l \rangle \right\}_{k,l}$ has to be estimated from the observed SRV curves.
-We can further simplify $S$ to
-\begin{align*}
-    S_{kl} =& \sum_{i=1}^n \int_0^1 \bar{b}_k(t) q_i(t) dt \int_0^1 \bar{q}_i(s) b_l(s) ds \\
-    =& \int_0^1 \int_0^1 \bar{b}_k(t) \underbrace{\left( \sum_{i=1}^n q_i(t) \bar{q}_i(s) \right)}_{= n \, \hat{C}(s,t)} b_l(s) ds dt\\
-    =& n \, \int_0^1 \int_0^1 \bar{b}_k(t) \hat{C}(s,t) b_l(s) ds dt\\
-\end{align*}
-with $\hat{C}(s,t) = \frac{1}{n} \sum_{i=1}^n q_i(s) \overline{q_i(t)}$ the sample analogue to the complex population covariance function $C(s,t) = \mathbb{E}[q(s)\overline{q(t)}]$.
-We may estimate $C(s,t)$ via tensor product splines, so that $\hat{C}(s,t) = \sum_{k,l} \hat{\xi}_{kl} b_k(t) b_l(s)$, where $b_j(t)$, $j=1,\dots,k$ are the same real valued basis functions as used for the mean and $\hat{\xi}_{kl}$ are the estimated complex coefficients.
-We can then further simplify $S_{kl}$
-\begin{align*}
-    S_{kl} =& n \, \int_0^1 \int_0^1 b_k(t) \left( \sum_{p,q} \hat{\xi}_{pq} b_q(t) b_p(s) \right) b_l(s) ds dt\\
-    =& n \, \sum_{p,q} \hat{\xi}_{pq} \int_0^1 \int_0^1 b_k(t) b_q(t) b_p(s) b_l(s) ds dt\\
-    =& n \, \sum_{p,q} \hat{\xi}_{pq} \langle b_k, b_q \rangle \langle b_p, b_l \rangle\\
-    =& n \, \sum_{p,q} \hat{\xi}_{pq} g_{kq} g_{pl}
-\end{align*}
-where $g_{ij}$, $i,j = 1, \dots, k$ are the elements of the Gram matrix $G = bb^T$ with $G = \mathbb{I}_k$ in the special case of an orthogonal basis.
-We can then write the write the matrix $S$ as a function of the estimated coefficient matrix $\hat{\Xi} = (\hat{\xi}_{ij})_{i,j = 1, \dots, k}$ :
-\begin{align*}
-    S =& n \, G \hat{\Xi} G
-\end{align*}
-The full Procrustes mean of SRV curves is then given by the solution to the optimization problem
-\begin{align*}
-    \hat{\mu} =& \argmax_{\theta} n \, \theta^H G \hat{\Xi} G \theta \quad \text{subj. to} \quad ||b^T \theta|| = 1 \\
-    =& \argmax_{\theta : ||b^T\theta||=1} \, \theta^H G \hat{\Xi} G \theta \quad \text{subj. to} \quad \theta^H G \theta = 1
-\end{align*}
-One may solve this by using Lagrange optimization with the Langrangian
-\begin{align*}
-  \mathcal{L}(\theta,\lambda) =& \, \theta^H G \hat{\Xi} G \theta - \lambda ( \theta^H G \theta - 1)
-\end{align*}
+using $\hat\Xi_\Re^T = \hat\Xi_\Re$ and $\hat\Xi_\Im^T = - \hat\Xi_\Im$.
+Differentiation w.r.t.\ $\theta_\Re$ and $\theta_\Im$ yields
+\begin{align}
+  \frac{\partial \mathcal{L}}{\partial \theta_\Re} & = \, 
+    2G\hat\Xi_\Re G \theta_\Re - 2G\hat\Xi_\Im G \theta_\Im - 2\lambda G\theta_\Re \overset{!}{=} 0 \label{eq:lagrRe}\\
+  \frac{\partial \mathcal{L}}{\partial \theta_\Im} & = \,
+    2G\hat\Xi_\Re G \theta_\Im + 2G\hat\Xi_\Im G \theta_\Re - 2\lambda G\theta_\Im \overset{!}{=} 0 \label{eq:lagrIm}
+\end{align}
+with the additional constraint $\theta_\Re^T G \theta_\Re + \theta_\Im^T G \theta_\Im = 1$.T
+We can simplify this further and multiply Eq. \ref{eq:lagrIm} by $i$, leading to
+\begin{align}
+  \hat\Xi_\Re G \theta_\Re - \hat\Xi_\Im G \theta_\Im & = \lambda \theta_\Re\\
+  i \hat\Xi_\Re G \theta_\Im + i \hat\Xi_\Im G \theta_\Re & = i \lambda \theta_\Im \,.
+\end{align}
+Adding both equations finally leads to  
+$$( \hat\Xi_\Re + i \hat\Xi_\Im) G \theta_\Re + i (\hat\Xi_\Re + \hat\Xi_\Im) G \theta_\Im = \lambda ( \theta_\Re + i \theta_\Im)$$
+or likewise, using $\theta$ and $\hat\Xi$
+$$ \hat\Xi G \theta = \lambda \theta $$
+which is an eigenvalue problem on the product of the complex coefficient matrix and the Gram matrix.
+Multiplying by $\theta^H G$ from the left yields $\lambda = \theta^H G \hat\Xi G \theta$, i.e. the eigenvalues correspond to the target function to maximize.
+It follows that the estimate for the coefficient vector of the elastic full Procrustes mean is given by the eigenvector of the leading eigenvalue of $\hat\Xi G$.
+\textbf{[TODO: Cite Reiss.]}
 
 
 
 \section{Numerical Integration of the Procrustes Fits}
 \label{sec:pfit}
-
-\textbf{[TODO: Derivation as with Lisa.]}
+\textbf{[TODO: Mean value theorem in the integral, etc.]}
 

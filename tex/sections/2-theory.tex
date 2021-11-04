@@ -230,6 +230,7 @@ Man kann das glaube ich auch umschreiben mit $\breve z_1 = (z_1 \circ \gamma^{-1
 
 
 \section{The Elastic Full Procrustes Mean for Planar Curves}
+\textbf{[TODO: Nummerierung der equations ist ein mess]}
 We now want to calculate shape means for a random sample of planar curves.
 Again, we assume all curves to be absolutely continous $\beta_i \in \mathcal{AC}([0,1],\, \mathbb{C})$ with corresponding SRV curves $q_i \in \mathbb{L}^2([0,1],\, \mathbb{C})$, $i=1,\dots,N$.
 As we want to take into account shape invariance in the mean calculation, we cannot simply use sums or integrals to calculate a sample mean shape.
@@ -300,11 +301,12 @@ We can rewrite this again as a functional scalar product by considering the \emp
 \end{equation}
 This is a well known problem in the context of functional principal component analysis (FPCA).
 From $\overline{C(s,t)} = \overline{\mathbb{E}[z(s)\overline{z(t)}]} = \mathbb{E}[z(t)\overline{z(s)}] = C(t,s)$ it follows that $\left\langle \mu_q, C \mu_q \right\rangle = \left\langle C \mu_q, \mu_q \right\rangle$ and therefore that $C$ is a \emph{self-adjoint} operator.
-\textbf{[TODO: Nicht sicher hier wegen Notation $C(s,t)$ vs. $C$.]}
 The optimization problem then reduces to an eigenfunction problem 
-$$ Cu = \lambda u \quad \Leftrightarrow \quad \int_0^1 C(s, t) u(t)\, dt = \lambda u(s)\,,$$
+\begin{equation}
+  \label{eq:funceig}
+  Cu = \lambda u \quad \Leftrightarrow \quad \int_0^1 C(s, t) u(t)\, dt = \lambda u(s)\,,
+\end{equation}
 where $\lambda = \left\langle \mu_q,\, C \mu_q \right\rangle$ is the target function to maximize.
-\textbf{[TODO: Nochmal überprüfen ob das so stimmt. Evtl. complex conjugate irgendwo?]}
 For normalized eigenfunctions $u_1, u_2,\,\dots$ and corresponding eigenvalues $\lambda_1 \geq \lambda_2 \geq \dots$ of $C(s,t)$, the solution $\hat\mu_q(t)$ is given by the leading normalized eigenfunction $u_1(t)$ of $C(s,t)$ \parencite[see][153,397]{RamsaySilverman2005}.
 
 \begin{algorithm}[Sample elastic full Procrustes mean]
