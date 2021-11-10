@@ -3,6 +3,12 @@
 
 %% Packages
 
+% QUALITY OF LIVE
+\RequirePackage[l2tabu, orthodox]{nag}  % detect depreceated latex pkgs
+\usepackage[notref,notcite]{showkeys} % useful when writing the paper
+\overfullrule=2cm % allows to find overfull hboxes much quicker
+\usepackage{todonotes}
+
 % Document margins/formating
 \usepackage[margin=2.5cm,footskip=\dimexpr1.25cm+\dp\strutbox\relax]{geometry}
 \usepackage{setspace} 
@@ -48,7 +54,6 @@
 
 % Additional packages
 \usepackage[nodayofweek]{datetime}
-\usepackage[hidelinks]{hyperref} % For hyperlinks in the PDF
 \usepackage{import}
 \usepackage{verbatim}
 \usepackage{color}
@@ -99,6 +104,14 @@
   left=12pt,
 }
 
+% Inputting tikz files with relative path
+\newcommand\inputTikz[2][graphics]{
+    \let\pgfimageOld\pgfimage%
+    \renewcommand{\pgfimage}[2][]{\pgfimageOld[##1]{#1/##2}}%
+    \input{#1/#2}%
+    \let\pgfimage\pgfimageOld%
+}
+
 %% Settings
 \allowdisplaybreaks
 
@@ -106,6 +119,10 @@
 \KOMAoptions{onpsinit={\linespread{1}\selectfont}}% <- added
 \clearpairofpagestyles
 \cfoot*{\pagemark}
+
+
+%% Hyperrefs
+\usepackage[hidelinks]{hyperref} % should be imported after all other packages as it changes a lot
 
 
 %% The document starts here!
@@ -147,6 +164,7 @@
 \pagenumbering{roman}
 \tableofcontents
 
+\listoftodos
 
 % --- Main Content
 

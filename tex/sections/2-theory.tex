@@ -1,10 +1,31 @@
 As a starting point, it is important to establish a notational and mathematical framework for the treatment of planar shapes.
 While the restriction to the 2D case might seem a major one, it still covers all shape data extracted from e.g.\ imagery and is therefore very applicable in practice.
-The outline of a 2D object may be naturally represented by a planar curve $\beta : [0,1] \rightarrow \mathbb{R}^2$ with $\beta(t) = (x(t),\, y(t))^T$, where $x(t)$ and $y(t)$ are the scalar-valued \textit{coordinate functions}.
+The outline of a 2D object may be naturally represented by a planar curve $\beta : [0,1] \rightarrow \mathbb{R}^2$ with $\beta(t) = (x_1(t),\, x_2(t))^T$, where $x_1(t)$ and $x_2(t)$ are the scalar-valued \textit{coordinate functions}.
 Calculations in two dimensions, and in particular the derivation of the full Procrustes mean, are greatly simplified by using complex notation.
-Going forward, we will therefore identify $\mathbb{R}^2$ with $\mathbb{C}$ and always use complex notation when representing a planar curve:
-$$\beta : [0,1] \rightarrow \mathbb{C}, \quad \beta(t) = x(t) + i\, y(t).$$
-For reasons that will be discussed in Section \ref{theo:dist}, we furthermore assume the curves to be absolutely continuous or $\beta \in \mathcal{AC}([0,1], \mathbb{C})$.
+\begin{figure}
+  \centering
+  \begin{subfigure}{.48\textwidth}
+    \centering
+    \inputTikz{2-curve}
+  \end{subfigure}\hfill%
+  \begin{subfigure}{.48\textwidth}
+    \centering
+    \begin{subfigure}{\textwidth}
+      \centering
+      \inputTikz{2-curveX}
+    \end{subfigure}
+    \begin{subfigure}{\textwidth}
+      \centering
+      \inputTikz{2-curveY}
+    \end{subfigure}
+  \end{subfigure}
+  \caption{Example of a planar curve (left) with respective coordinate functions (right) using complex notation. Data: see Figure \ref{fig:1-shape}.}
+  \label{fig:2-curve}
+\end{figure}
+As shown in \ref{fig:2-curve}, we will therefore identify $\mathbb{R}^2$ with $\mathbb{C}$ and always use complex notation when representing a planar curve:
+$$\beta : [0,1] \rightarrow \mathbb{C}, \quad \beta(t) = x_1(t) + i\, x_2(t).$$
+We will assume the curves to be absolutely continuous, denoted as $\beta \in \mathcal{AC}([0,1], \mathbb{C})$, which guarantees integrable derivatives $\frac{\partial \beta(t)}{\partial t}$.
+This is important when working in the square-root-velocity (SRV) framework, as will be discussed in Section \ref{theo:dist}.
 All considerations will be restricted to the case of open curves, with possible extensions to closed curves $\beta \in \mathcal{AC}(\mathbb{S}^1, \mathbb{C})$ discussed in Section \ref{app:closed} of the appendix.
 
 
@@ -36,7 +57,7 @@ A brief introduction to group actions may be found in \cite[Chap.\ 3]{Srivastava
     An equivalence class is $[\beta]_{\text{Wrp}} = \{\beta \circ \gamma\,|\, \gamma \in \Gamma\}$.
 \end{itemize}
 
-\textbf{[TODO: Wording and sentence structure not super clear in this paragraph.]}
+\todo[inline]{Wording and sentence structure not super clear in this paragraph.}
 In a next step, we can consider how these transformations act in concert and whether they \textit{commute}, that is, whether the order of applying the transformations changes outcomes.
 Consider for example the actions of the rotation and scaling product group $\mathbb{R}^+ \times [0,2\pi]$ given by $((\lambda, \theta), \beta) \xmapsto{\text{Scl} + \text{Rot}} \lambda e^{i\theta} \beta$.
 These clearly commute, because the order of applying rotation or scaling do not make a difference, as $\lambda(e^{i\theta}\beta) = e^{i\theta}(\lambda\beta)$.
@@ -59,13 +80,13 @@ Putting everything together, we can finally give a formal definition of the shap
   The \emph{shape space} $\mathcal{S}$ is then given by the corresponding quotient space 
   $$\mathcal{S} = \mathcal{AC}([0,1], \mathbb{C}) \big/ \Gamma \times \mathbb{C} \rtimes \left( \mathbb{R}^+ \times [0,2\pi] \right) = \left\{[\beta]\,|\,\beta \in \mathcal{AC}([0,1],\, \mathbb{C})\}\right\},$$
   where the symbol \enquote{$\rtimes$} denotes a semi-direct product, i.e. the translation group acting \enquote{after} scaling and rotation. 
-  \textbf{[This is probably not super clear?]}
+  \todo[inline]{Is this clear?}
 \end{definition}
 
 
 \section{The Elastic Full Procrustes Distance for Planar Curves}
 \label{theo:dist}
-\textbf{[TODO: Rewrite this motivation. Make approach to derivation more clear.]}
+\todo[inline]{Rewrite motivation. Make approach to derivation more clear.}
 Let us now turn to the calculatation of distances between the shapes of curves.
 As shapes are represented by certain equivalence classes, and are therefore elements of a non-Euclidean quotient space, calculating their distance is not straight-forward.
 A common approach is to \enquote{project} the distance calculation in shape space down into the underlying functional space.
@@ -84,7 +105,7 @@ For two equally re-parameterized curves $\widetilde\beta_{1,2} = \beta_{1,2} \ci
 It follows that $\norm{\widetilde\beta_1 - \widetilde\beta_2} \neq \norm{\beta_1 - \beta_2}$, as in general $\dot\gamma(\gamma^{-1}(s)) \neq 1$.
 Likewise, it holds for equal re-scaling that $\norm{\lambda \beta_1 - \lambda \beta_2} = \lambda\, \norm{\beta_1 - \beta_2} \neq \norm{\beta_1 - \beta_2}$.
 As one consequence the above optimization problem might simply be solved by $\lambda_1, \lambda_2 \rightarrow 0$, leading to $d([\beta_1], [\beta_2]) \rightarrow 0$ for any two curves $\beta_1$, $\beta_2$.
-Furthermore, optimizing over re-parametrization using the $\mathbb{L}^2$-distance has problems relating to the so called \textit{pinching effect} and \textit{inverse-inconsistency}, where the later means that aligning the parametrisation of one curve to another by $\inf_{\gamma \in \Gamma} \norm{\beta_1 - \beta_2 \circ \gamma}$ may yield different results than $\inf_{\gamma \in \Gamma} \norm{\beta_2 - \beta_1 \circ \gamma}$ \textbf{[TODO: Exact citations in this paragraph!]} \parencite[see][88]{SrivastavaKlassen2016}.
+Furthermore, optimizing over re-parametrization using the $\mathbb{L}^2$-distance has problems relating to the so called \textit{pinching effect} and \textit{inverse-inconsistency}, where the later means that aligning the parametrisation of one curve to another by $\inf_{\gamma \in \Gamma} \norm{\beta_1 - \beta_2 \circ \gamma}$ may yield different results than $\inf_{\gamma \in \Gamma} \norm{\beta_2 - \beta_1 \circ \gamma}$ \todo{Exact citations!} \parencite[see][88]{SrivastavaKlassen2016}.
 
 A solution proposed in \cite{SrivastavaEtAl2011} is to ditch the $\mathbb{L}^2$-metric in favor of an \textit{elastic metric}, which is isometric with respect to re-parametrization.
 Calculation of this metric, the Fisher-Rao Riemannian metric \parencite{Rao1945}, can be greatly simplified by using the \textit{square-root-velocity} (SRV) framework, as the Fisher-Rao metric of two curves can be equivalently calculated as the $\mathbb{L}^2$-distance of their respective SRV curves.
@@ -99,7 +120,7 @@ Calculation of this metric, the Fisher-Rao Riemannian metric \parencite{Rao1945}
   where $q \in \mathbb{L}^2([0,1], \mathbb{C})$ and $\dot\beta(t) = \frac{\partial\beta(t)}{\partial t}$.
 \end{definition}
 
-\textbf{[TODO: Write more in detail about this being bijective between $\mathcal{AC}$ and $\mathbb{L}^2$]!}
+\todo[inline]{More detail about bijective between $\mathcal{AC}$ and $\mathbb{L}^2$!}
 \begin{remark}
 The original curve $\beta$ can be re-constructed from its SRVF, up to translation, by $\beta(t) = \beta(0) + \int_0^t q(s) \norm{q(s)} ds$.
 \end{remark}
@@ -110,6 +131,20 @@ The SRVFs are considered elements of a Hilbert space, which is given by $\mathbb
 The complex inner product of $q,q' \in \mathbb{L}^2([0,1],\,\mathbb{C})$ is defined as
 $$ \langle q, q' \rangle = \int_0^1 \overline{q(t)} q'(t) dt \,, $$
 with $\overline{z} = \operatorname{Re}(z) - i \operatorname{Im}(z)$ denoting the complex conjugate.
+
+\begin{figure}
+  \centering
+  \begin{subfigure}{.48\textwidth}
+    \centering
+    \missingfigure{Example SRV and coordinate functions}
+  \end{subfigure}\hfill%
+  \begin{subfigure}{.48\textwidth}
+    \centering
+    \missingfigure{Example reparameterized SRV and coordinate functions}
+  \end{subfigure}
+  \caption{SRV function of the planar curve from Figure \ref{fig:2-curve} in original (left) and reparameterized (right; $t \mapsto t^5$) form, with respective coordinate functions on SRV level. Data: see Figure \ref{fig:1-shape}.}
+  \label{fig:2-srv}
+\end{figure}
 
 As we can always recover the original curve up to translation, the SRV representation holds all relevant information about the shape of a curve.
 Furthermore, because of the use of derivatives, the SRV representation is invariant under changes in translation of the original curve.
@@ -148,10 +183,8 @@ $\inf_{\theta_1,\theta_2 \in [0,2\pi]} \norm{e^{i\theta_1}q_1 - e^{i\theta_2}q_2
 Taken together these lead to
 $$d([\beta_1], [\beta_2]) = 
   \inf_{\lambda_{1,2} \in \mathbb{R}^+,\,\theta \in [0,2\pi],\, \gamma \in \Gamma} \norm{ \sqrt{\lambda_1}q_1 - \sqrt{\lambda_2} e^{i\theta}(q_2 \circ \gamma) \sqrt{\dot\gamma}}\,,$$
-which, however, still has the problem of not being isometric with respect to scaling.
-\textbf{[TODO: Rewrite! A distance cannot be isometric.]}
+which, however, still has the problem of not being \todo{Distance cannot be isometric} isometric with respect to scaling.
 
-\textbf{[TODO: Problem: Wenn $\norm{z_1}$, $\norm{z_2}$ nicht genau berechnet werden können?]} 
 A possible solution, mirroring the definition of the \emph{full Procrustes distance} for landmark data, is to work with the normalized representations $z = \frac{q}{\norm q}$, while only aligning the scaling of one of the curves.
 This leads to a distance that is isometric with respect to scaling, as for $\widetilde{q}_{1,2} = \lambda q_{1,2}$ with $\lambda \in \mathbb{R}^+$ it holds that $\norm{\widetilde z_1 - \widetilde z_2} = \norm{ \frac{\lambda q_1}{\norm{\lambda q_1}} - \frac{\lambda q_2}{\norm{\lambda q_2}}} = \norm{z_1 - z_2}$, while also being inverse consistent, as $\inf_{\lambda \in \mathbb{R}^+} \norm{z_1 - \lambda z_2}^2 = \inf_{\lambda \in \mathbb{R}^+}\,\norm{z_1}^2 + \lambda^2 \norm{z_2}^2 - \lambda (\langle z_1, z_2 \rangle + \langle z_2, z_1 \rangle) \overset{\norm{z_{1,2}} = 1}{=} \inf_{\gamma \in \Gamma} \norm{z_2}^2 + \lambda^2 \norm{z_1}^2 - \lambda (\langle z_1, z_2 \rangle + \langle z_2, z_1 \rangle) = \inf_{\lambda \in \mathbb{R}^+} \norm{z_2 - \lambda z_1}^2$.
 We can finally take everything together and define an \emph{elastic full Procrustes distance}.
@@ -166,7 +199,7 @@ We can finally take everything together and define an \emph{elastic full Procrus
   If the original curve $\beta$ is of unit length $L[\beta] = \int_0^1 \abs{\dot\beta(t)}dt = 1$, the SRV curve $q = \frac{\dot\beta}{\norm{\dot\beta}}$ will be automatically normalized, as $ \norm{q} = \sqrt{ \int_0^1 |q(t)|^2 \, dt} = \sqrt{\int_0^1 |\dot{\beta}(t)| \, dt} = 1$.
 \end{remark}
 
-\textbf{[TODO: Make duality of approach more explicit!]}
+\todo[inline]{Make duality of approach more explicit!}
 To calculate the distance, we need to solve the joint optimization problem over $\Gamma \times \mathbb{R}^+ \times [0,2\pi]$.
 For a fixed $\gamma \in \Gamma$, the optimization problem in Definition \ref{def:dist} mirrors the full Procrustes distance for landmark data, where an explicit solution is known in the planar case \parencite[see][Chapter~8]{DrydenMardia2016}.
 Likewise, for fixed rotation $\theta \in [0,2\pi]$ and scaling $\lambda \in \mathbb{R}^+$, there are known optimization techniques dealing with re-parametrisation.
@@ -181,7 +214,7 @@ The rotation and scaling parameters can always be recovered by $\lambda = \abs{\
 \end{equation}
 
 The usual strategy is to optimize over the sets of parameters individually and then to iterate through both solutions.
-\textbf{[TODO: Citation, write more here!]}
+\todo{Citation, write more here!}
 Let us first consider the optimization with respect to rotation and scaling.
 For fixed $\gamma \in \Gamma$ with $\widetilde z_2 = (z_2 \circ \gamma) \sqrt{\dot\gamma}$ we can write Eq.\ \ref{eq:argmin} as
 \begin{equation}
@@ -205,6 +238,21 @@ which can be solved analytically.
 \begin{remark}
   For fixed $\gamma \in \Gamma$, we can use the first part of Lemma \ref{lem:dist} to calculate the optimal rotation and scaling alignment of $\widetilde z_2 = (z_2 \circ \gamma) \sqrt{\dot\gamma}$ onto $z_1$. The alignment $\widetilde z_2^P = \langle \widetilde z_2,\, z_1 \rangle \, \widetilde z_2$ is called the \emph{Procrustes fit} of $\widetilde z_2$ onto $z_1$. The second part of Lemma \ref{lem:dist} will be useful for mean calculation in the next section.
 \end{remark}
+
+\begin{figure}
+  \centering
+  \begin{subfigure}{.48\textwidth}
+    \centering
+    \missingfigure{Example original Procrustes fits}
+  \end{subfigure}\hfill%
+  \begin{subfigure}{.48\textwidth}
+    \centering
+    \missingfigure{Example SRV Procrustes fits}
+  \end{subfigure}
+  \caption{Procrustes fit of two example curves on original (left) and SRV (right) curve level. Data: see Figure \ref{fig:1-shape}.}
+  \label{fig:2-pfit}
+\end{figure}
+
 Given the current $\omega \in \mathbb{C}$ with $z_2^P = \omega z_2$, the optimization with respect to re-parametrization can be written as
 \begin{equation}
   \label{eq:argmin_wrp}
@@ -226,11 +274,11 @@ Mit $\widetilde C(s,t)$ der Kovarianz-Funktion von $\widetilde z_2 = (z_2 \circ 
 Habe das jetzt nicht weiter verfolgt (weil Zeit), aber vielleicht ist das ganz interessant?
 Man kann das glaube ich auch umschreiben mit $\breve z_1 = (z_1 \circ \gamma^{-1}) \sqrt{\dot{\gamma^{-1}}}$ als $\argmax_{\gamma \in \Gamma} \langle C \, \breve z_1, \breve z_1 \rangle$.
 
-\textbf{[TODO: Explain iterative procedure in abit more detail! Basically as in \cite{SrivastavaEtAl2011}.]}
+\todo[inline]{Write iterative procedure as algorithm! Basically as in \cite{SrivastavaEtAl2011}.}
 
 
 \section{The Elastic Full Procrustes Mean for Planar Curves}
-\textbf{[TODO: Nummerierung der equations ist ein mess]}
+\todo[inline]{Nummerierung der Equations überarbeiten}
 We now want to calculate shape means for a random sample of planar curves.
 Again, we assume all curves to be absolutely continous $\beta_i \in \mathcal{AC}([0,1],\, \mathbb{C})$ with corresponding SRV curves $q_i \in \mathbb{L}^2([0,1],\, \mathbb{C})$, $i=1,\dots,N$.
 As we want to take into account shape invariance in the mean calculation, we cannot simply use sums or integrals to calculate a sample mean shape.
@@ -286,6 +334,31 @@ The problem we have to solve is:
 \end{align*}
 We can identify the inner term as proportional to a sample estimator $\check{C}(s,t) = \frac{1}{N} \sum_{i=1}^N z_i(s) \overline{z_i(t)}$ of the population covariance surface $C(s,t) = \mathbb{E}[z(s) \overline{z(t)}]$, when noting that $\mathbb{E}[z(t)] = 0$ for all $t \in [0,1]$ due to rotational symmetry.
 \textbf{[TODO: Hier wird die Notation etwas unsauber. Man hat hier ja einen Cov. Estimator aus den "gewarpten" Kurven. Vielleicht müsste man sich hier nicht nochmal kurz Gedanken machen wie $C(s,t)$ eigentlich aussieht, wenn man berücksichtigt, dass die $z(t)$ auch random gewarpt sind. Vielleicht ist's auch egal.]}
+
+\begin{figure}
+  \centering
+  \begin{subfigure}{.48\textwidth}
+    \centering
+    \missingfigure{Example original Covariance surface (real part)}
+  \end{subfigure}\hfill%
+  \begin{subfigure}{.48\textwidth}
+    \centering
+    \missingfigure{Example SRV Covariance surface (real part}
+  \end{subfigure}\\
+  \begin{subfigure}{.48\textwidth}
+    \centering
+    \missingfigure{Example original Covariance surface (imaginary part)}
+    \caption{Covariance surface on original curve level.}
+  \end{subfigure}\hfill%
+  \begin{subfigure}{.48\textwidth}
+    \centering
+    \missingfigure{Example SRV Covariance surface (imaginary part}
+    \caption{Covariance surface on SRV curve level.}
+  \end{subfigure}
+  \caption{Complex covariance surface on original and SRV curve level. Data: see Figure \ref{fig:1-shape}.}
+  \label{fig:2-cov}
+\end{figure}
+
 $$ \hat\mu_q = \, \argmax_{\mu_q \in \mathbb{L}^2:\,\norm{\mu_q} = 1}\,\,
     N\cdot\int_0^1 \int_0^1 \overline{\mu_q (s)} \check C(s,t) \mu_q(t) \,ds\,dt $$
 By replacing $\check C(s,t)$ by its expectation $C(s,t)$, we can analogously formulate an estimator on the population level.

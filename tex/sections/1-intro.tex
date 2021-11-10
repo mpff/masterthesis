@@ -1,39 +1,90 @@
-Statistical Shape Analysis \parencite[see e.g.][]{DrydenMardia2016} is a branch of statistics concerned with modelling the geometry of objects.
-Examples might be outlines of bones and organs, handwritten digits, or the folds of a protein.
-To capture an object's geometrical information, a common approach is the use of \textit{landmarks}, characteristic points on an object, that \textquote[{\parencite[3]{DrydenMardia2016}}]{match between and within populations}.
-However, in recent years an alternative approach has gained in popularity, where objects are represented using curves.
-This has the advantage of a more flexible representation of an object's geometry, as the analysis is not restricted to a fixed set of discrete points.
-The curves are usually themselves represented by functions $\beta : [0,1] \rightarrow \mathbb{R}^k$, which, for example for $k = 2$, might describe the outlines of an object in an image. 
-As each object corresponds to one observation, this opens up a connection to the branch of statistics concerned with observations that are whole functions: Functional Data Analysis \parencite[see e.g.][]{RamsaySilverman2005}.
+Statistical Shape Analysis \parencite[see e.g.][]{DrydenMardia2016} is the branch of statistics concerned with modelling geometrical information.
+Such information might come in the form of outlines of bones or organs in a medical image, traced points along a handwritten digit, or data on the folding structure of a protein.
+This data is commonly captured using \emph{landmarks}, which are characteristic points on the objects of interest that \textquote[{\parencite[3]{DrydenMardia2016}}]{match between and within populations}.
+As an example, we might geometrically compare a set of mouse vertebrae by comparing the coordinates of prominent points along the bone outlines, which are common between all mouse vertebrae.
+More formally, we could say that each mouse vertebra's geometrical information is then represented by a landmark configuration $X \in \mathbb{R}^{k \times d}$, which is the stacked matrix of the $k$ $d$-dimensional landmark coordinates, allowing for a multivariate treatment of shape or geometrical form.
 
-Differences in location, rotation, and size are often not of interest, when analyzing the geometry of objects.
-Instead, the focus lies purely on their differences in  \textit{shape}, a widely adapted definition of which was established by \cite{Kendall1977} and which might be formulated in the following way:
-\begin{definition}[Shape] 
-  \textquote[{\parencite[1]{DrydenMardia2016}}]{\textins*{A}ll the geometrical information that remains when location, scale and rotational effects are removed from an object}.
-\end{definition}
-\noindent When considering the shapes of curves, one has to additionally take into account effects relating to re-parametrisation, as only the image of any function describing e.g.\ an object's outline, but not its parametrisation, is indacative of the object's shape.
+A more flexible approach might be to treat e.g.\ the outline of an object as a whole, represented in the form of a continous curve $\beta : [0,1] \rightarrow \mathbb{R}^d$. 
+Landmarks have the drawback that there is no clear way of choosing which points to include in the configuration, leaving the decision up to the subjectivity of the researcher. 
+Furthermore, using landmarks leads to an inherently discrete treatment of the available data, which means modes of variation that lie in between landmarks may not be picked up by the analysis.  
+By using curves, the analysis is not restricted to a fixed set of $k$ discrete points, but instead uses all the available information.
+At the same time, the subjectivity in choosing the landmarks is eliminated.
+As each object then corresponds to one observation, this opens up a connection to the branch of statistics concerned with observations that are whole functions: Functional Data Analysis \parencite[see e.g.][]{RamsaySilverman2005}.
 
-A prerequisite for many statistical methods is the ability to measure distances between observations.
-\cite{SrivastavaEtAl2011} introduced a mathematical framework for analysing the shape of curves, by using their square-root-velocity (SRV) representation and an elastic metric, which is isometric under re-parametrisation.
-\textbf{[TODO: Formulate this part better!]}
-While this SRV framework has been used for the calculation of elastic shape means before, which also include invariance under scaling, rotation and translation, most of these approaches focus on \enquote{Riemannian} or \enquote{geodesic} mean concepts \textbf{[TODO: Citation!]}.
+When analyzing the geometry of objects, differences in location, rotation, and size are often not of interest.
+Instead, the focus lies purely on their differences in  \textit{shape}, a widely adapted definition of which was established by \cite{Kendall1977} and which might be formulated in the following way: \textquote[{\parencite[1]{DrydenMardia2016}}]{\textins*{A}ll the geometrical information that remains when location, scale and rotational effects are removed from an object}.
+This is illustrated in Figure \ref{fig:1-eucl}, where the same shape of a handwritten digit \enquote{3} is plotted in three different orientations and sizes.
+\begin{figure}
+  \centering
+  \begin{subfigure}{.48\textwidth}
+    \centering
+    \inputTikz{1-eucl}
+    \caption{The same digit with randomized rotation, scaling and translation applied three times.\\}
+    \label{fig:1-eucl}
+  \end{subfigure}\hfill%
+  \begin{subfigure}{.48\textwidth}
+    \centering
+    \inputTikz{1-warp}
+    \caption{Original (left) and re-parameterized digit (right; $t \mapsto t^5$). Color indicates the value of the parametrization $t \in [0,1]$ at point $\beta(t)$.}
+    \label{fig:1-warp}
+  \end{subfigure}
+  \caption{Several representations of the same shape. Data:\ \texttt{digits3.dat} from the \texttt{shapes} package \parencite{shapes} for the \texttt{R} programming language \parencite{R} with smoothing applied using methods discussed in Appendix \ref{app:smooth}. Original dataset collected by \cite{Anderson1997}.}
+  \label{fig:1-shape}
+\end{figure}
+When considering the shape of a curve $\beta : [0,1] \rightarrow \mathbb{R}^d$, one has to additionally take into account effects relating to re-parametrisation.
+As illustrated in Figure \ref{fig:1-warp}, curves $\beta(t)$ and $\beta(\gamma(t))$, with some re-parametrisation or \textit{warping function} $\gamma : [0,1] \rightarrow [0,1]$ monotonically increasing and differentiable, have the same image and therefore represent the same shape as well.
 
-The \textit{Full Procrustes Mean} is a different shape mean concept, which is widely used when working with landmark data, and which has particularly nice properties in two dimensions, when identifying $\mathbb{R}^2$ with $\mathbb{C}$ \parencite[see][Chap.\ 8]{DrydenMardia2016}.
-When working with planar curves, its calculation can be shown to be related to an eigenfunction problem of the complex covariance surface of the observed curves.
-This offers an advantage when working in the challenging setting of sparsely and irregularly sampled curves, as appropriate smoothing techniques for estimation of covariance surfaces in this setting are already known.
-Here in particular, \cite{CederbaumScheiplGreven2018} offers a method for efficient covariance smoothing in the sparse setting. 
+A pre-requisite for any statistical analysis of shape is the ability to calculate a distance between and to estimate a mean from observations, in a fashion that does not depend on location, rotation, scale and/or parametrization of the input.
+In this thesis two established approaches to shape analysis will be combined:
+Firstly, the \emph{full Procrustes distance} and \emph{mean} are widely used for translation-, rotation-, and scaling-invariant analysis of landmark data \parencite[see e.g.][Chap.\ 4,\ 6]{DrydenMardia2016}.
+Secondly, \cite{SrivastavaEtAl2011} introduced a mathematical framework for the \emph{elastic} (re-parametrization invariant) shape analysis of curves, by using their square-root-velocity (SRV) representations.
+Taken together, both approaches allow for analysing curves in a fashion that is invariant to all four shape-preserving transformations, leading to an \emph{elastic full Procrustes distance} and \emph{mean}.
+As the full Procrustes mean has particularly nice properties in two dimensions, when identifying $\mathbb{R}^2$ with $\mathbb{C}$ \parencite[see][Chap.\ 8]{DrydenMardia2016}, this thesis will be restricted to the case of planar curves.
 
-The aim of this thesis is to extend existing methods for elastic mean estimation of sparse and irregularly sampled curves, as proposed by \cite{Steyer2021} and implemented in the \texttt{R} package \texttt{elasdics} \parencite{elasdics}, to also include invariance with respect to rotation and scaling.
-The later will be achieved by generalizing the concept of the \textit{Full Procrustes Mean} from landmark to functional data and by iteratively applying full Procrustes mean estimation, rotation-alignment and parametrisation-alignment, leading to the estimation of \textit{Elastic Full Procrustes Means}.
-To make use of the nice properties of the Procrustes mean in two dimensions, analysis will be restricted to the case of planar curves.
-Here, smoothing techniques for sparse estimation of the complex covariance surfaces, as available in the \texttt{R} package \texttt{sparseFLMM} \parencite{sparseFLMM}, will be used.
+While we are interested in modeling a (planar) object's geometrical information as a continous curve $\beta : [0,1] \rightarrow \mathbb{R}^2$, the curve itself is usually only observed as a discrete set of points $\beta(t_1), \beta(t_2), \dots, \beta(t_m)$.
+As shown on the left side of Figure \ref{fig:1-sparse} this is no problem when the number of observed points $m$ is high and the whole length of the curve is densly observed, as we can easily interpolate any value $\beta(t)$ for $t \in [0,1]$.
+\begin{figure}
+  \centering
+  \begin{subfigure}{.48\textwidth}
+    \centering
+    \inputTikz{1-sparse}
+  \end{subfigure}\hfill%
+  \begin{subfigure}{.48\textwidth}
+    \centering
+    \inputTikz{1-dense}
+  \end{subfigure}
+  \caption{Sparse (left) and dense (right) observations of the same three digits. Data: see Figure \ref{fig:1-shape}.}
+  \label{fig:1-sparse}
+\end{figure}
+However, in cases where $\beta$ is only observed over a small number of points (right side) and where the density and position of observed points may even vary between different curves---a setting known as \emph{sparse} and \emph{irregular}---more sophisticated smoothing techniques have to be applied.
+While the SRV framework has been combined with a Procrustes distance before, to estimate elastic shape means that also include invariance under scaling, rotation and translation \parencite[see][]{SrivastavaEtAl2011}, these approaches have mostly focused on \enquote{Riemannian} or \enquote{geodesic} mean concepts and are not specially designed with sparse or irregular observations in mind.
+On the other hand, as will be shown, the estimation of the \emph{elastic full Procrustes mean} in two dimensions is related to an eigenfunction problem over the complex covariance surface of the observed curves.
+This offers an advantage, as we can then make use of established smoothing techniques for the estimation of covariance surfaces in the sparse and irregular setting.
+Here, in particular \cite{CederbaumScheiplGreven2018} offers a method for efficient covariance smoothing using \emph{tensor product p-splines} \parencite[see e.g.][Chap. 8.2]{FahrmeierEtAl2013}.
 
-The thesis is organized as follows. 
-\textbf{[Update this later.]}
-After covering the relevant background material and deriving an expression for the elastic full Procrustes mean in Section \ref{sec:theo}.
-An estimation strategy for the setting of sparse and irregular curves will be proposed in Section \ref{sec:est}.
-The methods will be verified using simulated and empirical datasets in Section \ref{sec:app}.
+The aim of this thesis, as illustrated in Figure \ref{fig:1-mean}, is to extend existing methods for elastic mean estimation of sparse and irregularly sampled curves, as proposed by \cite{Steyer2021} and implemented in the package \texttt{elasdics} \parencite{elasdics} for the \texttt{R} programming language \parencite{R}, to also include invariance with respect to rotation and scaling.
+\begin{figure}
+  \centering
+  \begin{subfigure}{.48\textwidth}
+    \centering
+    \inputTikz{1-obs}
+  \end{subfigure}\hfill%
+  \begin{subfigure}{.48\textwidth}
+    \centering
+    \inputTikz{1-mean}
+  \end{subfigure}
+  \caption{Elastic full Procrustes mean function (right) estimated from sparse and irregular observations (left) using 13 knots and linear p-splines with a 2nd order penalty on SRV level. Data: \texttt{digits3.dat} with additional random rotation, scaling and translation applied.}
+  \label{fig:1-mean}
+\end{figure}
+The later will be achieved by generalizing the concept of the full Procrustes mean from landmark to functional data and by iteratively applying full Procrustes mean estimation, rotation-alignment and parametrization-alignment, leading to the estimation of elastic full Procrustes means.
+Here, smoothing techniques for sparse estimation of the complex covariance surfaces as available in the \texttt{R} package \texttt{sparseFLMM} \parencite{sparseFLMM} will be used.
+
+
+The thesis is organized as follows.
+In Section \ref{sec:theo} relevant background material is reviewed and the elastic full Procrustes mean is derived, in the case where curves $\beta:[0,1] \rightarrow \mathbb{R}^2$ are fully observed. 
+Then, in Section \ref{sec:est}, an estimation procedure for the setting of sparse and irregularly observed curves $\beta(t_1), \dots, \beta(t_m)$ is proposed, concluding the theoretical part of this thesis.
+In Section \ref{sec:app} the proposed method will be verified and applied using simulated and empirical datasets.
 Finally, all results will be summarized in Section \ref{sec:sum}.
-Appendix \ref{app:app} and Supplements \ref{app:sup} offer additional considerations and reproducability guides.
+Appendix \ref{app:app} and Supplements \ref{app:sup} offer additional considerations and some reproducability guidelines.
 
 \newpage

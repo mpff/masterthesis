@@ -33,3 +33,23 @@
 
 
 \section{Shape-Smoothing Using the Estimated Covariance-Surface}
+\label{app:smooth}
+Idea: Smooth $q$ in mean basis $b(t)$, so that $\hat{q}(t) = b(t)^T \hat{\theta}_q$. Then the scalar products simplify to
+$$ \langle q, \hat{p} \rangle \approx \hat{\theta}_q^H G \hat{\theta} $$
+$$ \langle q, q \rangle \approx \hat{\theta}_q^H G \hat{\theta}_q $$
+
+As $q$ can be sparse, we may want to use the estimated covariance matrix $\hat{\Xi}$ when estimating $\theta_q$ in the form of a Normal prior $\theta_q \sim \mathcal{N}_{\mathbb{C}^k}(0, \hat\Xi)$ leading to
+
+$$ \hat\theta_q = (B^T B + \Xi^{-1})^{-1} B^T q $$
+
+or equivalently using eigendecompositon $\Xi = V \Lambda V^{-1}$ with $V^H V = \mathcal{I}$ and $\Lambda = diag(\lambda_1, \dots, \lambda_k)$
+
+$$ \hat\theta_q = V ( V^H B^T B V + \Lambda^{-1})^{-1} V^H B^T q$$
+
+In general how well this works tends to depend on how close the curve is to the estimated mean.
+
+Maybe using a penalty parameter - controling the strength of the regularization - is also thinkable? Something like this:
+
+$$ \hat\theta_q(\lambda) = V ( V^H B^T B V + \lambda \cdot \Lambda^{-1})^{-1} V^H B^T q$$
+
+**Thought**: A normal prior is probably not appropriate, because while its true that $\mathbb{E}[\theta] = 0$ (due to rotational symmetry) I would think that in general $\mathbb{E}[\lVert\theta\rVert] \neq 0$. A distribution more like a Normal distribution lying on a ring around 0 with radius $r = \lVert\theta\rVert$ is probably better? Then estimates wouldn't be pressed to zero so strongly, and instead would be pressed to curve of size equal to the mean.

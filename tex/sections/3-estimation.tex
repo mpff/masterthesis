@@ -1,3 +1,4 @@
+\todo[inline]{Create figures for everything.}
 Alg. \ref{algo:mean} shows an idealized version of the elastic full Procrustes mean estimation, where it is assumed that each curve $\beta_i$ is fully observed.
 This is not the case in practice, as each observation $\beta_i$ is usually itself only observed at a finite number of discrete points $\beta_i(t_{i1}), \dots, \beta_i(t_{im_i})$.
 Additionally, the number of observed points per curve $m_i$ might be quite small and the points do not need to follow a common sampling scheme across all curves, a setting which is respectively known as \emph{sparse} and \emph{irregular}.
@@ -45,6 +46,20 @@ The warped discrete derivative is given by $\Delta (\beta \circ \gamma) \big\rve
 The corresponding warped SRV curve is then given by  $(q \circ \gamma) \sqrt{\dot\gamma} \big\rvert_{[\gamma(t_j), \gamma(t_{j+1})]} = \frac{\beta(\gamma(t_{j+1})) - \beta(\gamma(t_j))}{\sqrt{\gamma(t_{j+1}) - \gamma(t_j)} \cdot \sqrt{\norm{\beta(\gamma(t_{j+1})) - \beta(\gamma(t_j))}}}$.
 
 \textbf{[TODO: Das hier zuende formulieren.]}
+
+\begin{figure}
+  \centering
+  \begin{subfigure}{.48\textwidth}
+    \centering
+    \missingfigure{Sparsely observed digit 3.}
+  \end{subfigure}\hfill%
+  \begin{subfigure}{.48\textwidth}
+    \centering
+    \missingfigure{Sparse SRV of digit 3.}
+  \end{subfigure}
+  \caption{A sparsely observed planar curve (left) with sparse approximate SRV curve (right). Data: see Figure \ref{fig:1-shape}.}
+  \label{fig:3-disc}
+\end{figure}
 
 
 
@@ -140,4 +155,16 @@ It follows that the estimate for the coefficient vector of the elastic full Proc
 \section{Numerical Integration of the Procrustes Fits}
 \label{sec:pfit}
 \textbf{[TODO: Mean value theorem in the integral, etc.]}
+
+$\hat{p}(t) = b(t)^T \hat{\theta}$ estimated Procrustes mean function, $q$ piecewise constant SRV transform with $q|_{[t_j, t_{j+1}]} = q_j \in \mathbb{C}$.
+
+For estimation of the Procrustes fits we need to estimate two scalar products:
+
+$$ \hat{q}_{p} = \frac{\langle q,\hat{p} \rangle}{\langle q, q \rangle} q $$
+
+So far I treat $q$ as piecewise constant (as in Lisa's paper):
+
+$$ \langle q, \hat{p} \rangle = \int_0^1 \langle q(t), \hat{p}(t) \rangle \, dt \approx \sum_{j=0}^{m-1} \int_{t_j}^{t_{j+1}} \langle q_j, \hat{p}(t) \rangle \, dt $$
+
+$$ \langle q, q \rangle = \int_0^1 \langle q(t), q(t) \rangle \, dt \approx \sum_{j=0}^{m-1} (t_{j+1} - t_j) \, \langle q_j, q_j \rangle $$
 
