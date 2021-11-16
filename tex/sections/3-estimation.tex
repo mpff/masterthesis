@@ -1,18 +1,19 @@
+\label{sec:3}
 \todo[inline]{Create figures for everything.}
 Alg. \ref{algo:mean} shows an idealized version of the elastic full Procrustes mean estimation, where it is assumed that each curve $\beta_i$ is fully observed.
 This is not the case in practice, as each observation $\beta_i$ is usually itself only observed at a finite number of discrete points $\beta_i(t_{i1}), \dots, \beta_i(t_{im_i})$.
 Additionally, the number of observed points per curve $m_i$ might be quite small and the points do not need to follow a common sampling scheme across all curves, a setting which is respectively known as \emph{sparse} and \emph{irregular}.
 
 Following the steps laid out in Alg. \ref{algo:mean}, this section proposes a mean estimation strategy for dealing with sparse and irregular observations.
-In a first step, the construction of SRV and warped SRV curves from discrete (and possibly sparse) observations will be shown in Section \ref{sec:discrete}.
-Section \ref{sec:cov} discusses efficient estimation of the complex covariance surface $C(s,t)$ from sparse observations.
-In Section \ref{sec:mean_basis} the calculation of the leading eigenfunction $u_1$ of $C(s,t)$ in a fixed basis will be shown.
-Section \ref{sec:pfit} deals with the estimation of the scalar product $\omega = \langle z, \mu_q \rangle$, which gives the optimal rotation and scaling alignment.
+In a first step, the construction of SRV and warped SRV curves from discrete (and possibly sparse) observations will be shown in Section \ref{sec:3-discrete}.
+Section \ref{sec:3-cov} discusses efficient estimation of the complex covariance surface $C(s,t)$ from sparse observations.
+In Section \ref{sec:3-mean} the calculation of the leading eigenfunction $u_1$ of $C(s,t)$ in a fixed basis will be shown.
+Section \ref{sec:3-pfits} deals with the estimation of the scalar product $\omega = \langle z, \mu_q \rangle$, which gives the optimal rotation and scaling alignment.
 Note that the final warping alignment step in Alg. \ref{algo:mean} can be solved by using methods for warping alignment of sparse and irregular curves provided in \cite{Steyer2021}.
 
 
 \section{Discrete Treatment of SRV Curves}
-\label{sec:discrete}
+\label{sec:3-discrete}
 A natural first consideration might be how to calculate SRV curves from sparse observations.
 We defined the SRV curve of a function $\beta \in \mathcal{AC}([0,1],\,\mathbb{C})$ as $q = \frac{\dot\beta}{\sqrt{\norm{\dot\beta}}}$ (for $\dot\beta \neq 0$).
 This means that if we want to calculate the SRV curve, we have to calculate the derivative of $\beta$.
@@ -64,7 +65,7 @@ The corresponding warped SRV curve is then given by  $(q \circ \gamma) \sqrt{\do
 
 
 \section{Efficient Estimation using Hermitian Covariance Smoothing}
-\label{sec:cov}
+\label{sec:3-cov}
 
 We want to estimate $C(s,t) = \mathbb{E}[z(s)\overline{z(t)}]$ given approximate observations of the normalized SRV curves $z_i(s_{ij})$, with $j = 1,\dots,m_i-1$ and $i=1,\dots,N$, where $m_i$ denotes the number of observed points per curve.
 Following \textbf{[TODO: Cite]}, we can treat this estimation as a smoothing problem, by constructing responses $y_{ijk} = z_i(s_{ij}) \overline{z_i(s_{ik})}$ and treating the pairs $s_{ij}$, $s_{ik}$ as covariates $s$ and $t$.
@@ -88,7 +89,7 @@ For efficient estimation, two \texttt{mgcv} smooths from the package \texttt{spa
 
 
 \section{Estimating the Elastic Full Procrustes Mean in a Fixed Basis}
-\label{sec:mean_basis}
+\label{sec:3-mean}
 To estimate the elastic full Procrustes Mean, we have to solve a functional eigenvalue problem on the estimated covariance surface $\hat{C}(s,t) = b(s)^t \hat\Xi b(t)$.
 This may be achieved by evaluating $\hat{C}(s,t)$ on a dense grid and performing an eigendecomposition on the matrix of evaluations \textbf{[TODO: Cite]}.
 Alternatively, we can estimate the mean directly in some basis $b(s) = (b_1(s),\dots,b_K(s))$, where a natural choice might be to evaluate mean and covariance surface in the same basis, i.e. $\mu_q(s) = b(s)^T \theta$.
@@ -153,7 +154,7 @@ It follows that the estimate for the coefficient vector of the elastic full Proc
 
 
 \section{Numerical Integration of the Procrustes Fits}
-\label{sec:pfit}
+\label{sec:3-pfits}
 \textbf{[TODO: Mean value theorem in the integral, etc.]}
 
 $\hat{p}(t) = b(t)^T \hat{\theta}$ estimated Procrustes mean function, $q$ piecewise constant SRV transform with $q|_{[t_j, t_{j+1}]} = q_j \in \mathbb{C}$.

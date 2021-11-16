@@ -1,8 +1,11 @@
-\section{Proofs and Derivations}
+\label{app:a}
 
-\subsection{Derivation of Lemma \ref{lem:dist}}
-\label{app:deriv-full-proc-dist}
-\textbf{[TODO: Make dependence on $\gamma$ explicit!]}
+\section{Proofs and Derivations}
+\label{app:a-deriv}
+
+\subsection{Derivation of Lemma \ref{lem:2-fpdist}}
+\label{app:a-deriv-fpdist}
+\todo[inline]{Rewrite proof for on curve level.}
 \begin{proof}
   Start with ii.).
   Let $\widetilde z_2 = (\gamma, z_2) = (z_2 \circ \gamma) \sqrt{\dot\gamma}$, then optimise $d_{EF}([\beta_1],[\beta_2])^2$ over rotation and scaling, keeping $\gamma$ fixed.
@@ -29,11 +32,11 @@
 
 
 \section{Discussion of Possible Extensions to Closed Curves}
-\label{app:closed}
+\label{app:a-closed}
 
 
 \section{Shape-Smoothing Using the Estimated Covariance-Surface}
-\label{app:smooth}
+\label{app:a-smooth}
 Idea: Smooth $q$ in mean basis $b(t)$, so that $\hat{q}(t) = b(t)^T \hat{\theta}_q$. Then the scalar products simplify to
 $$ \langle q, \hat{p} \rangle \approx \hat{\theta}_q^H G \hat{\theta} $$
 $$ \langle q, q \rangle \approx \hat{\theta}_q^H G \hat{\theta}_q $$

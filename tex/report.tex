@@ -3,11 +3,11 @@
 
 %% Packages
 
-% QUALITY OF LIVE
+% QUALITY OF LIVE (REMOVE LATER)
 \RequirePackage[l2tabu, orthodox]{nag}  % detect depreceated latex pkgs
-\usepackage[notref,notcite]{showkeys} % useful when writing the paper
-\overfullrule=2cm % allows to find overfull hboxes much quicker
-\usepackage{todonotes}
+\usepackage[notref,notcite]{showkeys}  % show labels
+\overfullrule=2cm  % mark overfull hboxes with a black box
+\usepackage{todonotes}  % create TODO marks
 
 % Document margins/formating
 \usepackage[margin=2.5cm,footskip=\dimexpr1.25cm+\dp\strutbox\relax]{geometry}
@@ -20,7 +20,7 @@
 \usepackage[sc,noBBpl]{mathpazo} % Use the Palatino font with ams mathbb symb.
 \usepackage[T1]{fontenc} % western enc. Improves wordsplitting
 \usepackage[english]{babel} % Set language
-\DeclareMicrotypeSet*[tracking]{my}% Anleitung lesen um das zu verstehen.
+\DeclareMicrotypeSet*[tracking]{my} % Anleitung lesen um das zu verstehen.
   { font = */*/*/sc/* }%
 \SetTracking{ encoding = *, shape = sc }{ 45 }%
 \usepackage{ellipsis} % Slightly tweak spacing for \dots
@@ -154,7 +154,7 @@
   \vfill
   \end{center}
 
-  \noindent \textbf{Advisors:} Lisa Maike Steyer, Almond Stöcker\\
+  \noindent \textbf{Advisors:} Lisa Steyer, Almond Stöcker\\
   \noindent \textbf{1st Examiner:} Prof.\ Dr.\ Sonja Greven\\
   \noindent \textbf{2nd Examiner:} Prof.\ Dr.\ Nadja Klein
   \vspace{0.5em}
@@ -171,34 +171,29 @@
 \newpage
 \pagenumbering{arabic}
 \chapter{Introduction}
-\label{sec:intro}
 \input{sections/1-intro}
 
 \newpage
 \chapter{Elastic Full Procrustes Means for Planar Curves}
-\label{sec:theo}
 \input{sections/2-theory}
 
 \newpage
 \chapter{Estimation Strategy for Sparse and Irregular Observations}
-\label{sec:est}
 \input{sections/3-estimation}
 
 \newpage
 \chapter{Empirical Applications}
-\label{sec:app}
 \input{sections/4-application}
 
 \newpage
 \chapter{Summary}
-\label{sec:sum}
 \input{sections/5-summary}
 
 
 % ---- References
 \newpage
 \nocite{*}
-\printbibliography[heading=bibintoc] % Insert bilbiography and create toc entry
+\printbibliography[heading=bibintoc] % Insert bibliography and create toc entry
 
 
 % --- Appendix
@@ -207,12 +202,10 @@
 \newpage
 \appendix
 \chapter{Appendix}
-\label{app:app}
 \input{sections/a-appendix}
 
 \newpage
 \chapter{Supplementary Materials}
-\label{app:sup}
 \input{sections/b-supplements}
 
 \newpage
