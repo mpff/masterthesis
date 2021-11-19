@@ -231,7 +231,11 @@ It is in particular noteworthy, that warping the original curve changes the imag
 Going forward, we will work in the SRV framework and combine the elastic distance with the full Procrustes distance.
 While the full Procrustes distance (see Def. \ref{def:2-fpdist}) was defined over the normalized and centered curves, the SRV curves are already translation invariant so additional centering is not necessary.
 We will therefore define the \emph{elastic full Procrustes distance} as the minimal distance, when aligning the scaling, rotation, and warping of the normalized SRV curves $\widetilde q = \frac{q}{\norm{q}}$.
-Note that when the original curve $\beta$ is of unit length $L[\beta] = \int_0^1 \abs{\dot\beta(t)}dt = 1$ the SRV curve $q = \frac{\dot\beta}{\norm{\dot\beta}}$ will be normalized, as $ \norm{q} = \sqrt{ \int_0^1 |q(t)|^2 \, dt} = \sqrt{\int_0^1 |\dot{\beta}(t)| \, dt} = \sqrt{L[\beta]}$.
+Note that when the original curve $\beta$ is of unit length $L[\beta] = \int_0^1 \abs{\dot\beta(t)}dt = 1$ the SRV curve $q = \frac{\dot\beta}{\norm{\dot\beta}}$ will be normalized, as 
+\begin{equation}
+  \label{eq:2-norm}
+  \norm{q} = \sqrt{ \int_0^1 |q(t)|^2 \, dt} = \sqrt{\int_0^1 |\dot{\beta}(t)| \, dt} = \sqrt{L[\beta]}.
+\end{equation}
 
 \begin{definition}[Elastic full Procrustes distance]
   \label{def:2-elfpdist}
@@ -252,7 +256,7 @@ so that the elastic full Procrustes distance is given as the $\mathbb{L}^2$-dist
 \begin{equation}
   d([\beta_1], [\beta_2]) = \norm{\widetilde q_1 - \omega^\text{opt} ( \widetilde q_2 \circ \gamma^\text{opt}) \sqrt{\dot{\gamma^\text{opt}}}}_{\mathbb{L}^2}\,.
 \end{equation}
-Following \cite{SrivastavaEtAl2011} we can optimize over the sets of parameters individually and then to iterate through both solutions until some form of convergence is reached.
+Following \cite{SrivastavaEtAl2011} we optimize over the sets of parameters individually and then to iterate through both solutions until some form of convergence is reached.
 Let us first consider the optimization over $\omega \in \mathbb{C}$ for a fixed $\gamma^{(k)} \in \Gamma$.
 \begin{equation}
   \label{eq:2-elfpdist-rot}
@@ -310,8 +314,7 @@ In this thesis we will use the methods laid out in \cite{Steyer2021}, for solvin
 \label{sec:2-mean}
 We now want to use the elastic Full Procrustes distance to calculate shape means for sets of planar curves.
 Again, we assume all curves to be absolutely continous $\beta_i \in \mathcal{AC}([0,1],\, \mathbb{C})$ with corresponding SRV curves $q_i \in \mathbb{L}^2([0,1],\, \mathbb{C})$, $i=1,\dots,N$.
-Because we want to take into account invariance with respect to shape-preserving transformations, we canno simply define the mean using sums or integrals.
-Instead, we can define the mean as a minimizer over the sum of squared elastic full Procrustes distances between the shape of each curve and the mean shape.
+We can take into account invariance with respect to shape-preserving transformations by defining the mean as a minimizer over the sum of squared elastic full Procrustes distances between the shape of each curve and a mean shape.
 If the resulting mean is a global minimum, it is usually called a \enquote{sample Fr\'echet mean} \parencite{Frechet1948}, if it is a local minimum a \enquote{sample Karcher mean} \parencite{Karcher1977} \parencite[see][111]{DrydenMardia2016}.
 
 \begin{definition}[Elastic full Procrustes mean]
@@ -324,20 +327,20 @@ If the resulting mean is a global minimum, it is usually called a \enquote{sampl
   where $\mathcal{S} = \left\{ [\beta] : \beta \in \mathcal{AC}([0,1],\,\mathbb{C}) \right\}$ is the shape space.
 \end{definition}
 
-\noindent In practice, we will always solve Eq. \ref{eq:2-mean-def} directly on SRV level, by using the definition of the elastic full Procrustes distance (see Def. \ref{def:2-elfpdist}) and writing it as an optimization problem over the normalized SRV mean function.
+\noindent In practice, we will always solve Eq. \ref{eq:2-mean-def} directly on SRV level, by using the definition of the elastic full Procrustes distance (see Def. \ref{def:2-elfpdist}) and writing it as an optimization problem over a normalized SRV mean function.
 \begin{equation}
   \label{eq:2-mean-def-srv}
   \hat\mu_q = \argmin_{\mu_q \in \mathbb{L}^2,\,\norm{\mu_q} = 1}\,\,
   \sum_{i=1}^N \, \left( \inf_{\omega_i \in \mathbb{C}, \gamma_i \in \Gamma} \,
     \norm{\mu_q - \omega_i (\widetilde q_i \circ \gamma_i) \sqrt{\dot\gamma_i}} \right)^2\,.
 \end{equation}
-The estimated normalized SRV mean $\hat{\mu}_q$ then defines a representative unit-length mean shape $\hat{\mu} \in \hat{[\mu]}$ by integration $\hat\mu(t) = \hat\mu(0) + \int_0^t \hat\mu_q(s) \norm{\hat\mu_q(s)}\,ds$, which is unique up to translation $\hat\mu(0)$.
+The estimated normalized SRV mean $\hat{\mu}_q$ then defines a representative unit-length (see Eq. \ref{eq:2-norm}) mean $\hat{\mu} \in \hat{[\mu]}$ by integration $\hat\mu(t) = \hat\mu(0) + \int_0^t \hat\mu_q(s) \norm{\hat\mu_q(s)}\,ds$, which is unique up to translation $\hat\mu(0)$.
 When re-constructing $\hat\mu$ from $\hat\mu_q$, one may decide to set $\hat\mu(0)$ to a certain value depending on the application.
 In particular, setting $\hat\mu(0) = 0$, so that the mean curve starts at the origin, makes sense when the object represented by the mean curve has a \enquote*{natural} starting point shared across all objects of this type.
-An example, explored in Section \ref{sec:4-tounges} are tounge shapes, which all connected to the back of the mouth on one end.
+An example, explored in Section \ref{sec:4-tounges} are tounge shapes, which all connect to the back of the mouth on one end.
 Another possibility would be choose a $\hat\mu(0)$ that centers the mean curve, by setting $\hat\mu(0) = \int_0^1 \int_0^t \hat\mu_q(s) \norm{ \hat\mu_q(s)}\,ds\,dt$.
 From the point of shape analysis, the choice of representation does not make a difference, as both mean curves are elements of $\hat{[\mu]}$ and therefore have the same shape.
-However, the distinction becomes important when the estimated mean curve $\hat\mu$ is used in concert with other curves, for example when visualizing multiple curves or when comparing multiple class mean shapes, as those do not typically share the same center or starting point.
+However, the distinction becomes important when the estimated mean curve $\hat\mu$ is used in concert with other curves, for example in visualizing multiple curves or in comparing multiple class mean shapes, as those do not typically share the same center or starting point.
 Differences between both representations will be explored using the empirical tounge shapes data in Section \ref{sec:4-tounges}.
 
 Turning back to the calculation of $\hat\mu_1$, we can simplify Eq. \ref{eq:2-mean-def-srv} by applying the following Lemma, which uses the analytical solution for the optimization over rotation in the full Procrustes distance (see Lemma \ref{lem:2-fpdist} i.). 
@@ -347,7 +350,7 @@ Turning back to the calculation of $\hat\mu_1$, we can simplify Eq. \ref{eq:2-me
   Let $\beta_1, \beta_2$ be two absolutely continuous planar curves with corresponding shape $[\beta_1], [\beta_2]$. Let $\widetilde q_1, \widetilde q_2$ be the respective normalized SRV curves.
   The elastic full Procrustes distance is given by
   \begin{equation}
-    d_{EFP}([\beta_1],[\beta_2]) = \inf_{\gamma \in \Gamma} \quad \sqrt{ 1 - \langle \widetilde q_1, ( \widetilde q_2 \circ \gamma) \sqrt{\dot\gamma} \rangle \langle (\widetilde q_2 \circ \gamma) \sqrt{\dot\gamma}, \widetilde q_1 \rangle }
+    d([\beta_1],[\beta_2]) = \inf_{\gamma \in \Gamma} \quad \sqrt{ 1 - \langle \widetilde q_1, ( \widetilde q_2 \circ \gamma) \sqrt{\dot\gamma} \rangle \langle (\widetilde q_2 \circ \gamma) \sqrt{\dot\gamma}, \widetilde q_1 \rangle }
   \end{equation}
   \begin{proof}
     The result follows from applying Lemma \ref{lem:2-fpdist} i.) to Eq. \ref{eq:2-elfpdist-def} keeping $\gamma$ fixed.
@@ -364,7 +367,7 @@ Turning back to the calculation of $\hat\mu_1$, we can simplify Eq. \ref{eq:2-me
 \end{align}
 and we end up with a two step optimization problem consisting of an outer optimization over $\mu_q$ and an inner optimization over the set $\left\{\gamma_i\right\}_{i=1,\dots,N}$.
 Similarly to the approaches discussed in \cite{SrivastavaKlassen2016} and to \cite{Steyer2021}, we solve this by \emph{template based alignment} \parencite[see e.g.][271]{SrivastavaKlassen2016}:
-In a first step the mean $\hat\mu_q$ is estimated while keeping the parametrizations fixed, after which the $\gamma_i$ are updated by calculating the optimal warping alignment from the elastic full Procrustes fit of each $\widetilde q_i$ onto $\hat\mu_q$.
+In a first step the mean $\hat\mu_q$ is estimated while keeping the parametrizations fixed, after which the $\gamma_i$ are updated by calculating the optimal warping alignment from \todo{Check in code!} the elastic full Procrustes fit of each $\widetilde q_i$ onto $\hat\mu_q$.
 Both steps are iterated until the mean shape has converged.
 
 Let us consider the outer optimization problem for a fixed set of warping function $\{\gamma_i^{(k)}\}_{i=1,\dots,N}$ with corresponding warping aligned normalized SRV curves $\widetilde q_i^{(k)} = ( \widetilde q_i \circ \gamma_i^{(k)}) \sqrt{\dot{\gamma_i^{(k)}}}$.
@@ -388,13 +391,13 @@ We can identify the inner term as proportional to a sample estimator $\check{C}^
 \end{equation}
 By replacing $\check C^{(k)}(s,t)$ by its expectation \todo{Notation? (k)??} $C^{(k)}(s,t)$, we can analogously formulate an estimator on the population level.
 \begin{equation}
-  \mu_q^{(k)} = \, \argmax_{\mu_q \in \mathbb{L}^2:\,\norm{\mu_q} = 1}\,\,
+  \mathbb{E}[\mu_q^{(k)}] = \, \argmax_{\mu_q \in \mathbb{L}^2:\,\norm{\mu_q} = 1}\,\,
     \int_0^1 \int_0^1 \overline{\mu_q (s)} C^{(k)}(s,t) \mu_q(t) \,ds\,dt
 \end{equation}
 We can rewrite this again as a functional scalar product by considering the \emph{covariance operator} $C$ with $(C\mu_q)(s) = \int_0^1 C(s,t) \mu_q(t) dt$ \parencite[see][153]{RamsaySilverman2005}.
 \begin{equation}\
   \label{eq:quadr_opt}
-  \mu_q^{(k)} = \, \argmax_{\mu_q \in \mathbb{L}^2,\,\norm{\mu_q} = 1}\,\,
+  \mathbb{E}[\mu_q^{(k)}] = \, \argmax_{\mu_q \in \mathbb{L}^2,\,\norm{\mu_q} = 1}\,\,
     \left\langle \mu_q, C^{(k)}\mu_q \right\rangle
 \end{equation}
 This is a well known problem in the context of functional principal component analysis (FPCA).
@@ -405,7 +408,7 @@ The optimization problem then reduces to an eigenfunction problem
   C^{(k)} u^{(k)} = \lambda^{(k)} u^{(k)} \quad \Leftrightarrow \quad \int_0^1 C^{(k)}(s, t) u^{(k)}(t)\, dt = \lambda^{(k)} u^{(k)}(s)\,,
 \end{equation}
 where $\lambda^{(k)} = \left\langle \mu_q,\, C^{(k)} \mu_q \right\rangle$ is the target function to maximize.
-For normalized eigenfunctions $u^{(k)}_1, u^{(k)}_2,\,\dots$ and corresponding eigenvalues $\lambda^{(k)}_1 \geq \lambda^{(k)}_2 \geq \dots$ of $C^{(k)}(s,t)$, the solution $\hat\mu_q^{(k)}(t)$ is given by the leading normalized eigenfunction $u^{(k)}_1(t)$ of $C^{(k)}(s,t)$ \parencite[see][153,397]{RamsaySilverman2005}.
+For normalized eigenfunctions $u^{(k)}_1, u^{(k)}_2,\,\dots$ and corresponding eigenvalues $\lambda^{(k)}_1 \geq \lambda^{(k)}_2 \geq \dots$ of $C^{(k)}(s,t)$, the expectation $\mathbb{E}[\hat\mu_q^{(k)}(t)]$ is given by the leading normalized eigenfunction $u^{(k)}_1(t)$ of $C^{(k)}(s,t)$ \parencite[see][153,397]{RamsaySilverman2005}.
 
 We will estimate $C^{(k)}(s,t)$ using the methods for covariance estimation from sparse and irregular observations laid out in Section \ref{sec:3}.
 Given such an estimate $\hat C^{(k)}(s,t)$, we can calculate the elastic full Procrustes mean by the following algorithm.
@@ -419,34 +422,11 @@ Given such an estimate $\hat C^{(k)}(s,t)$, we can calculate the elastic full Pr
   \begin{enumerate}
     \item For $i=1,\dots,N: \quad$ Set $\widetilde q_i^{(k)}(t) = \widetilde q_i\left(\gamma^{(k)}_i(t)\right) \cdot \sqrt{\dot\gamma_i^{(k)}(t)}$.
     \item Estimate $\hat C^{(k)}(s,t)$ from $\left\{\widetilde q_i^{(k)}\right\}_{i=1,\dots,N}$. 
-    \item Calculate $u_1^{(k)}$ by eigendecomposition of $\hat C^{(k)}(s,t)$.
-    \item Set $\hat\mu_q^{(k)}$ as $u_1^{(k)}$. \emph{\textbf{Stop}} if $\hat\mu_q^{(k)}$ is close to $\hat\mu_q^{(k-1)}$.
+    \item Estimate $\hat u_1^{(k)}$ by eigendecomposition of $\hat C^{(k)}(s,t)$.
+    \item Set $\hat\mu_q^{(k)}$ as $\hat u_1^{(k)}$. \emph{\textbf{Stop}} if $k>1$ and $\norm{\hat\mu_q^{(k)} - \hat\mu_q^{(k-1)}} < \epsilon$.
     \item For $i=1,\dots,N:\quad$ Calculate $\omega^{(k)}_i = \left\langle \widetilde q_i^{(k)},\, \hat\mu_q^{(k)} \right\rangle$.
     \item For $i=1,\dots,N:\quad$ Solve $\gamma_i^{(k+1)} = \argmin_{\gamma \in \Gamma} \norm{\hat\mu_q^{(k)} - \omega_i^{(k)} (\widetilde q_i \circ \gamma ) \sqrt{\dot\gamma}}$.
     \item Set $k = k+1$ and return to Step 1.
   \end{enumerate}
 \end{algorithm}
 
-\begin{figure}
-  \centering
-  \begin{subfigure}{.48\textwidth}
-    \centering
-    \missingfigure{Example original Covariance surface (real part)}
-  \end{subfigure}\hfill%
-  \begin{subfigure}{.48\textwidth}
-    \centering
-    \missingfigure{Example SRV Covariance surface (real part}
-  \end{subfigure}\\
-  \begin{subfigure}{.48\textwidth}
-    \centering
-    \missingfigure{Example original Covariance surface (imaginary part)}
-    \caption{Covariance surface on original curve level.}
-  \end{subfigure}\hfill%
-  \begin{subfigure}{.48\textwidth}
-    \centering
-    \missingfigure{Example SRV Covariance surface (imaginary part}
-    \caption{Covariance surface on SRV curve level.}
-  \end{subfigure}
-  \caption{Complex covariance surface on original and SRV curve level. Data: see Figure \ref{fig:1-shape}.}
-  \label{fig:2-cov}
-\end{figure}
