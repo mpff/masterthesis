@@ -147,7 +147,7 @@ When considering warping, we would like to do something similar to rotation in t
 A usual choice would be to optimize this over the $\mathbb{L}^2$-distance between the curves, but in this case the result would not define a proper distance.
 Optimizing over re-parametrization using the $\mathbb{L}^2$-distance has problems relating to the so called \emph{pinching effect} and \emph{inverse-inconsistency}, where the later means that aligning the parametrisation of one curve to another by $\inf_{\gamma \in \Gamma} \norm{\beta_1 - \beta_2 \circ \gamma}$ may yield different results than $\inf_{\gamma \in \Gamma} \norm{\beta_2 - \beta_1 \circ \gamma}$ \parencite[see][88-90]{SrivastavaKlassen2016}.
 
-A solution proposed in \cite{SrivastavaEtAl2011} is to ditch the $\mathbb{L}^2$-metric in favor of an \emph{elastic metric}, which is isometric with respect to warping.
+A solution proposed in \cite{SrivastavaEtAl2011} is to ditch the $\mathbb{L}^2$-metric in favor of an \emph{elastic metric}, on which warping acts by isometry.
 Calculation of this metric, the Fisher-Rao Riemannian metric \parencite{Rao1945}, can be greatly simplified by using the \emph{square-root-velocity} (SRV) framework, as the Fisher-Rao metric of two curves can be equivalently calculated as the $\mathbb{L}^2$-distance of their respective SRV curves.
 As this SRV representation makes use of derivatives, any curve $\beta$ that has a SRV curve must fulfill some kind of differentiability constraint.
 Here it is enough to consider only curves that are absolutely continuous $\beta \in \mathcal{AC}([0,1],\, \mathbb{C})$, which in particular means that the original curves do not have to be smooth but might also be piecewise linear \parencite[see][91]{SrivastavaKlassen2016}.
@@ -193,7 +193,7 @@ See Figure \ref{fig:2-srv} for an example SRV curve of a digit \enquote*{3}.
   where $\beta_i \in \mathcal{AC}([0,1], \mathbb{C})$ and $\dot\beta_i(t) = \frac{\partial\beta_i(t)}{\partial t}$ for $i=1,2$.
 \end{definition}
 
-\noindent Unlike the optimization over rotation in the definition of the full Procrustes distance (see Eq. \ref{eq:2-fpdist-def}), no analytical solution exists for the optimization over warping (see Eq. \ref{eq:2-eldist-def}) in the definition of the elastic distance.
+\noindent Unlike the optimization over rotation in the definition of the full Procrustes distance (see Eq. \ref{eq:2-fpdist-def}), no analytical solution exists for the optimization over warping (see Eq. \ref{eq:2-eldist-def}).
 Instead, Eq. \ref{eq:2-eldist-def} is usually solved numerically, by minimizing a cost function $H[\gamma] = \int_0^1 \norm{q_1(t) - q_2\left( \gamma(t) \right) \sqrt{\dot\gamma(t)}}\, dt$ using a dynamic programming algorithm \parencite[see e.g.][152]{SrivastavaKlassen2016} or gradient based methods \parencite[see e.g.][]{Steyer2021}.
 
 
@@ -229,7 +229,7 @@ The result is irrespective of the order of applying the transformations.
 It is in particular noteworthy, that warping the original curve changes the image of the SRV curve.
 
 Going forward, we will work in the SRV framework and combine the elastic distance with the full Procrustes distance.
-While the full Procrustes distance (see Def. \ref{def:2-fpdist}) was defined over the normalized and centered curves, the SRV curves are already translation invariant so additional centering is not necessary.
+While the full Procrustes distance (see Def.\ \ref{def:2-fpdist}) was defined over the normalized and centered curves, the SRV curves are already translation invariant so additional centering is not necessary (see Lemma \ref{lem:2-transf} i.).
 We will therefore define the \emph{elastic full Procrustes distance} as the minimal distance, when aligning the scaling, rotation, and warping of the normalized SRV curves $\widetilde q = \frac{q}{\norm{q}}$.
 Note that when the original curve $\beta$ is of unit length $L[\beta] = \int_0^1 \abs{\dot\beta(t)}dt = 1$ the SRV curve $q = \frac{\dot\beta}{\norm{\dot\beta}}$ will be normalized, as 
 \begin{equation}
@@ -275,7 +275,7 @@ For fixed rotation and scaling $\omega^{(k)} \in \mathbb{C}$ the optimization pr
 \end{equation}
 Again, Eq. \ref{eq:2-elfpdist-wrp} is equivalent to the optimization problem of the elastic distance defined in Def. \ref{def:2-eldist}, when aligning the parametrization of the normalized SRV curve $\widetilde q_1$ and the rotation and scaling aligned, normalized SRV curve $\omega^{(k)} q_2$.
 A solution $\gamma^{(k+1)}$ can be found by applying known optimization techniques such as a dynamical programming algorithm or a gradient based method.
-In this thesis we will use the methods laid out in \cite{Steyer2021}, for solving Eq.\ \ref{eq:2-elfpdist-wrp} in the setting of sparse and irregularly sampled curves.
+In this thesis we will use the methods laid out in \cite{Steyer2021} and implemented in the \texttt{R} package \texttt{elasdics} \parencite{elasdics} for solving Eq.\ \ref{eq:2-elfpdist-wrp} in the setting of sparse and irregularly sampled curves.
 
 \begin{algorithm}[Elastic full Procrustes distance]
   \label{alg:2-dist}

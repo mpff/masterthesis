@@ -3,39 +3,40 @@
 
 %% Packages
 
-% QUALITY OF LIVE (REMOVE LATER)
+%%%% QUALITY OF LIVE DURING WRITING (REMOVE BEFORE PUBLISHING) %%%%
 \RequirePackage[l2tabu, orthodox]{nag}  % detect depreceated latex pkgs
 \usepackage[notref,notcite]{showkeys}  % show labels
-\overfullrule=2cm  % mark overfull hboxes with a black box
+\overfullrule=2cm   % mark overfull hboxes with a black box
 \usepackage{todonotes}  % create TODO marks
 
 % Document margins/formating
 \usepackage[margin=2.5cm,footskip=\dimexpr1.25cm+\dp\strutbox\relax]{geometry}
 \usepackage{setspace} 
-\setstretch{1.5} % Zeilenabstand definieren
+\setstretch{1.5}  % Zeilenabstand definieren
 
-% Language and fonts
-\usepackage[tracking=true]{microtype} % Slightly tweak font spacing for aesthetics
-\usepackage[utf8]{inputenc} % Allows Umlauts
-\usepackage[sc,noBBpl]{mathpazo} % Use the Palatino font with ams mathbb symb.
-\usepackage[T1]{fontenc} % western enc. Improves wordsplitting
-\usepackage[english]{babel} % Set language
-\DeclareMicrotypeSet*[tracking]{my} % Anleitung lesen um das zu verstehen.
+% Language, fonts, aesthetics
+\usepackage[tracking=true]{microtype}  % Slightly randomize font spacing for aesthetics
+\usepackage[utf8]{inputenc}  % Allows Umlauts
+\usepackage[sc,noBBpl]{mathpazo}  % Use the Palatino font with ams bb symbols
+\usepackage[T1]{fontenc}  % western encoding. improves wordsplitting
+\usepackage[english]{babel}  % Set language
+\DeclareMicrotypeSet*[tracking]{my} %  Anleitung lesen um das zu verstehen.
   { font = */*/*/sc/* }%
 \SetTracking{ encoding = *, shape = sc }{ 45 }%
-\usepackage{ellipsis} % Slightly tweak spacing for \dots
+\usepackage{ellipsis}  % Slightly tweak spacing for \dots
 
 % Math fonts and symbols
 \usepackage{mathtools}
-\usepackage{amssymb} % for extra math symbols and mathbb
-\usepackage{bm} % For bolding mathsymbols and letters
+\usepackage{amssymb}  % for extra math symbols and mathbb
+\usepackage{bm}  % For bolding mathsymbols and letters
 \usepackage{siunitx}
-\usepackage{amsthm} % For theorems, definitions, etc.
+\usepackage{amsthm}  % For theorems, definitions, etc.
 
-% Graphics, figures and tables
+% Lists, figures and tables
+\usepackage{enumitem}
 \usepackage{graphicx}
 \usepackage{tikz}
-\usepackage[margin=15pt,hang,small,labelfont={bf,sf},up,up]{caption} % Custom captions 
+\usepackage[margin=15pt,hang,small,labelfont={bf,sf},up,up]{caption}  % Custom captions 
 \usepackage{subcaption}
 \usepackage{array}
 \usepackage{multirow}
@@ -45,12 +46,11 @@
 
 % Bibliography
 \usepackage[backend=biber,style=authoryear,sorting=nyt]{biblatex}
-\usepackage[autostyle,autopunct]{csquotes} % For Quotations
-\renewcommand{\mkcitation}[1]{#1} % For correct footcites with csquotes
-\renewcommand*{\mkbibnamefamily}[1]{\textsc{#1}} % For small caps author names
+\addbibresource{references.bib}  % Name of Biblatex file
+\usepackage[autostyle,autopunct]{csquotes}  % For Quotations
+\renewcommand{\mkcitation}[1]{#1}  % For correct footcites with csquotes
+\renewcommand*{\mkbibnamefamily}[1]{\textsc{#1}}  % For small caps author names
 \setlength\bibnamesep{1.33\itemsep}  % Spacing between authors
-\addbibresource{references.bib} % Name of Biblatex file
-
 
 % Additional packages
 \usepackage[nodayofweek]{datetime}
@@ -59,17 +59,31 @@
 \usepackage{color}
 \usepackage{transparent}
 \usepackage{comment}
-\usepackage{enumitem}
+\usepackage[many,skins]{tcolorbox}  % For custom boxes around definitions
+\usepackage{xpatch}
 
-% Shortcuts/Definitions
-\DeclareMathOperator*{\argmin}{argmin}   % Jan Hlavacek
-\DeclareMathOperator*{\argmax}{argmax}   % Jan Hlavacek
-\DeclareMathOperator*{\arginf}{arginf}   % Jan Hlavacek
-\DeclareMathOperator*{\argsup}{argsup}   % Jan Hlavacek
-\DeclarePairedDelimiter\abs{\lvert}{\rvert}%
-\DeclarePairedDelimiter\norm{\lVert}{\rVert}%
+% Hyperrefs - should be imported after all other packages as it changes a lot
+\usepackage[hidelinks]{hyperref}
+\usepackage[capitalise]{cleveref}  % Full references ("Fig. X")
 
-% Define theorems and definitions
+%% Settings
+
+% Page layouts <- what exactly does this do?
+\allowdisplaybreaks
+\usepackage[automark]{scrlayer-scrpage}
+\KOMAoptions{onpsinit={\linespread{1}\selectfont}}% <- added
+\clearpairofpagestyles
+\cfoot*{\pagemark}
+
+% Inputting tikz files with relative path './graphics/...'
+\newcommand\inputTikz[2][graphics]{
+    \let\pgfimageOld\pgfimage%
+    \renewcommand{\pgfimage}[2][]{\pgfimageOld[##1]{#1/##2}}%
+    \input{#1/#2}%
+    \let\pgfimage\pgfimageOld%
+}
+
+% Define theorem, lemma, definition environments
 \theoremstyle{plain}
 \newtheorem{theorem}{Theorem}[chapter]
 \newtheorem{corollary}{Corollary}[theorem]
@@ -84,9 +98,6 @@
 \theoremstyle{plain}
 \newtheorem*{lemma*}{Lemma}
 
-% Boxxes
-\usepackage[many,skins]{tcolorbox}
-\usepackage{xpatch}
 % Add box to definitions
 \tcolorboxenvironment{definition}{enhanced,sharp corners=all,colback=white,colframe=white,toprule=0pt,bottomrule=0pt,leftrule=1pt,rightrule=1pt,overlay={
     \draw[black,line width=1pt] (frame.north west) -- ++(1cm,0pt);
@@ -94,6 +105,7 @@
     \draw[black,line width=1pt] (frame.south east) -- ++(-1cm,0pt);
     \draw[black,line width=1pt] (frame.south east) -- ++(0pt,0.61cm);
 }}
+
 % Add line on left side of proofs.
 \tcolorboxenvironment{proof}{
   blanker,
@@ -104,32 +116,28 @@
   left=12pt,
 }
 
-% Inputting tikz files with relative path
-\newcommand\inputTikz[2][graphics]{
-    \let\pgfimageOld\pgfimage%
-    \renewcommand{\pgfimage}[2][]{\pgfimageOld[##1]{#1/##2}}%
-    \input{#1/#2}%
-    \let\pgfimage\pgfimageOld%
-}
+%% Shortcurts 
 
-%% Settings
-\allowdisplaybreaks
-
-\usepackage[automark]{scrlayer-scrpage}
-\KOMAoptions{onpsinit={\linespread{1}\selectfont}}% <- added
-\clearpairofpagestyles
-\cfoot*{\pagemark}
+% Math
+\DeclareMathOperator*{\argmin}{argmin}   % Jan Hlavacek
+\DeclareMathOperator*{\argmax}{argmax}   % Jan Hlavacek
+\DeclareMathOperator*{\arginf}{arginf}   % Jan Hlavacek
+\DeclareMathOperator*{\argsup}{argsup}   % Jan Hlavacek
+\DeclarePairedDelimiter\abs{\lvert}{\rvert}%
+\DeclarePairedDelimiter\norm{\lVert}{\rVert}%
 
 
-%% Hyperrefs
-\usepackage[hidelinks]{hyperref} % should be imported after all other packages as it changes a lot
 
 
-%% The document starts here!
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%% The document starts here! %%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
 \begin{document}
 
 
-% --- Front Matter
+% --- Front Matter ---
 
 \begin{titlepage}
   \begin{center}
@@ -163,7 +171,8 @@
 
 \listoftodos
 
-% --- Main Content
+
+% --- Main Content ---
 
 \newpage
 \pagenumbering{arabic}
@@ -187,14 +196,16 @@
 \input{sections/5-summary}
 
 
-% ---- References
+% ---- References ---
+
 \newpage
 \nocite{*}
 \printbibliography[heading=bibintoc] % Insert bibliography and create toc entry
 
 
-% --- Appendix
-\addtocontents{toc}{\protect\setcounter{tocdepth}{1}}
+% --- Appendix ---
+\addtocontents{toc}{\protect\setcounter{tocdepth}{1}}  % Don't show appendix sections in TOC
+
 
 \newpage
 \appendix

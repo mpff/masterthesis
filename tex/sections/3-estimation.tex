@@ -27,7 +27,7 @@ The corresponding SRV curve $q$ can then be treated as piecewise constant $q\big
 \end{equation}
 the constant \emph{square-root-velocity} of $\beta$ between its corners $\beta(t_j)$ and $\beta(t_{j+1})$.
 As shown in \cite{Steyer2021} (cf.\ Fig.\ 3), treating the SRV curves as piecewise-constant functions can lead to overfitting, where the mean shape is estimated too polygon-like.
-As an alternative they propose to approximate the derivative, by assuming that it attains the value of the discrete derivative $\Delta \beta \big\rvert_{[t_j,t_{j+1}]}$ at the center $s_j = \frac{t_{j+1} - t_j}{2}$ of the interval $[t_j, t_{j+1}]$.
+As an alternative they \todo{Nochmal genau checken, war das nur im Integral?} propose to approximate the derivative, by assuming that it attains the value of the discrete derivative $\Delta \beta \big\rvert_{[t_j,t_{j+1}]}$ at the center $s_j = \frac{t_{j+1} - t_j}{2}$ of the interval $[t_j, t_{j+1}]$.
 Using this, we can construct \enquote{approximate observations} $q(s_j) \approx q_j$ of the SRV curve $q$.
 See Fig.\ \ref{fig:3-disc} for a visualization of both approaches.
 Finally, we can approximate the normalized SRV curve $\widetilde q = q / \norm{q}$ using the polygon-length $l$ of $\beta$ by $\widetilde q_j = q_j \big/ \sqrt{l}$ (see Eq. \ref{eq:2-norm}.
@@ -36,11 +36,11 @@ Finally, we can approximate the normalized SRV curve $\widetilde q = q / \norm{q
   \centering
   \begin{subfigure}{.32\textwidth}
     \centering
-    \missingfigure{Sparsely observed digit 3.}
+    \inputTikz{3-srv-orig}
   \end{subfigure}\hfill%
   \begin{subfigure}{.32\textwidth}
     \centering
-    \missingfigure{Piecewise constant SRV.}
+    \inputTikz{3-srv-discr}
   \end{subfigure}\hfill%
   \begin{subfigure}{.32\textwidth}
     \centering
@@ -60,15 +60,17 @@ The corresponding warped SRV curve is then given by  $(q \circ \gamma) \sqrt{\do
 \section{Efficient Estimation using Hermitian Covariance Smoothing}
 \label{sec:3-cov}
 
-Next, we want to estimate the warping aligned complex covariance surface $C^{(k)}(s,t) = \mathbb{E}[\widetilde q^{(k)}(s)\overline{\widetilde q^{(k)}(t)}]$ given approximate observations of the warped, normalized SRV curves $\widetilde q^{(k)}_i(s_{ij})$ in step $k$ of Alg. \ref{algo:mean}, with $j = 1,\dots,m_i-1$ and $i=1,\dots,N$, where $m_i$ denotes the number of observed points per curve.
-Following \textbf{[TODO: Cite]}, we can treat this estimation as a smoothing problem, by constructing responses \todo{Index $k$ für step ändern} $y^{(k)}_{ijk} = \widetilde q^{(k)}_i(s_{ij}) \overline{\widetilde q^{(k)}_i(s_{ik})}$ and treating the pairs $s_{ij}$, $s_{ik}$ as covariates $s$ and $t$.
+In step $k$ of Alg.\ \ref{algo:mean}, we want to estimate the warping aligned complex covariance surface $C^{(k)}(s,t) = \mathbb{E}[\widetilde q^{(k)}(s)\overline{\widetilde q^{(k)}(t)}]$ given approximate observations of the warped, normalized SRV curves $\widetilde q^{(k)}_i(s_{ij})$ for $j = 1,\dots,m_i-1$ and $i=1,\dots,N$, where $m_i$ denotes the number of observed points per curve.
+Following ...\todo{Cite!}, we can treat this estimation as a smoothing problem, by constructing responses \todo{Index $k$ für step ändern} $y^{(k)}_{ijk} = \widetilde q^{(k)}_i(s_{ij}) \overline{\widetilde q^{(k)}_i(s_{ik})}$ and treating the pairs $s_{ij}$, $s_{ik}$ as covariates $s$ and $t$.
 Smooothing the responses $y^{(k)}_{ijk}$ gives an estimate $\hat C^{(k)}(\cdot, \cdot)$ of $C^{(k)}(s,t)$, as each response has expectation $\mathbb{E}[y^{(k)}_{ijk}|s_{ij},s_{ik}] = C^{(k)}(s_{ij},s_{ik})$. 
-A popular approach \textbf{[TODO: Cite]} is to carry out the smoothing in a \emph{tensor product spline} basis 
+We carry out the smoothing in a very flexible \emph{tensor product spline} basis 
 \begin{equation}
   C^{(k)}(s,t) = b(s)^T \Xi^{(k)} b(t) 
 \end{equation}
 where $b(s) = (b_1(s),\dots,b_K(s))$ denotes the vector of a spline basis and $\Xi^{(k)}$ is a $K \times K$ coefficient matrix to be estimated.
 As $C^{(k)}(s,t)$ is complex, we set the spline basis to be real-valued with $b_k : \mathbb{R} \rightarrow \mathbb{R}$ for $k = 1,\dots,K$ and the coefficient matrix to be complex-valued with $\Xi^{(k)} \in \mathbb{C}^{K \times K}$, without loss of generality.
+
+\todo[inline]{Erklärung Penalty? Motivate b-spline/p-spline basis using Lisa's paper? REML?}
 
 Taking into account the symmetry properties of the covariance surface by considering every unique pair $s_{ij}$,$s_{ik}$ only once allows for more efficient estimation, as shown in \cite{CederbaumScheiplGreven2018}. 
 In the complex case, the covariance surface is hermitian with $C^{(k)}(s,t) = \overline{C^{(k)}(t,s)}$, which means we can decompose the estimation into two seperate regression problems over the symmetric real and skew-symmetric imaginary parts of $C^{(k)}(s,t)$.
@@ -77,9 +79,9 @@ In the complex case, the covariance surface is hermitian with $C^{(k)}(s,t) = \o
   \mathbb{E}[\Im(y^{(k)})] &= b(s)^T \Xi^{(k)}_{\Im} b(t)
 \end{align}
 with $\Xi^{(k)}_\Re, \Xi^{(k)}_\Im \in \mathbb{R}^{K\times K}$ and $\Xi^{(k)} = \Xi^{(k)}_\Re + i \Xi^{(k)}_\Im$, under the constraints that $(\Xi^{(k)}_\Re)^T = \Xi^{(k)}_\Re$ and $(\Xi^{(k)}_\Im)^T = - \Xi^{(k)}_\Im$.
+
 In this thesis  $\Xi^{(k)}_\Re$ and $\Xi^{(k)}_\Im$ are estimated using the \texttt{gam} function from the \texttt{R} package \texttt{mgcv} \parencite{Wood2017}.
 Two \texttt{mgcv} smooths from the package \texttt{sparseFLMM} \parencite{sparseFLMM} are used for efficient, hermition smoothing, which implement and generalize the approach proposed by \cite{CederbaumScheiplGreven2018} for symmetric and skew-symmetric tensor product p-splines.
-\todo[inline]{Erklärung p-splines? Motivate b-spline/p-spline basis using Lisa's paper? REML?}
 
 \begin{figure}
   \centering
