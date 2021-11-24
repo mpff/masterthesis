@@ -61,7 +61,7 @@ However, in cases where $\beta$ is only observed over a small number of points (
 While the SRV framework has been combined with a Procrustes distance before, to estimate elastic shape means that also include invariance under scaling, rotation and translation \parencite[see][]{SrivastavaEtAl2011}, these approaches have mostly focused on \emph{Riemannian} or \emph{geodesic} mean concepts and are not specially designed with sparse or irregular observations in mind.
 On the other hand, as will be shown, the estimation of the \emph{elastic full Procrustes mean} in two dimensions is related to an eigenfunction problem over the complex covariance surface of the observed curves.
 This offers an advantage, as we can then make use of established smoothing techniques for the estimation of covariance surfaces in the sparse and irregular setting.
-Here, in particular \cite{CederbaumScheiplGreven2018} offers a method for efficient covariance smoothing using \emph{tensor product p-splines} \parencite[see e.g.][Chap. 8.2]{FahrmeierEtAl2013}.
+Here, in particular \cite{CederbaumScheiplGreven2018} offers a method for efficient covariance smoothing using \emph{tensor product P-splines} \parencite[see e.g.][Chap. 8.2]{FahrmeierEtAl2013}.
 
 The aim of this thesis, as illustrated in \cref{fig:1-mean}, is to extend existing methods for elastic mean estimation of sparse and irregularly sampled curves, as proposed by \cite{Steyer2021} and implemented in the package \texttt{elasdics} \parencite{elasdics} for the \texttt{R} programming language \parencite{R}, to also include invariance with respect to rotation and scaling.
 \begin{figure}
@@ -74,11 +74,11 @@ The aim of this thesis, as illustrated in \cref{fig:1-mean}, is to extend existi
     \centering
     \inputTikz{1-mean}
   \end{subfigure}
-  \caption{Elastic full Procrustes mean function (right) estimated from sparse and irregular observations (left) using 13 knots and linear p-splines with a 2nd order penalty on SRV level. Data: Original (un-smoothed) \texttt{digits3.dat} with additional random rotation, scaling and translation applied.}
+  \caption{Elastic full Procrustes mean function (right) estimated from sparse and irregular observations (left) using a 13 knot linear B-spline basis, with a 2nd order roughness penalty on SRV level. Data: Original (un-smoothed) \texttt{digits3.dat} with additional random rotation, scaling and translation applied.}
   \label{fig:1-mean}
 \end{figure}
 The later will be achieved by generalizing the concept of the full Procrustes mean from landmark to functional data and by iteratively applying full Procrustes mean estimation, rotation-alignment and parametrization-alignment, leading to the estimation of elastic full Procrustes means.
-Here, techniques for hermitian smoothing of the complex covariance surfaces as available in the \texttt{R} package \texttt{sparseFLMM} \parencite{sparseFLMM} will be used.
+Here, techniques for Hermitian smoothing of the complex covariance surfaces as available in the \texttt{R} package \texttt{sparseFLMM} \parencite{sparseFLMM} will be used.
 
 
 The thesis is organized as follows.

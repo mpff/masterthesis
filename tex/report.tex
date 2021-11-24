@@ -59,7 +59,7 @@
 \usepackage{color}
 \usepackage{transparent}
 \usepackage{comment}
-\usepackage[many,skins]{tcolorbox}  % For custom boxes around definitions
+\usepackage[breakable,many,skins]{tcolorbox}  % For custom boxes around definitions
 \usepackage{xpatch}
 
 % Hyperrefs - should be imported after all other packages as it changes a lot
@@ -119,12 +119,24 @@
 %% Shortcurts 
 
 % Math
+\newcommand{\dd}{\mathrm{d}}
+\newcommand{\dt}{\mathop{\mathrm{d}t}}
+\newcommand{\ds}{\mathop{\mathrm{d}s}}
+\newcommand{\Ltwo}{{\mathbb{L}^2}}
+\newcommand{\iu}{\mathrm{i}\mkern1mu}  % imaginary unit
+\renewcommand{\Re}{\mathrm{Re}}
+\renewcommand{\Im}{\mathrm{Im}}
+\newcommand{\Trl}{\mathrm{Trl}}
+\newcommand{\Scl}{\mathrm{Scl}}
+\newcommand{\Rot}{\mathrm{Rot}}
+\newcommand{\Wrp}{\mathrm{Wrp}}
+\newcommand{\Eucl}{\mathrm{Eucl}}
 \DeclareMathOperator*{\argmin}{argmin}   % Jan Hlavacek
 \DeclareMathOperator*{\argmax}{argmax}   % Jan Hlavacek
 \DeclareMathOperator*{\arginf}{arginf}   % Jan Hlavacek
 \DeclareMathOperator*{\argsup}{argsup}   % Jan Hlavacek
-\DeclarePairedDelimiter\abs{\lvert}{\rvert}%
-\DeclarePairedDelimiter\norm{\lVert}{\rVert}%
+\DeclarePairedDelimiter\abs{\lvert}{\rvert}
+\DeclarePairedDelimiter\norm{\lVert}{\rVert}
 
 
 
@@ -184,7 +196,7 @@
 \input{sections/2-theory}
 
 \newpage
-\chapter{Estimation Strategy for Sparse and Irregular Observations}
+\chapter{Mean Estimation for Sparse and Irregular Observations}
 \input{sections/3-estimation}
 
 \newpage
@@ -221,6 +233,5 @@
 \input{sections/c-discards}
 
 
-
-
 \end{document}
+
