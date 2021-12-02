@@ -36,6 +36,7 @@
 \usepackage{enumitem}
 \usepackage{graphicx}
 \usepackage{tikz}
+\tikzset{every picture/.append style={font=\footnotesize}}  % smaller font inside figure
 \usepackage[margin=15pt,hang,small,labelfont={bf,sf},up,up]{caption}  % Custom captions 
 \usepackage{subcaption}
 \usepackage{array}
@@ -68,7 +69,7 @@
 
 %% Settings
 
-% Page layouts <- what exactly does this do?
+% Page layouts <- what exactly does this do again?
 \allowdisplaybreaks
 \usepackage[automark]{scrlayer-scrpage}
 \KOMAoptions{onpsinit={\linespread{1}\selectfont}}% <- added
@@ -119,10 +120,10 @@
 %% Shortcurts 
 
 % Math
-\newcommand{\dd}{\mathrm{d}}
+\newcommand{\dd}{\mathrm{d}}  % differential
 \newcommand{\dt}{\mathop{\mathrm{d}t}}
 \newcommand{\ds}{\mathop{\mathrm{d}s}}
-\newcommand{\Ltwo}{{\mathbb{L}^2}}
+\newcommand{\Ltwo}{{\mathbb{L}^2}}  
 \newcommand{\iu}{\mathrm{i}\mkern1mu}  % imaginary unit
 \renewcommand{\Re}{\mathrm{Re}}
 \renewcommand{\Im}{\mathrm{Im}}
@@ -216,7 +217,7 @@
 
 
 % --- Appendix ---
-\addtocontents{toc}{\protect\setcounter{tocdepth}{1}}  % Don't show appendix sections in TOC
+\addtocontents{toc}{\protect\setcounter{tocdepth}{0}}  % Don't show appendix sections in TOC
 
 
 \newpage
@@ -231,6 +232,8 @@
 \newpage
 \chapter*{---Discarded---}
 \input{sections/c-discards}
+
+\addtocontents{toc}{\protect\setcounter{tocdepth}{1}}  % Don't show appendix sections in TOC
 
 
 \end{document}
