@@ -52,7 +52,7 @@ As an alternative they propose to approximate the derivative, by assuming that i
 While \citeauthor{Steyer2021} use this to approximate an integral, in this thesis it is used for approximating observations $q(s_j) \approx q_j$ of the SRV curve $q$ for the covariance estimation step.
 See \cref{fig:3-disc-srv} for a visualization of both approaches.
 Finally, we can approximate the normalized SRV curve $\widetilde q = q / \norm{q}$ using the polygon-length $l$ of $\beta$ by $\widetilde q_j = q_j \big/ \sqrt{l}$ (see \cref{eq:2-norm}).
-\todo{Discuss normalization}
+\todo{Discuss normalization?}
 
 \begin{figure}
   \centering
@@ -77,14 +77,14 @@ Finally, we can approximate the normalized SRV curve $\widetilde q = q / \norm{q
 
 When considering the warped normalized SRV curve $(q \circ \gamma ) \sqrt{\dot\gamma}$, the warped discrete derivative is given by $\Delta (\beta \circ \gamma) \big\rvert_{[\gamma^{-1}(t_j), \gamma^{-1}(t_{j+1})]} = \frac{\beta(t_{j+1}) - \beta(t_{j})}{\gamma^{-1}(t_{j+1}) - \gamma^{-1}(t_j)}$.
 The corresponding warped SRV curve is then given by $(q \circ \gamma) \sqrt{\dot\gamma} \big\rvert_{[\gamma^{-1}(t_j), \gamma^{-1}(t_{j+1})]} = \frac{1}{\sqrt{\gamma^{-1}(t_{j+1}) - \gamma^{-1}(t_j)}} \cdot \frac{\beta(t_{j+1}) - \beta(t_j)}{\sqrt{\norm{\beta(t_{j+1}) - \beta(t_j)}}}$.
-Note that this does not influence the normalization as warping is norm-preserving.
+Note that this does not change the normalization as warping is norm-preserving.
 
 
 \section{Efficient Estimation using Hermitian Covariance Smoothing}
 \label{sec:3-cov}
 Given approximate observations of the warped normalized SRV curves $\widetilde q^{(k)}_i(s_{ij})$ for $j = 1,\dots,n_i-1$ and $i=1,\dots,N$, where $n_i$ denotes the number of observed points per curve, we want to estimate the warping aligned complex covariance surface $C^{(k)}(s,t) = \mathbb{E}[\widetilde q^{(k)}(s)\overline{\widetilde q^{(k)}(t)}]$.
 We can treat this estimation as a smoothing problem, by constructing responses $y^{(k)}_{ilm} = \widetilde q^{(k)}_i(s_{il}) \overline{\widetilde q^{(k)}_i(s_{im})}$ and treating the pairs $s_{il}$, $s_{im}$ as covariates $s$ and $t$.
-Smoothing the responses $y^{(k)}_{ilm}$ gives an estimate $\hat C^{(k)}(\cdot, \cdot)$ of $C^{(k)}(s,t)$, as each response has expectation $\mathbb{E}[y^{(k)}_{ilm}|s_{il},s_{im}] = C^{(k)}(s_{il},s_{im})$. 
+Smoothing the responses $y^{(k)}_{ilm}$ gives an estimate $\hat C^{(k)}(s,t)$ of $C^{(k)}(s,t)$, as each response has expectation $\mathbb{E}[y^{(k)}_{ilm}|s_{il},s_{im}] = C^{(k)}(s_{il},s_{im})$. 
 We carry out the smoothing in a flexible \emph{penalized tensor product spline} basis 
 \begin{equation}
   C^{(k)}(s,t) = b(s)^\top \Xi^{(k)} b(t) 
@@ -104,7 +104,8 @@ with $\Xi^{(k)}_\Re, \Xi^{(k)}_\Im \in \mathbb{R}^{K\times K}$ and $\Xi^{(k)} = 
 
 In this thesis  $\Xi^{(k)}_\Re$ and $\Xi^{(k)}_\Im$ are estimated using the \texttt{gam} function from the \texttt{R} package \texttt{mgcv} \parencite{Wood2017}, where parameters are selected via restricted maximum likelihood (REML) estimation.
 Two \texttt{mgcv} smooths provided in the package \texttt{sparseFLMM} \parencite{sparseFLMM} are used for efficient Hermitian smoothing, which generalize the approach proposed by \cite{CederbaumScheiplGreven2018} for symmetric tensor product P-splines to the skew-symmetric case.
-
+Note that \texttt{mgcv} automatically adds a sum-to-zero constraint to a specified basis \parencite[see][175]{Wood2017}, which makes it is necessary to transform the coefficient matrices $\widetilde \Xi_\Re^{(k)}$, $\widetilde \Xi_\Im^{(k)}$ recovered from \texttt{gam} with an appropriate transformation matrix $D$.
+The coefficient matrices in the specified basis are given by $\Xi_{\Re/\Im}^{(k)} = D \cdot \widetilde \Xi_ {\Re/\Im}^{(k)}$, where $D$ may be calculated from the constrained and unconstrained design matrices via $X = D \cdot \widetilde X$.
 
 \section{Estimating the Elastic Full Procrustes Mean in a Fixed Basis}
 \label{sec:3-mean}
@@ -113,8 +114,8 @@ We can choose an appropriate basis $b(s)$ by considering which, e.g., smoothness
 In this thesis we will use penalized B-spline basis functions (P-splines), which are piecewise polynomials of degree $l$, fused at $m$ knots $\left\{\kappa_j\right\}_{j=1,\dots,m}$, where the $p$-th order differences between coefficients of neighbouring splines are penalized in the covariance estimation \parencite[see][Chap.~8.1]{FahrmeierEtAl2013}.
 It shold be noted that by using a penalty, the number and location of knots do not have an influence on the estimated function when their number is high enough and they are evenly distributed.
 Furthermore, because of results relating to the identifiability of spline SRV curves modulo warping and translation, only piecewise linear ($l = 1$) and piecewise constant ($l = 0$) B-splines will be considered in the estimation \parencite[see][]{Steyer2021}.
-This still allows us the flexibility of estimating either polygonal or smooth means, as we estimate the mean function on original curve level by integration. 
 See \cref{fig:3-cov} for examples of a covariance surface estimated using piecewise constant and piecewise linear P-splines.
+This still allows us the flexibility of estimating either polygonal or smooth means, as we estimate the mean function on original curve level by integration (see \cref{fig:3-mean}). 
 
 \begin{figure}[t]
   \centering
@@ -155,7 +156,7 @@ Then, estimating the mean $\hat \mu_q (s) = b(s)^\top \theta$ reduces to estimat
   &\, = \, \argmax_{\theta \in \mathbb{C}^K,\,\norm{b^\top\theta} = 1}\,\,
     \theta^H \left( \int_0^1 b(s) b(s)^\top \ds \right) \hat\Xi \left( \int_0^1 b(t) b(t)^\top \dt\right) \theta \\
   &\, = \, \argmax_{\theta \in \mathbb{C}^K,\,\theta^H G \theta = 1}\,\,
-    \theta^H G \hat\Xi G \theta 
+    \theta^H G \hat\Xi G \theta \label{eq:3-target}
 \end{align}
 where $(\cdot)^H = \overline{(\cdot)}^\top$ denotes the conjugate transpose and $G$ is the $K \times K$ Gram matrix with entries given by the basis products $g_{ij} = \langle b_i, b_j \rangle$.
 For an orthonormal basis the Gram matrix is an identity matrix as $\langle b_i, b_j \rangle = \delta_{ij}$, however, this is not the case for many basis representations such as, e.g.,the B-spline basis.
@@ -205,21 +206,50 @@ Adding both equations finally leads to
 \end{equation}
 which is an eigenvalue problem on the product of the complex coefficient matrix and the Gram matrix.
 Note that this mirrors the result by \cite{ReissXu2020} for FPCA on real-valued tensor product spline coefficient matrices.
-Multiplying by $\theta^H G$ from the left and using $\theta^H G \theta = 1$ yields $\lambda = \theta^H G \hat\Xi G \theta$, i.e. the eigenvalues correspond to the target function to maximize.
+Multiplying by $\theta^H G$ from the left and using $\theta^H G \theta = 1$ yields $\lambda = \theta^H G \hat\Xi G \theta$, i.e.\ the eigenvalues $\lambda$ correspond to the target function to maximize (see \cref{eq:3-target}).
 It follows that the estimate for the coefficient vector of the elastic full Procrustes mean $\hat\theta$ is given by the eigenvector of the leading eigenvalue of $\hat\Xi G$ or likewise of $\hat\Xi^{(k)} G$, when taking into account the warping alignment in step $k$ of \cref{algo:mean}.
 
-\begin{figure}
+\begin{figure}[t]
   \centering
-  \begin{subfigure}{.48\textwidth}
+  \begin{subfigure}{\textwidth}
+    \begin{subfigure}{.48\textwidth}
+      \centering
+      \inputTikz{3-mean-srv}
+    \end{subfigure}\hfill%
+    \begin{subfigure}{.48\textwidth}
+      \centering
+      \begin{subfigure}{\textwidth}
+        \centering
+        \inputTikz{3-mean-srvX}
+      \end{subfigure}
+      \begin{subfigure}{\textwidth}
+        \centering
+        \inputTikz{3-mean-srvY}
+      \end{subfigure}
+    \end{subfigure}
+    \caption{Mean function $\hat\mu_q(t) = b(t)^\top \hat\theta$ on SRV level with scaled linear B-spline basis functions (right).}
+  \end{subfigure}\vspace{0.66em}\\
+  \begin{subfigure}{\textwidth}
     \centering
-    \inputTikz{3-mean-poly}
-  \end{subfigure}\hfill%
-  \begin{subfigure}{.48\textwidth}
-    \centering
-    \inputTikz{3-mean}
+    \begin{subfigure}{.48\textwidth}
+      \centering
+      \inputTikz{3-mean}
+    \end{subfigure}\hfill%
+    \begin{subfigure}{.48\textwidth}
+      \centering
+      \begin{subfigure}{\textwidth}
+        \centering
+        \inputTikz{3-meanX}
+      \end{subfigure}
+      \begin{subfigure}{\textwidth}
+        \centering
+        \inputTikz{3-meanY}
+      \end{subfigure}
+    \end{subfigure}
+    \caption{Mean function $\hat\mu(t) = \int_0^t \hat\mu_q(s) \norm{\hat\mu_q(s)} \ds$ on original curve level.}
   \end{subfigure}
   \caption{Elastic full Procrustes mean of handwritten digits \enquote*{3}.
-    Estimated using 13 equidistant knots, a 2nd order penalty and piecewise constant (left) or piecewise linear (right) B-splines.
+    Estimated using 13 equidistant knots, a 2nd order penalty and piecewise linear B-splines.
     Data: \texttt{digits3.dat}}
   \label{fig:3-mean}
 \end{figure}
@@ -227,18 +257,18 @@ It follows that the estimate for the coefficient vector of the elastic full Proc
 
 \section{Numerical Integration of the Procrustes Fits}
 \label{sec:3-pfits}
-Given an estimated mean function $\hat\mu_q^{(k)} = b(s)^\top\hat\theta$, we need to calculate the Procrustes alignment $\omega_i^{(k)} = \langle \widetilde q_i^{(k)}, \hat\mu_q^{(k)} \rangle$ of each curve onto the current mean, before we can update the warping alignment (see \cref{algo:mean}).
+Given an estimated mean function $\hat\mu_q^{(k)} = b(s)^\top\hat\theta$, we need to calculate the Procrustes alignment $\omega_i^{(k)} = \langle \widetilde q_i^{(k)}, \hat\mu_q^{(k)} \rangle$, $i = 1,\dots,N$, of each curve onto the current mean, before we can update the warping alignment (see \cref{algo:mean}).
 In the sparse and irregular setting, calculating a scalar product such as $\langle \widetilde q_i^{(k)}, \hat\mu_q^{(k)} \rangle$ can be a challenge, as we have to evaluate $\widetilde q_i^{(k)}(t)$ at every $t \in [0,1]$.
 \begin{equation}
 \langle \widetilde q_i^{(k)}, \hat\mu_q^{(k)} \rangle =
   \int_0^1 \langle \widetilde q_i^{(k)}(t), \hat\mu_q^{(k)}(t) \rangle \dt
 \end{equation}
-Following \cite{Steyer2021} and as discussed in \cref{sec:3-discrete}, this may be achieved by treating $\widetilde q_i^{(k)}$ as piecewise constant with the normalized and warping aligned values given by
+Following \cite{Steyer2021} and as discussed in \cref{sec:3-discrete}, this may be achieved by treating $\widetilde q_i^{(k)}$ as piecewise constant between the warping-aligned corners of the original curve $\beta_i$, with the normalized and warping aligned values given by
 \begin{equation}
    \widetilde q_i^{(k)} \Big\rvert_{\left[\left(\gamma_i^{(k)}\right)^{-1}(t_{ij}),\, \left(\gamma_i^{(k)} \right)^{-1}(t_{ij+1})\right]} =
   \widetilde q_{ij}^{(k)}
 \end{equation}
-with
+with $j = 1, \dots, m_i - 1$ for $m_i$ the number of observed points of the original curve $\beta_i$ and where
 \begin{equation}
   \widetilde q_{ij}^{(k)} = 
   \frac{1}{\sqrt{L[\beta_i]}}\cdot \frac{1}{\sqrt{\left(\gamma_i^{(k)}\right)^{-1}(t_{ij+1}) - \left(\gamma_i^{(k)}\right)^{-1}(t_{ij})}} \cdot \frac{\beta_i(t_{ij+1}) - \beta_i(t_{ij})}{\sqrt{\norm{\beta_i(t_{ij+1}) - \beta_i(t_{ij})}}} \,.
@@ -247,5 +277,6 @@ Given a fully observed smooth mean function $\hat\mu_q^{(k)}$ we can then analyt
 \begin{equation}
 \langle \widetilde q_i^{(k)}, \hat\mu_q^{(k)} \rangle =
   \int_0^1 \langle \widetilde q_i^{(k)}(t), \hat\mu_q^{(k)}(t) \rangle \dt =
-  \sum_{j=0}^{m-1} \int_{\left(\gamma_i^{(k)}\right)^{-1}(t_{ij})}^{\left(\gamma_i^{(k)}\right)^{-1}(t_{ij+1})} \langle \widetilde q_{ij}^{(k)},\, \hat\mu_q^{(k)} (t) \rangle \dt
+  \sum_{j=0}^{m_i-1} \int_{\left(\gamma_i^{(k)}\right)^{-1}(t_{ij})}^{\left(\gamma_i^{(k)}\right)^{-1}(t_{ij+1})} \langle \widetilde q_{ij}^{(k)},\, \hat\mu_q^{(k)} (t) \rangle \dt \,.
 \end{equation}
+

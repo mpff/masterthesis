@@ -1,10 +1,71 @@
 \label{sec:4}
+In this chapter the proposed methods will be applied and verified.
+\cref{sec:4-means} offers a comparison between the elastic full Procrustes mean, the elastic mean and the full Procrustes mean over two datasets, with the goal of illustrating some properties of the elastic full Procrustes mean.
+\cref{sec:4-penalty} will briefly discuss the effect of the penalty parameter on the estimation.
+\cref{sec:4-pfits} discusses differences between the elastic full Procrustes fits and the warping aligned Procrustes fits, and how they might matter practice.
+Finally, \cref{sec:4-tounges} applies the proposed methods to an empirical dataset of tounge shapes, which was kindly provided by \todo{Phonetics Data Citations}\dots.
 
-\section{Mean Estimation for Simulated Spirals}
-\label{sec:4-spirals}
 
-\section{Classification of Hand-written Digits}
-\label{sec:4-digits}
+\section{Comparison to the Elastic and the Full Procrustes Mean}
+\label{sec:4-means}
 
-\section{Mean Differences of Tounge Shapes in a Phonetics Study}
+
+\begin{figure}
+  \centering
+  \begin{subfigure}{\textwidth}
+    \centering
+    \inputTikz{41-digit3-means}
+    \caption{Means for \texttt{digits3.dat}.}
+    \label{fig:41-digit3-means-a}
+  \end{subfigure}\vspace{0.66em}\\
+  \begin{subfigure}{\textwidth}
+    \centering
+    \inputTikz{41-digit3-means-rot}
+    \caption{Means for \texttt{digits3.dat} with random rotation, translation and scaling applied.}
+    \label{fig:41-digit3-means-b}
+  \end{subfigure}\vspace{0.66em}\\
+  \begin{subfigure}{\textwidth}
+    \centering
+    \inputTikz{41-spiral-means}
+    \caption{Means for simulated sparse spirals.}
+    \label{fig:41-means-a}
+  \end{subfigure}\vspace{0.66em}\\
+  \begin{subfigure}{\textwidth}
+    \centering
+    \inputTikz{41-spiral-means-rot}
+    \caption{Means for simulated sparse spirals with random rotation, translation and scaling applied.}
+    \label{fig:41-means-b}
+  \end{subfigure}
+  \caption{Comparison of three mean types: Elastic mean (blue), full Procrustes mean (green) and elastic full Procrustes mean (red), estimated over two sets of data curves (grey).
+  Each mean is estimated as polygonal (light, 16 knots) and smooth (dark, 13 knots), where in the estimation of the two Procrustes means a 2nd order penalty was applied.
+  The elastic mean is estimated using \texttt{compute\_elastic\_mean} from the \texttt{elasdics} package \parencite{elasdics}.
+  Data: \textbf{(a,b)} \texttt{digits3.dat} from the \texttt{shapes} package \parencite{shapes}.
+  \textbf{(c,d)} Ten samples of the curve $\beta(t) = t \cos(13t) + \iu \cdot t \sin(13t)$, evaluated over a noisy grid, with additional small noise applied to the output.}
+  \label{fig:41-means}
+\end{figure}
+
+
+\section{Effect of the Penalty on Mean Estimation}
+\label{sec:4-penalty}
+
+\begin{figure}
+  \centering
+  \begin{subfigure}{\textwidth}
+  \inputTikz{41-digit3-pen}
+  \end{subfigure}
+  \begin{subfigure}{\textwidth}
+  \inputTikz{41-spiral-pen}
+  \end{subfigure}
+  \caption{Elastic full Procrustes mean under different penalties.
+  Estimated using 13 equidistant knots, linear B-splines on SRV level and four different penalties.
+  Data: See \cref{fig:41-digit3-means-b, fig:41-means-b}}
+  \label{fig:41-penalty}
+\end{figure}
+
+
+\section{Problems Relating to Outliers}
+\label{sec:4-pfits}
+
+
+\section{Mean Differences of Tounge Shapes in a Phonetics Dataset}
 \label{sec:4-tounges}

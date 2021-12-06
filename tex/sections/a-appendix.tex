@@ -5,30 +5,33 @@
 
 \subsection{Derivation of Lemma \ref{lem:2-fpdist}}
 \label{app:a-deriv-fpdist}
-\todo[inline]{Rewrite proof for on curve level.}
-\begin{proof}
-  Start with ii.).
-  Let $\widetilde z_2 = (\gamma, z_2) = (z_2 \circ \gamma) \sqrt{\dot\gamma}$, then optimise $d_{EF}([\beta_1],[\beta_2])^2$ over rotation and scaling, keeping $\gamma$ fixed.
-  \begin{align*}
-    d_{EF}([\beta_1],[\beta_2])^2 
-      = & \inf_{\lambda \in \mathbb{R}^+,\, \theta \in [0,2\pi],\, \gamma \in \Gamma} \norm{z_1 - \lambda e^{i\theta} \widetilde z_2}^2 \\
-      = & \inf_{\gamma \in \Gamma} \left( \inf_{\lambda \in \mathbb{R}^+,\, \theta \in [0,2\pi]} \langle z_1 - \lambda e^{i\theta} \widetilde z_2, z_1 - \lambda e^{i\theta} \widetilde z_2 \rangle \right) \\
-      = & \inf_{\gamma \in \Gamma} \left( \inf_{\lambda \in \mathbb{R}^+,\, \theta \in [0,2\pi]} \norm{z_1}^2 + \lambda^2 \norm{\widetilde z_2}^2 - \lambda ( e^{i\theta} \langle z_1, \widetilde z_2 \rangle + e^{-i\theta} \langle \widetilde z_2, z_1 \rangle ) \right) 
-  \end{align*}
-  As $\langle z_1, \widetilde z_2 \rangle \in \mathbb{C}$, define $\langle z_1, \widetilde z_2 \rangle = \kappa_\gamma e^{i\phi_\gamma}$, where $(\cdot)_\gamma$ denotes the dependence on $\gamma$. Furthermore, use $\norm{z_{1,2}} = 1$, which implies $\norm{\widetilde z_2} = 1$, as re-parametrisation is norm-preserving, when using the elastic metric.
-  \begin{align*}
-    \dots\quad
-     = & \inf_{\gamma \in \Gamma} \left( \inf_{\lambda \in \mathbb{R}^+,\, \theta \in [0,2\pi]} 1 + \lambda^2  - \lambda ( e^{i\theta} \kappa_\gamma e^{i\phi_\gamma} + e^{-i\theta} \kappa_\gamma e^{-i\phi_\gamma} ) \right) \\
-     = & \inf_{\gamma \in \Gamma} \left( \inf_{\lambda \in \mathbb{R}^+,\, \theta \in [0,2\pi]} 1 + \lambda^2  - \lambda \kappa_\gamma \left( e^{i(\theta + \phi_\gamma)} + e^{-i (\theta + \phi_\gamma)} \right) \right) \\
-     = &  \inf_{\gamma \in \Gamma} \left( \inf_{\lambda \in \mathbb{R}^+} 1 + \lambda^2  - \sup_{\theta \in [0,2\pi]} 2 \lambda \kappa_\gamma \cos{(\theta + \phi_\gamma)} \right) \\
-     \overset{\theta = -\phi_\gamma}{=} & \inf_{\gamma \in \Gamma} \left( \inf_{\lambda \in \mathbb{R}^+} 1 + \lambda^2  - 2 \lambda \kappa_\gamma \right) 
-  \end{align*}
-  From $\frac{\partial}{\partial\lambda}\left( 1 + \lambda^2 - 2\lambda\kappa_\gamma \right) = 2\lambda - 2\kappa_\gamma \overset{!}{=} 0$ it follows that $\lambda = \kappa_\gamma$.
-  $$\dots\quad = \inf_{\gamma \in \Gamma} \left( 1 + \kappa^2_\gamma  - 2 \kappa^2_\gamma \right) = \inf_{\gamma \in \Gamma} \left( 1 - \kappa^2_\gamma \right)$$
-  \textbf{[TODO: Make this part clearer!]}
-  Lemma \ref{lem:dist} ii.) follows from $\kappa^2_\gamma = \abs{\langle z_1, \widetilde z_2 \rangle}^2 = \langle z_1, \widetilde z_2 \rangle \langle \widetilde z_2, z_1 \rangle$ and $\widetilde z_2 = (z_2 \circ \gamma) \sqrt{\dot\gamma}$.
-  Lemma \ref{lem:dist} i.) follows from $\lambda e^{i\theta} = \kappa_\gamma e^{-i\phi_\gamma} = \overline{\langle z_1, \widetilde z_2 \rangle}$.
-\end{proof}
+\begin{align*}
+  d_{FP}([\beta_1]_\Eucl,[\beta_2]_\Eucl)^2 
+    = & \min_{\omega \in \mathbb{C}} \norm{\widetilde \beta_1 - \lambda e^{i\theta} \widetilde \beta_2}^2 \\
+    = & \min_{\lambda \in \mathbb{R}^+,\, \theta \in [0,2\pi]} \norm{\widetilde \beta_1 - \lambda e^{\iu\theta} \widetilde \beta_2}^2 \\
+    = & \min_{\lambda \in \mathbb{R}^+,\, \theta \in [0,2\pi]} \langle \widetilde \beta_1 - \lambda e^{\iu\theta} \widetilde \beta_2, \widetilde \beta_1 - \lambda e^{\iu\theta} \widetilde \beta_2 \rangle \\
+    = & \min_{\lambda \in \mathbb{R}^+,\, \theta \in [0,2\pi]} \norm{\widetilde \beta_1}^2 + \lambda^2 \norm{\widetilde \beta_2}^2 - \lambda ( e^{\iu\theta} \langle \widetilde \beta_1, \widetilde \beta_2 \rangle + e^{-\iu\theta} \langle \widetilde \beta_2, \widetilde \beta_1 \rangle 
+\end{align*}
+Define $\langle \widetilde \beta_1, \widetilde \beta_2 \rangle = \kappa e^{\iu\phi} \in \mathbb{C}$ and use $\norm{\widetilde \beta_1} = \norm{\widetilde \beta_2} = 1$.
+\begin{align*}
+  d_{FP}([\beta_1]_\Eucl,[\beta_2]_\Eucl)^2 
+   = &  \min_{\lambda \in \mathbb{R}^+,\, \theta \in [0,2\pi]} 1 + \lambda^2  - \lambda ( e^{\iu\theta} \kappa e^{\iu\phi} + e^{-\iu\theta} \kappa e^{-\iu\phi} ) \\
+   = &  \min_{\lambda \in \mathbb{R}^+,\, \theta \in [0,2\pi]} 1 + \lambda^2  - \lambda \kappa \left( e^{\iu(\theta + \phi)} + e^{-\iu (\theta + \phi)} \right) \\
+   = &  \min_{\lambda \in \mathbb{R}^+} 1 + \lambda^2  - \max_{\theta \in [0,2\pi]} 2 \lambda \kappa \cos{(\theta + \phi)} \\
+   \overset{\theta^\mathrm{opt} = -\phi}{=} & \min_{\lambda \in \mathbb{R}^+} 1 + \lambda^2  - 2 \lambda \kappa
+\end{align*}
+From $\frac{\partial}{\partial\lambda}\left( 1 + \lambda^2 - 2\lambda\kappa \right) = 2\lambda - 2\kappa \overset{!}{=} 0$ it follows that $\lambda^\mathrm{opt} = \kappa$.
+\begin{align*}
+  d_{FP}([\beta_1]_\Eucl,[\beta_2]_\Eucl)^2 
+   = &  \left( 1 + \kappa^2  - 2 \kappa^2 \right) =  \left( 1 - \kappa^2 \right)
+\end{align*}
+\cref{lem:2-fpdist} i.) follows by considering $\kappa^2 = \abs{\langle \widetilde \beta_1, \widetilde \beta_2 \rangle}^2 = \langle \widetilde \beta_1, \widetilde \beta_2 \rangle \langle \widetilde \beta_2, \widetilde \beta_1 \rangle$.
+Then
+\begin{align*}
+  d_{FP}([\beta_1]_\Eucl,[\beta_2]_\Eucl)
+   = &  \sqrt{ 1 - \langle \widetilde \beta_1, \widetilde \beta_2 \rangle \langle \widetilde \beta_2, \widetilde \beta_1 \rangle }\,.
+\end{align*}
+\cref{lem:2-fpdist} ii.) follows by $\omega^\mathrm{opt} = \lambda^\mathrm{opt} e^{\iu \theta^\mathrm{opt}} = \kappa e^{-\iu\phi} = \overline{\langle \widetilde \beta_1, \widetilde \beta_2 \rangle} = \langle \widetilde \beta_2, \widetilde \beta_1 \rangle$.
 
 
 \section{Discussion of Possible Extensions to Closed Curves}

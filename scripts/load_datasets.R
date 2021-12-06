@@ -12,6 +12,12 @@ rand_rotate_curve2d <- function(x){
     return(x)
 }
 
+rand_translate_curve2d <- function(x, tr = 2){
+    x[,1] <- x[,1] + runif(1, min=-tr, max=tr)
+    x[,2] <- x[,2] + runif(1, min=-tr, max=tr)
+    return(x)
+}
+
 rand_scale_curve2d <- function(x){
     # scale dataframe of 2D vectors randomly
     beta <- 0.5 + runif(1)
@@ -32,7 +38,7 @@ center_curve <- function (data_curve)
 
 # Datasets
 
-curves.spiral <- function(n_curves = 4, rotate = FALSE, scale = FALSE, center = FALSE){
+curves.spiral <- function(n_curves = 4, rotate = FALSE, scale = FALSE, center = FALSE, translate = FALSE, evals=10:15){
     # Dataset: Simulated spirals with optional random rotation and scaling.
     
     # Define spiral shape.
@@ -42,18 +48,21 @@ curves.spiral <- function(n_curves = 4, rotate = FALSE, scale = FALSE, center = 
     
     # Transform to data curves format.
     data_curves <- lapply(1:n_curves, function(i){
-      m <- sample(10:15, 1)
+      m <- sample(evals, 1)
       delta <- abs(rnorm(m, mean = 1, sd = 0.05))
       t <- cumsum(delta)/sum(delta)
       data.frame(t(curve(t)) + 0.07*t*matrix(cumsum(rnorm(2*length(delta))), ncol = 2))
     })
 
-    # Apply random rotation, random scaling, centering.
+    # Apply random translation, rotation, random scaling, centering.
     if(rotate){
         data_curves <- lapply(data_curves, rand_rotate_curve2d)
     }
     if(scale){
         data_curves <- lapply(data_curves, rand_scale_curve2d)
+    }
+    if(translate){
+        data_curves <- lapply(data_curves, rand_translate_curve2d)
     }
     if(center){
         data_curves <- lapply(data_curves, center_curve)
@@ -64,7 +73,7 @@ curves.spiral <- function(n_curves = 4, rotate = FALSE, scale = FALSE, center = 
 }
 
 
-curves.digit3 <- function(rotate = FALSE, scale = FALSE, center = FALSE){
+curves.digit3 <- function(rotate = FALSE, scale = FALSE, center = FALSE, translate = FALSE){
     # Dataset : Handwritten digits 3.
     
     data_curves <- shapes::digit3.dat
@@ -78,6 +87,9 @@ curves.digit3 <- function(rotate = FALSE, scale = FALSE, center = FALSE){
     }
     if(scale){
         data_curves <- lapply(data_curves, rand_scale_curve2d)
+    }
+    if(translate){
+        data_curves <- lapply(data_curves, rand_translate_curve2d, 60)
     }
     if(center){
         data_curves <- lapply(data_curves, center_curve)
