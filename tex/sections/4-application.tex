@@ -9,6 +9,32 @@ Finally, \cref{sec:4-tounges} applies the proposed methods to an empirical datas
 \section{Comparison to the Elastic and the Full Procrustes Mean}
 \label{sec:4-means}
 
+In this section we will estimate and compare the elastic mean, the full Procrustes mean and the elastic full Procrustes mean for two datasets.
+The first dataset is the \texttt{digits3.dat} dataset provided in the \texttt{shapes} package \parencite{shapes} and originally collected by \cite{Anderson1997}, which has already been used throughout this thesis for illustrative purposes.
+It consist of 30 handwritten digits \enquote*{3}, each of which was sampled in a regular fashion at 13 points along the digit, leading to sparse but somewhat regular observations.
+The second dataset consists of ten simulated spirals, each of which is a sample of the curve $\beta(t) = t \cos(13t) + \iu \cdot t \sin(13t)$, evaluated $m_i \in [10,15]$ times over a noisy grid, with additional noise applied to the output, leading to sparse and irregular observations.
+The code simulating these spirals was adapted from the \texttt{compute\_elastic\_mean} function's documenation in the \texttt{elasdics} package \parencite{elasdics}.
+Because the spirals \enquote{speed up} w.r.t.\ $t$ towards the end ($t = 1$), they start out quite densly sampled but become sparser towards the end, making the mean estimation, especially close to $t=1$, a challenge.
+The datasets will be considered in two settings:
+In the first setting, each dataset is considered as is, which means that all curves are centered and similarly aligned.
+In the second setting, for each curve $\beta_i$ a random Euclidean similarity transform with translation $\xi_i \sim \mathcal{U}([\xi_\mathrm{min}, \xi_\mathrm{max}])$, rotation $\theta_i \sim \mathcal{U}([0,2\pi))$ and scaling $\lambda_i \sim \mathcal{U}([0.5,1.5])$ is drawn, where $\xi_\mathrm{min}, \xi_\mathrm{max}$ are respectively set to $\pm 60$ and $\pm 2$ for the digits and spirals.
+The curves are then transformed by $\lambda_i e^{\iu \theta_i} \beta_i + \xi_i$.
+
+The four sets of data curves and means, are show in \cref{fig:4-means}.
+Here, the elastic mean (blue) is estimated using \texttt{compute\_elastic\_mean} from the \texttt{elasdics} package.
+The full Procrustes (green) and the elastic full Procrustes mean (red) are estimated using the methods proposed in \cref{sec:2,sec:3}, where for the full Procrustes mean the estimation is stopped before the warping alignment step during the first iteration.
+Note that the full Procrustes mean calculated in this way is not exactly\todo{Vielleicht sogar doch "exactly"} a minimizer of the sum of squared full Procrustes distance defined in \cref{def:2-fpdist}, but instead is a minimizer of the sum of squared full Procrustes distances on SRV level.
+When comparing the different mean types in \cref{fig:4-means} we can see that, unlike the elastic mean, both Procrustes means are invariant with respect to all Euclidean similarity transforms, as the estimated mean is the same for the transformed and original datasets.
+However for this very same reason, both Procrustes means hold no information about the scale or rotation of the original curves, as they are of unit-length and have a rotation dependent on the eigendecomposition of the covariance surface.
+The elastic mean is only invariant with respect to re-parametrization and translation so that its scale and rotation match the original data curves.
+Unlike the Procrustes means, it can therefore be meaningfully plotted together with the original curves, when they are centered.
+
+Apart from illustrating these properties, \cref{fig:4-means} provides two important validation checks for the estimation procedure proposed in \cref{sec:2,sec:3}.
+Firstly, the estimated elastic full Procrustes mean is invariant to all Euclidean similarity transforms, as the mean shapes do not change with transformations of the input curves.
+Secondly, when considering untransformed curves, the estimated elastic full Procrustes mean shapes are very compareable to elastic mean shapes estimated with the method proposed \cite{Steyer2021}.
+This is especially noteable when comparing the means in \cref{fig:4-means} (a) where the prominent \enquote{notch} in the center of the mean shape is similarly pronounced for the elastic and the elastic full Procrustes means.
+Taken together this shows that the proposed mean estimation method works as intended in the setting of sparse and irregular curves.
+
 
 \begin{figure}
   \centering
@@ -21,32 +47,43 @@ Finally, \cref{sec:4-tounges} applies the proposed methods to an empirical datas
   \begin{subfigure}{\textwidth}
     \centering
     \inputTikz{41-digit3-means-rot}
-    \caption{Means for \texttt{digits3.dat} with random rotation, translation and scaling applied.}
+    \caption{Means for \texttt{digits3.dat} with random Euclidean similarity transform applied.}
     \label{fig:41-digit3-means-b}
   \end{subfigure}\vspace{0.66em}\\
   \begin{subfigure}{\textwidth}
     \centering
     \inputTikz{41-spiral-means}
     \caption{Means for simulated sparse spirals.}
-    \label{fig:41-means-a}
+    \label{fig:41-spiral-means-a}
   \end{subfigure}\vspace{0.66em}\\
   \begin{subfigure}{\textwidth}
     \centering
     \inputTikz{41-spiral-means-rot}
-    \caption{Means for simulated sparse spirals with random rotation, translation and scaling applied.}
-    \label{fig:41-means-b}
+    \caption{Means for simulated sparse spirals with random Euclidean similarity transform applied.}
+    \label{fig:41-spiral-means-b}
   \end{subfigure}
-  \caption{Comparison of three mean types: Elastic mean (blue), full Procrustes mean (green) and elastic full Procrustes mean (red), estimated over two sets of data curves (grey).
-  Each mean is estimated as polygonal (light, 16 knots) and smooth (dark, 13 knots), where in the estimation of the two Procrustes means a 2nd order penalty was applied.
-  The elastic mean is estimated using \texttt{compute\_elastic\_mean} from the \texttt{elasdics} package \parencite{elasdics}.
-  Data: \textbf{(a,b)} \texttt{digits3.dat} from the \texttt{shapes} package \parencite{shapes}.
-  \textbf{(c,d)} Ten samples of the curve $\beta(t) = t \cos(13t) + \iu \cdot t \sin(13t)$, evaluated over a noisy grid, with additional small noise applied to the output.}
-  \label{fig:41-means}
+  \caption{Comparison of three mean types: Elastic mean (blue), full Procrustes mean (green) and elastic full Procrustes mean (red), estimated over four sets of data curves (grey).
+  Each mean is estimated as polygonal (light, 16 knots) and smooth (dark, 13 knots), where in the estimation of the two Procrustes means a 2nd order penalty was applied.}
+  \label{fig:4-means}
 \end{figure}
+
+
+\section{Problems Relating to Outliers}
+\label{sec:4-pfits}
+\begin{itemize}
+  \item Discuss elastic Procrustes fits.
+  \item Discuss warping aligned Procrustes fits in last iteration
+  \item Discuss plotting together with mean
+  \item Discuss outliers that get shrinked away.
+  \item Discuss normalization problem when keeping scaling fixed.
+\end{itemize}
 
 
 \section{Effect of the Penalty on Mean Estimation}
 \label{sec:4-penalty}
+The elastic full Procrustes mean is given by the leading eigenfunction of the complex covariance surface, which was estimated using tensor product P-splines.
+As a consequence, the order of the roughness penalty applied in the estimation of the covariance surface directly influences the shape of the estimated mean function, as shown in \cref{fig:4-penalty}.
+No penalty, ridge penalty, order 1 penalty -> constant, order 2 penalty -> linear?
 
 \begin{figure}
   \centering
@@ -57,15 +94,13 @@ Finally, \cref{sec:4-tounges} applies the proposed methods to an empirical datas
   \inputTikz{41-spiral-pen}
   \end{subfigure}
   \caption{Elastic full Procrustes mean under different penalties.
-  Estimated using 13 equidistant knots, linear B-splines on SRV level and four different penalties.
-  Data: See \cref{fig:41-digit3-means-b, fig:41-means-b}}
-  \label{fig:41-penalty}
+  Estimated using no penalty (left) and order 0/1/2 penalties (center-left/center-right/right) respectively, as well as 13 equidistant knots and linear B-splines on SRV level.
+  Data: See \cref{fig:41-digit3-means-b,fig:41-spiral-means-b}}
+  \label{fig:4-penalty}
 \end{figure}
 
-
-\section{Problems Relating to Outliers}
-\label{sec:4-pfits}
 
 
 \section{Mean Differences of Tounge Shapes in a Phonetics Dataset}
 \label{sec:4-tounges}
+\

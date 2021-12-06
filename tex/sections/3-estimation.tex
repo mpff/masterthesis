@@ -77,13 +77,13 @@ Finally, we can approximate the normalized SRV curve $\widetilde q = q / \norm{q
 
 When considering the warped normalized SRV curve $(q \circ \gamma ) \sqrt{\dot\gamma}$, the warped discrete derivative is given by $\Delta (\beta \circ \gamma) \big\rvert_{[\gamma^{-1}(t_j), \gamma^{-1}(t_{j+1})]} = \frac{\beta(t_{j+1}) - \beta(t_{j})}{\gamma^{-1}(t_{j+1}) - \gamma^{-1}(t_j)}$.
 The corresponding warped SRV curve is then given by $(q \circ \gamma) \sqrt{\dot\gamma} \big\rvert_{[\gamma^{-1}(t_j), \gamma^{-1}(t_{j+1})]} = \frac{1}{\sqrt{\gamma^{-1}(t_{j+1}) - \gamma^{-1}(t_j)}} \cdot \frac{\beta(t_{j+1}) - \beta(t_j)}{\sqrt{\norm{\beta(t_{j+1}) - \beta(t_j)}}}$.
-Note that this does not change the normalization as warping is norm-preserving.
+Note that this does not change the normalization as re-parametrization is norm-preserving on SRV level.
 
 
 \section{Efficient Estimation using Hermitian Covariance Smoothing}
 \label{sec:3-cov}
 Given approximate observations of the warped normalized SRV curves $\widetilde q^{(k)}_i(s_{ij})$ for $j = 1,\dots,n_i-1$ and $i=1,\dots,N$, where $n_i$ denotes the number of observed points per curve, we want to estimate the warping aligned complex covariance surface $C^{(k)}(s,t) = \mathbb{E}[\widetilde q^{(k)}(s)\overline{\widetilde q^{(k)}(t)}]$.
-We can treat this estimation as a smoothing problem, by constructing responses $y^{(k)}_{ilm} = \widetilde q^{(k)}_i(s_{il}) \overline{\widetilde q^{(k)}_i(s_{im})}$ and treating the pairs $s_{il}$, $s_{im}$ as covariates $s$ and $t$.
+We can treat this estimation as a smoothing problem\todo{Cov smoothing citations}, by constructing responses $y^{(k)}_{ilm} = \widetilde q^{(k)}_i(s_{il}) \overline{\widetilde q^{(k)}_i(s_{im})}$ and treating the pairs $s_{il}$, $s_{im}$ as covariates $s$ and $t$.
 Smoothing the responses $y^{(k)}_{ilm}$ gives an estimate $\hat C^{(k)}(s,t)$ of $C^{(k)}(s,t)$, as each response has expectation $\mathbb{E}[y^{(k)}_{ilm}|s_{il},s_{im}] = C^{(k)}(s_{il},s_{im})$. 
 We carry out the smoothing in a flexible \emph{penalized tensor product spline} basis 
 \begin{equation}
@@ -95,14 +95,14 @@ The exact choice of basis and penalty will be discussed in \cref{sec:3-mean}.
 
 Taking into account the symmetry properties of the covariance surface by considering every unique pair $(s_{il}$, $s_{im})$ only once allows for more efficient estimation, as shown in \cite{CederbaumScheiplGreven2018}. 
 In the complex case the covariance surface is Hermitian with $C^{(k)}(s,t) = \overline{C^{(k)}(t,s)}$, which means we can decompose the estimation into two seperate regression problems over the symmetric real and skew-symmetric imaginary parts of $C^{(k)}(s,t)$.
-We estimate the two models
+We estimate the two models\todo{Formal ok?}
 \begin{align}
   \mathbb{E}[\Re(y^{(k)})|s,t] &= b(s)^\top \Xi^{(k)}_{\Re} b(t) \\
   \mathbb{E}[\Im(y^{(k)})|s,t] &= b(s)^\top \Xi^{(k)}_{\Im} b(t)\,,
 \end{align}
 with $\Xi^{(k)}_\Re, \Xi^{(k)}_\Im \in \mathbb{R}^{K\times K}$ and $\Xi^{(k)} = \Xi^{(k)}_\Re + \iu \Xi^{(k)}_\Im$, under the constraints that $(\Xi^{(k)}_\Re)^\top = \Xi^{(k)}_\Re$ and $(\Xi^{(k)}_\Im)^\top = - \Xi^{(k)}_\Im$.
 
-In this thesis  $\Xi^{(k)}_\Re$ and $\Xi^{(k)}_\Im$ are estimated using the \texttt{gam} function from the \texttt{R} package \texttt{mgcv} \parencite{Wood2017}, where parameters are selected via restricted maximum likelihood (REML) estimation.
+In this thesis  $\Xi^{(k)}_\Re$ and $\Xi^{(k)}_\Im$ are estimated using the \texttt{gam} function from the \texttt{R} package \texttt{mgcv} \parencite{Wood2017}, where the smoothing parameters are selected via restricted maximum likelihood (REML) estimation.
 Two \texttt{mgcv} smooths provided in the package \texttt{sparseFLMM} \parencite{sparseFLMM} are used for efficient Hermitian smoothing, which generalize the approach proposed by \cite{CederbaumScheiplGreven2018} for symmetric tensor product P-splines to the skew-symmetric case.
 Note that \texttt{mgcv} automatically adds a sum-to-zero constraint to a specified basis \parencite[see][175]{Wood2017}, which makes it is necessary to transform the coefficient matrices $\widetilde \Xi_\Re^{(k)}$, $\widetilde \Xi_\Im^{(k)}$ recovered from \texttt{gam} with an appropriate transformation matrix $D$.
 The coefficient matrices in the specified basis are given by $\Xi_{\Re/\Im}^{(k)} = D \cdot \widetilde \Xi_ {\Re/\Im}^{(k)}$, where $D$ may be calculated from the constrained and unconstrained design matrices via $X = D \cdot \widetilde X$.
@@ -246,7 +246,7 @@ It follows that the estimate for the coefficient vector of the elastic full Proc
         \inputTikz{3-meanY}
       \end{subfigure}
     \end{subfigure}
-    \caption{Mean function $\hat\mu(t) = \int_0^t \hat\mu_q(s) \norm{\hat\mu_q(s)} \ds$ on original curve level.}
+    \caption{Mean function $\hat\mu(t) = \int_0^t \hat\mu_q(s) \norm{\hat\mu_q(s)} \ds$ on (unit-length) original curve level.}
   \end{subfigure}
   \caption{Elastic full Procrustes mean of handwritten digits \enquote*{3}.
     Estimated using 13 equidistant knots, a 2nd order penalty and piecewise linear B-splines.
@@ -257,7 +257,7 @@ It follows that the estimate for the coefficient vector of the elastic full Proc
 
 \section{Numerical Integration of the Procrustes Fits}
 \label{sec:3-pfits}
-Given an estimated mean function $\hat\mu_q^{(k)} = b(s)^\top\hat\theta$, we need to calculate the Procrustes alignment $\omega_i^{(k)} = \langle \widetilde q_i^{(k)}, \hat\mu_q^{(k)} \rangle$, $i = 1,\dots,N$, of each curve onto the current mean, before we can update the warping alignment (see \cref{algo:mean}).
+Given an estimated mean function $\hat\mu_q^{(k)} = b(s)^\top\hat\theta^{(k)}$, we need to calculate the Procrustes alignment $\omega_i^{(k)} = \langle \widetilde q_i^{(k)}, \hat\mu_q^{(k)} \rangle$, $i = 1,\dots,N$, of each curve onto the current mean, before we can update the warping alignment (see \cref{algo:mean}).
 In the sparse and irregular setting, calculating a scalar product such as $\langle \widetilde q_i^{(k)}, \hat\mu_q^{(k)} \rangle$ can be a challenge, as we have to evaluate $\widetilde q_i^{(k)}(t)$ at every $t \in [0,1]$.
 \begin{equation}
 \langle \widetilde q_i^{(k)}, \hat\mu_q^{(k)} \rangle =
@@ -279,4 +279,4 @@ Given a fully observed smooth mean function $\hat\mu_q^{(k)}$ we can then analyt
   \int_0^1 \langle \widetilde q_i^{(k)}(t), \hat\mu_q^{(k)}(t) \rangle \dt =
   \sum_{j=0}^{m_i-1} \int_{\left(\gamma_i^{(k)}\right)^{-1}(t_{ij})}^{\left(\gamma_i^{(k)}\right)^{-1}(t_{ij+1})} \langle \widetilde q_{ij}^{(k)},\, \hat\mu_q^{(k)} (t) \rangle \dt \,.
 \end{equation}
-
+\todo[inline]{Noch ein paragraph zu curve-wise interplation mit der penalty auf cov matrix. Verweis auf appendix.}
