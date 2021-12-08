@@ -5,7 +5,7 @@
 
 %%%% QUALITY OF LIVE DURING WRITING (REMOVE BEFORE PUBLISHING) %%%%
 \RequirePackage[l2tabu, orthodox]{nag}  % detect depreceated latex pkgs
-\usepackage[notref,notcite]{showkeys}  % show labels
+%\usepackage[notref,notcite]{showkeys}  % show labels
 \overfullrule=2cm   % mark overfull hboxes with a black box
 \usepackage{todonotes}  % create TODO marks
 
@@ -164,7 +164,7 @@
     \textbf{M.Sc.\ Statistics}
   \vspace{1.2cm}\\
   \textsc{\large Manuel Pfeuffer\footnote{\url{mnl.pfeuffer@gmail.com}, Matriculation number: 577668}}\\
-  \today, Berlin
+  Berlin, \today
   \vspace{2.0cm}\\
     \includegraphics[width=0.4\textwidth]{graphics/hulogo.pdf}
   \vspace{0.5cm}\\
@@ -201,7 +201,7 @@
 \input{sections/3-estimation}
 
 \newpage
-\chapter{Application to Simulated and Empirical Datasets}
+\chapter{Verification and Application using Simulated and Empirical Datasets}
 \input{sections/4-application}
 
 \newpage
@@ -217,7 +217,7 @@
 
 
 % --- Appendix ---
-\addtocontents{toc}{\protect\setcounter{tocdepth}{0}}  % Don't show appendix sections in TOC
+\addtocontents{toc}{\protect\setcounter{tocdepth}{0}}  % Only show chapter in TOC
 
 
 \newpage
@@ -229,11 +229,16 @@
 \chapter{Implementation Notes}
 \input{sections/b-supplements}
 
+\newpage
+\chapter*{Statutory Declaration}
+\addcontentsline{toc}{chapter}{Statutory Declaration}
+\input{sections/c-declaration}
+
 %\newpage
 %\chapter*{---Discarded---}
 %\input{sections/c-discards}
 
-\addtocontents{toc}{\protect\setcounter{tocdepth}{1}}  % Don't show appendix sections in TOC
+\addtocontents{toc}{\protect\setcounter{tocdepth}{1}}  % Show todo entries.
 
 
 \end{document}

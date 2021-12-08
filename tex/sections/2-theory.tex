@@ -27,7 +27,7 @@ We will therefore identify $\mathbb{R}^2$ with $\mathbb{C}$, as shown in \cref{f
 $$\beta : [0,1] \rightarrow \mathbb{C}, \quad \beta(t) = x_1(t) + \iu x_2(t).$$
 We will assume the curves to be absolutely continuous, denoted as $\beta \in \mathcal{AC}([0,1], \mathbb{C})$, guaranteeing that $\beta(t)$ has an integrable derivative.
 This is important when working in the square-root-velocity (SRV) framework, as will be discussed in \cref{sec:2-dist}.
-All considerations will be restricted to the case of open curves, with possible extensions to closed curves $\beta \in \mathcal{AC}(\mathbb{S}^1, \mathbb{C})$ discussed in \cref{app:a-closed} of the appendix.
+All considerations will be restricted to the case of open curves, with possible extensions to closed curves $\beta \in \mathcal{AC}(\mathbb{S}^1, \mathbb{C})$ discussed in \cref{app:a-closed}.\todo{Update}
 
 
 \section{Equivalence Classes and Shape}
@@ -363,7 +363,7 @@ Turning back to the calculation of $\hat\mu_1$, we can simplify \cref{eq:2-mean-
 \end{align}
 and we end up with a two step optimization problem consisting of an outer optimization over $\mu_q$ and an inner optimization over the set $\left\{\gamma_i\right\}_{i=1,\dots,N}$.
 Similarly to the approaches discussed in \cite{SrivastavaKlassen2016} and to \cite{Steyer2021}, we solve this iteratively by iterative \emph{template based alignment} \parencite[see e.g.][271]{SrivastavaKlassen2016}:
-In each step, the mean $\hat\mu_q$ is estimated while keeping the parametrizations $\gamma_i$ fixed, after which the $\gamma_i$ are updated by calculating the warping alignment of the full Procrustes fit of each $\widetilde q_i$ onto $\hat\mu_q$.\footnote{Note that this is \emph{not} the same as performing an elastic full Procrustes fit of $\widetilde q_i$ onto $\hat \mu_q$, because the warping and Procrustes alignments are themselves not iterated over.}
+In each step, the mean $\hat\mu_q$ is estimated while keeping the parametrizations $\gamma_i$ fixed, after which the $\gamma_i$ are updated by calculating the warping alignment of the full Procrustes fit of each $\widetilde q_i$ onto $\hat\mu_q$.\footnote{Note that this is \emph{not} the same as performing an elastic full Procrustes fit of $\widetilde q_i$ onto $\hat \mu_q$ in each step $k$, because the warping and Procrustes alignments are themselves not iterated over.}
 Mean estimation and warping alignment are iterated until the mean shape has converged.
 
 Let us consider the outer optimization problem in step $k$ for a fixed set of warping functions $\{\gamma_i^{(k)}\}_{i=1,\dots,N}$ with corresponding warping aligned normalized SRV curves $\widetilde q_i^{(k)} = ( \widetilde q_i \circ \gamma_i^{(k)}) \sqrt{\dot\gamma_i^{(k)}}$.

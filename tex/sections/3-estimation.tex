@@ -41,19 +41,18 @@ A common choice is an \emph{arc-length-parametrisation}, where we set $t_j = l_j
   \label{fig:3-disc}
 \end{figure}
 
-Consider the discrete derivative $\Delta \beta \big\rvert_{[t_j, t_{j+1}]} = \frac{\beta(t_{j+1}) - \beta(t_{j})}{t_{j+1} - t_j}$, which assumes that $\beta$ is linear between its observed corners. 
-The corresponding SRV curve $q$ can then be treated as piecewise constant $q\big\rvert_{[t_{j},t_{j+1}]} = q_j$ with 
+Consider the piecewise-constant derivative $\Delta \beta \big\rvert_{[t_j, t_{j+1}]} = \frac{\beta(t_{j+1}) - \beta(t_{j})}{t_{j+1} - t_j}$, which assumes that $\beta$ is linear between its observed corners. 
+The corresponding SRV curve $q$ can then similarly be treated as piecewise constant $q\big\rvert_{[t_{j},t_{j+1}]} = q_j$ with 
 \begin{equation}
   q_j = \Delta \beta \big\rvert_{[t_j, t_{j+1}]} \Big/ \sqrt{\norm{\Delta \beta \big\rvert_{[t_j, t_{j+1}]}}} = \frac{\beta(t_{j+1}) - \beta(t_j)}{\sqrt{t_{j+1} - t_j} \cdot \sqrt{\norm{\beta(t_{j+1}) - \beta(t_j)}}}
 \end{equation}
 the constant \emph{square-root-velocity} of $\beta$ between its corners $\beta(t_j)$ and $\beta(t_{j+1})$.
 As shown in \cite[][Fig.\ 3]{Steyer2021}, treating the SRV curves as piecewise-constant functions can lead to overfitting, where the mean shape is estimated too polygon-like.
-As an alternative they propose to approximate the derivative, by assuming that it attains the value of the discrete derivative $\Delta \beta \big\rvert_{[t_j,t_{j+1}]}$ at the center $s_j = \frac{t_{j+1} - t_j}{2}$ of the interval $[t_j, t_{j+1}]$.
-While \citeauthor{Steyer2021} use this to approximate an integral, in this thesis it is used for approximating observations $q(s_j) \approx q_j$ of the SRV curve $q$ for the covariance estimation step.
+As an alternative they propose to approximate the derivative, by assuming that it attains the value of the piecwise-constant derivative $\Delta \beta \big\rvert_{[t_j,t_{j+1}]}$ at the center $s_j = \frac{t_{j+1} - t_j}{2}$ of the interval $[t_j, t_{j+1}]$.
+Here, this will be used for approximating observations $q(s_j) \approx q_j$ of the SRV curve $q$ in the covariance estimation step.
 See \cref{fig:3-disc-srv} for a visualization of both approaches.
 Finally, we can approximate the normalized SRV curve $\widetilde q = q / \norm{q}$ using the polygon-length $l$ of $\beta$ by $\widetilde q_j = q_j \big/ \sqrt{l}$ (see \cref{eq:2-norm}).
 \todo{Discuss normalization?}
-
 \begin{figure}
   \centering
   \begin{subfigure}{.48\textwidth}
@@ -74,9 +73,8 @@ Finally, we can approximate the normalized SRV curve $\widetilde q = q / \norm{q
   \caption{Discretely approximated (black, dashed) and piecewise constant (gray) SRV curve of the digit \enquote*{3} in \cref{fig:3-disc}. Data: \texttt{digits3.dat}.}
   \label{fig:3-disc-srv}
 \end{figure}
-
 When considering the warped normalized SRV curve $(q \circ \gamma ) \sqrt{\dot\gamma}$, the warped discrete derivative is given by $\Delta (\beta \circ \gamma) \big\rvert_{[\gamma^{-1}(t_j), \gamma^{-1}(t_{j+1})]} = \frac{\beta(t_{j+1}) - \beta(t_{j})}{\gamma^{-1}(t_{j+1}) - \gamma^{-1}(t_j)}$.
-The corresponding warped SRV curve is then given by $(q \circ \gamma) \sqrt{\dot\gamma} \big\rvert_{[\gamma^{-1}(t_j), \gamma^{-1}(t_{j+1})]} = \frac{1}{\sqrt{\gamma^{-1}(t_{j+1}) - \gamma^{-1}(t_j)}} \cdot \frac{\beta(t_{j+1}) - \beta(t_j)}{\sqrt{\norm{\beta(t_{j+1}) - \beta(t_j)}}}$.
+The corresponding warped SRV curve is then given by $(q \circ \gamma) \sqrt{\dot\gamma} \big\rvert_{[\gamma^{-1}(t_j), \gamma^{-1}(t_{j+1})]} = \frac{1}{\sqrt{\gamma^{-1}(t_{j+1}) - \gamma^{-1}(t_j)}} \cdot \frac{\beta(t_{j+1}) - \beta(t_j)}{\sqrt{\norm{\beta(t_{j+1}) - \beta(t_j)}}}$ \parencite[see][]{Steyer2021}.
 Note that this does not change the normalization as re-parametrization is norm-preserving on SRV level.
 
 
@@ -115,8 +113,6 @@ In this thesis we will use penalized B-spline basis functions (P-splines), which
 It shold be noted that by using a penalty, the number and location of knots do not have an influence on the estimated function when their number is high enough and they are evenly distributed.
 Furthermore, because of results relating to the identifiability of spline SRV curves modulo warping and translation, only piecewise linear ($l = 1$) and piecewise constant ($l = 0$) B-splines will be considered in the estimation \parencite[see][]{Steyer2021}.
 See \cref{fig:3-cov} for examples of a covariance surface estimated using piecewise constant and piecewise linear P-splines.
-This still allows us the flexibility of estimating either polygonal or smooth means, as we estimate the mean function on original curve level by integration (see \cref{fig:3-mean}). 
-
 \begin{figure}[t]
   \centering
   \begin{subfigure}{.48\textwidth}
@@ -142,8 +138,9 @@ This still allows us the flexibility of estimating either polygonal or smooth me
   \caption{Complex covariance surface on SRV curve level. Estimated using 13 equidistant knots, a 2nd order penalty and piecewise constant (top) or piecewise linear (bottom) B-splines. Data: \texttt{digits3.dat}}
   \label{fig:3-cov}
 \end{figure}
+This still provides the flexibility of estimating either polygonal or smooth means, as the mean function on original curve level is calculated by integration (see \cref{fig:3-mean}). 
 
-To calculate the elastic full Procrustes Mean, we had to solve a functional eigenvalue problem on the estimated covariance surface $\hat{C}(s,t) = b(s)^\top \hat\Xi b(t)$ (omitting \enquote*{$\cdot^{(k)}$} in this section).
+To calculate the elastic full Procrustes Mean, a functional eigenvalue problem on the estimated covariance surface $\hat{C}(s,t) = b(s)^\top \hat\Xi b(t)$ had to be solved (omitting \enquote*{$\cdot^{(k)}$} in this section).
 Remember that the elastic full Procrustes mean (for fixed warping) is estimated by the solution to the optimization problem
 \begin{equation}
 \hat\mu_q = \, \argmax_{\mu_q \in \mathbb{L}^2,\,\norm{\mu_q} = 1}\,\,
@@ -255,7 +252,7 @@ It follows that the estimate for the coefficient vector of the elastic full Proc
 \end{figure}
 
 
-\section{Numerical Integration of the Procrustes Fits}
+\section{Numerical Integration of the Warping-Aligned Procrustes Fits}
 \label{sec:3-pfits}
 Given an estimated mean function $\hat\mu_q^{(k)} = b(s)^\top\hat\theta^{(k)}$, we need to calculate the Procrustes alignment $\omega_i^{(k)} = \langle \widetilde q_i^{(k)}, \hat\mu_q^{(k)} \rangle$, $i = 1,\dots,N$, of each curve onto the current mean, before we can update the warping alignment (see \cref{algo:mean}).
 In the sparse and irregular setting, calculating a scalar product such as $\langle \widetilde q_i^{(k)}, \hat\mu_q^{(k)} \rangle$ can be a challenge, as we have to evaluate $\widetilde q_i^{(k)}(t)$ at every $t \in [0,1]$.
@@ -263,7 +260,7 @@ In the sparse and irregular setting, calculating a scalar product such as $\lang
 \langle \widetilde q_i^{(k)}, \hat\mu_q^{(k)} \rangle =
   \int_0^1 \langle \widetilde q_i^{(k)}(t), \hat\mu_q^{(k)}(t) \rangle \dt
 \end{equation}
-Following \cite{Steyer2021} and as discussed in \cref{sec:3-discrete}, this may be achieved by treating $\widetilde q_i^{(k)}$ as piecewise constant between the warping-aligned corners of the original curve $\beta_i$, with the normalized and warping aligned values given by
+Following \cite{Steyer2021} and as discussed in \cref{sec:3-discrete}, this may be approximated by treating $\widetilde q_i^{(k)}$ as piecewise constant between the warping-aligned corners of the original curve $\beta_i$, with the normalized and warping aligned values given by
 \begin{equation}
    \widetilde q_i^{(k)} \Big\rvert_{\left[\left(\gamma_i^{(k)}\right)^{-1}(t_{ij}),\, \left(\gamma_i^{(k)} \right)^{-1}(t_{ij+1})\right]} =
   \widetilde q_{ij}^{(k)}
