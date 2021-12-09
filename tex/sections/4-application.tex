@@ -56,49 +56,14 @@ The full Procrustes (green) and the elastic full Procrustes mean (red) are estim
 Note that the full Procrustes mean calculated in this way is not exactly\todo{Vielleicht sogar doch "exactly?"} a minimizer of the sum of squared full Procrustes distance defined in \cref{def:2-fpdist}, but instead is a minimizer of the sum of squared full Procrustes distances on SRV level.
 When comparing the different mean types in \cref{fig:4-means} we can see that, unlike the elastic mean, both Procrustes means are invariant with respect to all Euclidean similarity transforms, as the estimated mean is the same for the transformed and original datasets.
 However for this very same reason, both Procrustes means hold no information about the scale or rotation of the original curves, as they are of unit-length and have a rotation dependent on the eigendecomposition of the covariance surface.
-The elastic mean is only invariant with respect to re-parametrization and translation so that its scale and rotation match the original data curves.
-Unlike the Procrustes means, it can therefore be meaningfully plotted together with the original curves, when they are centered.
+The elastic mean is invariant only with respect to re-parametrization and translation, so that its scale and rotation match the original data curves.
+It can therefore be meaningfully plotted together with the original curves, when they are centered.
 
 Apart from illustrating these properties, \cref{fig:4-means} provides two important validation checks for the estimation procedure proposed in \cref{sec:2,sec:3}.
 Firstly, as stated, the estimated elastic full Procrustes mean is invariant to all Euclidean similarity transforms, as the mean shapes do not change with transformations of the input curves.
-Secondly, when considering untransformed curves, the estimated elastic full Procrustes mean shapes are very compareable to elastic mean shapes estimated with the method proposed \cite{Steyer2021}.
+Secondly, when considering untransformed curves, the estimated elastic full Procrustes mean shapes are very compareable to elastic mean shapes estimated with the method proposed in \cite{Steyer2021}.
 This is especially noteable when comparing the means in \cref{fig:4-means} (a) where the prominent \enquote{notch} in the center of the mean shape is similarly pronounced for the elastic and the elastic full Procrustes means, but not for the (non-elastic) full Procrustes mean.
-Taken together this shows that the proposed mean estimation method provide elastic mean estimates in the setting of sparse and irregular curves, which are invariant to all shape-preserving transformations.
-
-
-\section{Elastic Full Procrustes Fits and Outliers}
-\label{sec:4-pfits}
-\todo[inline]{Überlegen wie ich diese section schreibe. Procrustes fits, outlier plots.}
-\begin{figure}
-  \centering
-  \begin{subfigure}{0.48\textwidth}
-    \inputTikz{4-digits3-pfits}
-  \end{subfigure}
-  \begin{subfigure}{0.48\textwidth}
-    \inputTikz{4-spirals-pfits}
-  \end{subfigure}
-  \caption{Elastic full Procrustes fits (grey) and smooth mean (red). Data: See \cref{fig:41-digit3-means-b,fig:41-spiral-means-b}}
-  \label{fig:4-pfits}
-\end{figure}
-\begin{itemize}
-  \item Discuss elastic Procrustes fits.
-  \item Discuss warping aligned Procrustes fits in last iteration
-  \item Plot Procrustes fits from last iteration together with mean.
-  \item Discuss outliers that get shrinked away $\rightarrow$ plot.
-  \item Discuss normalization problem when keeping scaling fixed $\rightarrow$ Appendix?
-\end{itemize}
-\todo[inline]{Compare sum-of-squared distances to mean for three mean types. Can only compare the two Procrustes means}
-\begin{figure}
-  \centering
-  \begin{subfigure}{0.48\textwidth}
-    \inputTikz{4-digits3-pfits-srv}
-  \end{subfigure}
-  \begin{subfigure}{0.48\textwidth}
-    \inputTikz{4-spirals-pfits-srv}
-  \end{subfigure}
-  \caption{Elastic full Procrustes fits (grey) and piecewise-linear mean (red) on SRV level for digits (left) and spirals (right). Data: See \cref{fig:41-digit3-means-b,fig:41-spiral-means-b}}
-  \label{fig:4-pfits-srv}
-\end{figure}
+Taken together this shows that the proposed mean estimation method provides elastic mean estimates in the setting of sparse and irregular curves, which are invariant to all shape-preserving transformations.
 
 
 \section{Effect of the Penalty on the Estimated Mean}
@@ -133,9 +98,116 @@ In fact, a ridge penalty on SRV level only shrinks the \emph{absolute velocity} 
 This can be seen, when comparing the zero order penalty spiral mean (center-left) to the higher order penalty spiral means (right) and noting that, as a consequence of the decreased absolute velocity, it is relatively \enquote{shorter} towards the end when compared to the beginning of the spiral.
 The higher order penalties may be interpreted as smoothing the SRV mean function towards a polynomal of degree $p-1$ in areas where the penalty dominates, which means a constant function for the first order penalty and a linear function for the second order penalty \parencite[see e.g.][435]{FahrmeierEtAl2013}.
 Looking at the means for $p = 1,2$ in \cref{fig:4-penalty}, these differences are already hard to spot.
-The order two mean (right) is slightly longer towards the end, indicating a speed up, which is caused by the penalization towards a linearly (increasing) velocity, compared to a more conservative penalization towards a constant velocity.\todo{Warum sieht p=1 nicht polygon aus?} 
+The order two mean (right) is slightly longer towards the end, indicating a speed up, which is caused by the penalization towards a global linearly (increasing) velocity, compared to a more conservative penalization towards a global constant velocity. 
+
+
+\section{Elastic Full Procrustes Fits and Outliers}
+\label{sec:4-pfits}
+Although the elastic full Procrustes mean does not share rotation, scale and translation as the input curves, it is still possible to visually compare them, by plotting the mean together with the elastic full Procrustes fits.
+In \cref{fig:4-pfits} the elastic full Procrustes mean and fits are plotted for the digits \enquote*{3} and simulated spiral datasets discussed in \cref{sec:4-means}.
+\begin{figure}
+  \centering
+  \begin{subfigure}{0.48\textwidth}
+    \inputTikz{4-digits3-pfits}
+  \end{subfigure}
+  \begin{subfigure}{0.48\textwidth}
+    \inputTikz{4-spirals-pfits}
+  \end{subfigure}
+  \caption{Elastic full Procrustes fits (grey) and smooth means (red). Parameters: Second order penalty and linear B-splines, with 13 (left) and 19 (right) equidistant knots. Data: See \cref{fig:41-digit3-means-b,fig:41-spiral-means-b}}
+  \label{fig:4-pfits}
+\end{figure}
+Here, the elastic full Procrustes alignment is calculated on SRV level as $\widetilde q^\mathrm{EP} = (\omega^\mathrm{opt}\cdot \widetilde q \circ \gamma^\mathrm{opt} ) \sqrt{\dot\gamma^\mathrm{opt}}$, where the optimal rotation and scaling alignment $\omega^\mathrm{opt} = \lambda^\mathrm{opt} e^{\iu \theta^\mathrm{opt}}$ and optimal warping alignment $\gamma^\mathrm{opt}$ of each curve to the mean are taken from the last iteration of the mean estimation step.
+
+
+Wir hatten ja schon öfters mal diskutiert, dass der geschätzte Mean (rein visuell) dann nicht unbedingt entlang des "Schwerpunktes" der Procrustes-Fits verläuft.
+Der Mean ist am Ende eben NICHT einfach der Mean über die Procrustes Fits, wie das bei Landmark Daten der Fall ist.
+Zum einen liegt das natürlich daran, dass der Mean auf SRV Ebene berechnet wird, d.h. man hat schonmal inf Möglichkeiten den Mean zusammen mit den Pfits zu plotten (z.B. alle zentriert, oder alle starten bei 0, oder irgendwas anders) die mehr oder weniger gleichwertig sind.
+Zum anderen werden die Pfits und der Mean ja auch mit einem unterschiedlichen Level an "Smoothness" berechnet: Cov-Glättung mit Penalty etc. beim Mean -> sehr smooth, Piecewise constant Kurven integrieren -> kaum smooth. 
+Letzteres führt (glaube ich) dazu, dass die Pfits generell etwas "geshrinkt" werden, aber genau kann ich das nicht sagen. 
+As can be seen in \cref{fig:4-pfits-srv}.
+Auf jeden Fall kann man den Mean glaube ich auch nicht als einfach Mean der SRV Pfits interpretieren, weil da schon noch irgendwie eine Glättung mit reinspielt, die man beim Alignment nicht hat.
+
+Außerdem sind die Procrustes Fits auch ein Punkt bei der MA, wo am ehesten etwas schieflaufen kann.
+Manche "Outlier Kurven" werden ja sehr schlecht dran-rotiert und dann auch recht klein. 
+As can be seen in \cref{fig:4-outliers}.
+Das kann natürlich Konsequenzen für das Warping-Alignment haben, dass sich dann nicht anpassen kann oder sogar schlechter wird.
+Es kann also passieren, dass diese Kurven nie gut dran rotiert und einfach klein werden \dots
+Bin mir noch nicht sicher, ob ich das als Bug oder Feature der Methode sehen soll.
+Die Means sehen am Ende ja trotzdem sehr gut aus (oder gerade deswegen? 
+Der full Procrustes Mean ist ja angeblich am "robustesten" unter den Procrustes Means). 
+Vielleicht gibt es für diese Kurven einfach kein gutes Alignment.
+
+Anhand des Kapitels kann man schön verdeutlichen, wo man wahrscheinlich noch etwas verbessern kann (z.B. mit dem von dir vorgeschlagenen Glätten der beobachteten Kurven mit Hilfe der geschätzten Kovarianz). 
+Aber ja, ab jetzt haben die Zungendaten auf jeden Fall Prio.
+See also \cref{sec:a-warping}.
+
+
+\begin{itemize}
+  \item Discuss elastic Procrustes fits.
+  \item Discuss warping aligned Procrustes fits in last iteration
+  \item Discuss outliers that get shrinked away $\rightarrow$ plot.
+\end{itemize}
+
+\begin{figure}
+  \centering
+  \begin{subfigure}{0.48\textwidth}
+    \inputTikz{4-digits3-pfits-srv}
+  \end{subfigure}
+  \begin{subfigure}{0.48\textwidth}
+    \inputTikz{4-spirals-pfits-srv}
+  \end{subfigure}
+  \caption{Elastic full Procrustes fits (grey) and piecewise-linear mean (red) on SRV level for digits (left) and spirals (right).
+  Parameters: See \cref{fig:4-pfits}.
+  Data: See \cref{fig:41-digit3-means-b,fig:41-spiral-means-b}}
+  \label{fig:4-pfits-srv}
+\end{figure}
+
+\begin{figure}
+  \centering
+  \begin{subfigure}{0.24\textwidth}
+    \inputTikz{4-outlier-dist}
+  \end{subfigure}
+  \begin{subfigure}{0.24\textwidth}
+    \inputTikz{4-outlier-bopt}
+  \end{subfigure}
+  \begin{subfigure}{0.48\textwidth}
+    \centering
+    \inputTikz{4-outlier}
+  \end{subfigure}
+  \caption{Left: Distribution of each curves elastic full Procrustes distance to the estimated mean.
+  Center-left: Distribution of the scaling parameter of each elastic Procrustes fit onto the estimated mean.
+  Right: Four largest outliers (grey) with respect to their distance to the estimated mean (red) for the \texttt{digits3.dat} dataset.
+  Parameters: See \cref{fig:4-pfits}. 
+  Data: See \cref{fig:41-digit3-means-b,fig:41-spiral-means-b}}
+  \label{fig:4-outliers}
+\end{figure}
+
 
 
 \section{Mean Differences of Tounge Shapes in a Phonetics Dataset}
 \label{sec:4-tounges}
 \todo[inline]{Fertig machen und aufschreiben!}
+In dem Consulting Projekt wurde der Einfluss der \emph{flankierenden Vokale des Konsonanten auf die Zungenkontur} untersucht.
+Also z.B. wie sich die Zungenkontur "pada" vs. "pidi" unterscheidet. Dabei hat man in den Zungenkonturen drei Arten der Varibilität, einmal über die Vokalkontexte, einmal über die Versuchspersonen und einmal über die Wiederholungen pro Versuchsperson.
+An sich würde ich einfach vorschlagen genau die Varibilität entlang der Zunge zwischen den Vokalkontexten zu untersuchen und dabei für die Versuchspersonen zu kontrollieren.
+Die Unterschiede über die Wiederholungen sollten ja eher random noise sein.
+
+\paragraph{Estimation via Regression}
+Also man hat dann sowas wie:
+$$ y_i(t) = \beta_0(t) + D_{Vokal,i} * \beta_{Vokal}(t) + D_{Pers, i} * \beta_{Pers}(t) + \epsilon_i(t) $$
+Und was einen dann interessiert ist sowas wie:
+$$ \mathbb{E}\left[ (y_i | D_{Vokal, i} = \text{"a"})  - (y_i | D_{Vokal, i} = \text{"i"}) \right](t) = \beta_{\text{Vokal "a"}}(t) - \beta_{\text{Vokal "i"}}(t) $$
+
+\paragraph{Estimation via step-wise Means}
+Da uns nur Mean-Berechnung zur Verfügung steht, können wir obiges Modell nicht einfach schätze. Am einfachsten wäre es daher für jede Beobachtung
+$$ d_i(t) = (y_i(t) | D_{Vokal, i} = \text{"a"})  - (y_i(t) | D_{Vokal, i} = \text{"i"}) $$
+direkt auszurechnen und dann einfach den Mean über $d_i$ zu bilden.
+Allerdings haben wir pro Beobachtung nur entweder $y_i | D_{Vokal, i} = \text{"a"}$ oder $y_i | D_{Vokal, i} = \text{"i"}$ beobachtet, aber nie beides.
+Wir müssen $d_i(t)$ also irgendwie abschätzen. Der Erwartungswert von $d_i(t)$ ist gegeben als:
+$$ \mathbb{E}\left[d_i\right](t) = \mathbb{E}\left[y_i | D_{Vokal, i} = \text{"a"}\right](t)  - \mathbb{E}\left[y_i | D_{Vokal, i} = \text{"i"}\right](t) $$
+Was mir mit LIE umschreiben können als
+$$ \mathbb{E}\left[d_i\right](t) = \mathbb{E}\left[ \mathbb{E}\left[d_i | D_{Pers} \right]\right](t) = \mathbb{E}\left[ \mathbb{E}\left[y_i | D_{Vokal, i} = \text{"a"}, D_{Pers, i} \right]  - \mathbb{E}\left[y_i | D_{Vokal, i} = \text{"i"}, D_{Pers, i}\right] \right](t) $$
+Da uns pro Versuchsperson und pro Vokal mehrere Wiederholungen zur Verfügung stehen, können wir $\mathbb{E}\left[y_i | D_{Vokal, i}, D_{Pers, i} \right] $ über Mean-Berechnung schätzen und bekommen dadurch einen Schätzer für $\mathbb{E}\left[d_i | D_{Pers} \right]$:
+$$ \hat{d}_{D_{Pers}} (t) = \bar{y}(t)|_{D_{Vokal} = \text{"a"}, D_{Pers}} - \bar{y}(t)|_{D_{Vokal} = \text{"i"}, D_{Pers}}$$
+Schlussendlich bekommen wir einen Schätzer für $d(t)$ als Mean $\bar{d}(t)$ der $\hat{d}_{D_{Pers}}(t)$.
+Am Ende interessiert uns dann vielleicht auch eher $\lVert d(t) \rVert$ (Größe der Differenz entlang $t$, also entlang der Zunge).

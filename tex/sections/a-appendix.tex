@@ -34,11 +34,6 @@ Then
 \cref{lem:2-fpdist} ii.) follows by $\omega^\mathrm{opt} = \lambda^\mathrm{opt} e^{\iu \theta^\mathrm{opt}} = \kappa e^{-\iu\phi} = \overline{\langle \widetilde \beta_1, \widetilde \beta_2 \rangle} = \langle \widetilde \beta_2, \widetilde \beta_1 \rangle$.
 
 
-\section{Discussion of Possible Extensions to Closed Curves}
-\label{app:a-closed}
-\todo[inline]{Vielleicht einfach weglassen.}
-
-
 \section{Shape-Smoothing Using the Estimated Covariance-Surface}
 \label{app:a-smooth}
 \todo[inline]{In Form schreiben.}
@@ -61,3 +56,10 @@ Maybe using a penalty parameter - controling the strength of the regularization 
 $$ \hat\theta_q(\lambda) = V ( V^H B^T B V + \lambda \cdot \Lambda^{-1})^{-1} V^H B^T q$$
 
 **Thought**: A normal prior is probably not appropriate, because while its true that $\mathbb{E}[\theta] = 0$ (due to rotational symmetry) I would think that in general $\mathbb{E}[\lVert\theta\rVert] \neq 0$. A distribution more like a Normal distribution lying on a ring around 0 with radius $r = \lVert\theta\rVert$ is probably better? Then estimates wouldn't be pressed to zero so strongly, and instead would be pressed to curve of size equal to the mean.
+
+
+\section{Removing the Iteration over Rotation}
+\label{app:a-warping}
+\todo[inline]{As suggested to Lisa}
+
+
