@@ -97,6 +97,7 @@ However, this does not imply that the estimated mean on data curve level also ge
 In fact, a ridge penalty on SRV level only shrinks the \emph{absolute velocity} of the mean on data curve level towards zero, but should not directly influence the \emph{direction} of the mean curve.
 This can be seen, when comparing the zero order penalty spiral mean (center-left) to the higher order penalty spiral means (right) and noting that, as a consequence of the decreased absolute velocity, it is relatively \enquote{shorter} towards the end when compared to the beginning of the spiral.
 The higher order penalties may be interpreted as smoothing the SRV mean function towards a polynomal of degree $p-1$ in areas where the penalty dominates, which means a constant function for the first order penalty and a linear function for the second order penalty \parencite[see e.g.][435]{FahrmeierEtAl2013}.
+\todo{Kann man das so einfach übertrage?}
 Looking at the means for $p = 1,2$ in \cref{fig:4-penalty}, these differences are already hard to spot.
 The order two mean (right) is slightly longer towards the end, indicating a speed up, which is caused by the penalization towards a global linearly (increasing) velocity, compared to a more conservative penalization towards a global constant velocity. 
 
@@ -104,7 +105,8 @@ The order two mean (right) is slightly longer towards the end, indicating a spee
 \section{Elastic Full Procrustes Fits and Outliers}
 \label{sec:4-pfits}
 Although the elastic full Procrustes mean does not share rotation, scale and translation as the input curves, it is still possible to visually compare them, by plotting the mean together with the elastic full Procrustes fits.
-In \cref{fig:4-pfits} the elastic full Procrustes mean and fits are plotted for the digits \enquote*{3} and simulated spiral datasets discussed in \cref{sec:4-means}.
+In this thesis, the elastic full Procrustes fits are calculated on SRV level as $\widetilde q^\mathrm{EP} = (\omega^\mathrm{opt}\cdot \widetilde q \circ \gamma^\mathrm{opt} ) \sqrt{\dot\gamma^\mathrm{opt}}$, where the optimal rotation and scaling alignment $\omega^\mathrm{opt} = \lambda^\mathrm{opt} e^{\iu \theta^\mathrm{opt}}$ and optimal warping alignment $\gamma^\mathrm{opt}$ of each curve to the mean are taken from the last iteration of the mean estimation step.
+In \cref{fig:4-pfits} the elastic full Procrustes mean and fits are plotted for the digits \enquote*{3} and simulated spiral datasets discussed in \cref{sec:4-means}, whith a random Euclidean similarity transform was applied to each curve.
 \begin{figure}
   \centering
   \begin{subfigure}{0.48\textwidth}
@@ -113,55 +115,45 @@ In \cref{fig:4-pfits} the elastic full Procrustes mean and fits are plotted for 
   \begin{subfigure}{0.48\textwidth}
     \inputTikz{4-spirals-pfits}
   \end{subfigure}
-  \caption{Elastic full Procrustes fits (grey) and smooth means (red). Parameters: Second order penalty and linear B-splines, with 13 (left) and 19 (right) equidistant knots. Data: See \cref{fig:41-digit3-means-b,fig:41-spiral-means-b}}
+  \caption{Centered elastic full Procrustes fits (grey) and smooth means (red). Parameters: Second order penalty and linear B-splines, with 13 (left) and 19 (right) equidistant knots. Data: See \cref{fig:41-digit3-means-b,fig:41-spiral-means-b}}
   \label{fig:4-pfits}
 \end{figure}
-Here, the elastic full Procrustes alignment is calculated on SRV level as $\widetilde q^\mathrm{EP} = (\omega^\mathrm{opt}\cdot \widetilde q \circ \gamma^\mathrm{opt} ) \sqrt{\dot\gamma^\mathrm{opt}}$, where the optimal rotation and scaling alignment $\omega^\mathrm{opt} = \lambda^\mathrm{opt} e^{\iu \theta^\mathrm{opt}}$ and optimal warping alignment $\gamma^\mathrm{opt}$ of each curve to the mean are taken from the last iteration of the mean estimation step.
+This alignment works very well for the simluated spirals and is more fuzzy for the digits, due to their greater variability in shape. 
 
+In general, one has to be careful when interpreting these plots.
+For example, it can be seen that the estimated mean does not necessarily follow the \enquote{center of mass} of the aligned curves. 
+One reason for this is that the mean is calculated on SRV level, meaning we may set an arbitrary translation for the mean on data curve level.
+Here, the Procrustes fits and the mean function are centered, but a natural alternative might be to have all curves start at the origin, with both choices leading to very different, but equally valid, visual representations.
+It should also be taken into account that the mean is calculated from a smooth covariance surface, which was estimated using a roughness penalty (see \cref{sec:3-cov}), while the optimal rotation and scaling alignment was calculated by an approximation, where the observed normalized SRV curves are assumed piecewise-constant (see \cref{sec:3-pfits}).
 
-Wir hatten ja schon öfters mal diskutiert, dass der geschätzte Mean (rein visuell) dann nicht unbedingt entlang des "Schwerpunktes" der Procrustes-Fits verläuft.
-Der Mean ist am Ende eben NICHT einfach der Mean über die Procrustes Fits, wie das bei Landmark Daten der Fall ist.
-Zum einen liegt das natürlich daran, dass der Mean auf SRV Ebene berechnet wird, d.h. man hat schonmal inf Möglichkeiten den Mean zusammen mit den Pfits zu plotten (z.B. alle zentriert, oder alle starten bei 0, oder irgendwas anders) die mehr oder weniger gleichwertig sind.
-Zum anderen werden die Pfits und der Mean ja auch mit einem unterschiedlichen Level an "Smoothness" berechnet: Cov-Glättung mit Penalty etc. beim Mean -> sehr smooth, Piecewise constant Kurven integrieren -> kaum smooth. 
-Letzteres führt (glaube ich) dazu, dass die Pfits generell etwas "geshrinkt" werden, aber genau kann ich das nicht sagen. 
-As can be seen in \cref{fig:4-pfits-srv}.
-Auf jeden Fall kann man den Mean glaube ich auch nicht als einfach Mean der SRV Pfits interpretieren, weil da schon noch irgendwie eine Glättung mit reinspielt, die man beim Alignment nicht hat.
+%\begin{figure}
+%  \centering
+%  \begin{subfigure}{0.48\textwidth}
+%    \inputTikz{4-digits3-pfits-srv}
+%  \end{subfigure}
+%  \begin{subfigure}{0.48\textwidth}
+%    \inputTikz{4-spirals-pfits-srv}
+%  \end{subfigure}
+%  \caption{Elastic full Procrustes fits (grey) and piecewise-linear mean (red) on SRV level for digits (left) and spirals (right).
+%  Parameters: See \cref{fig:4-pfits}.
+%  Data: See \cref{fig:41-digit3-means-b,fig:41-spiral-means-b}}
+%  \label{fig:4-pfits-srv}
+%\end{figure}
 
-Außerdem sind die Procrustes Fits auch ein Punkt bei der MA, wo am ehesten etwas schieflaufen kann.
-Manche "Outlier Kurven" werden ja sehr schlecht dran-rotiert und dann auch recht klein. 
-As can be seen in \cref{fig:4-outliers}.
-Das kann natürlich Konsequenzen für das Warping-Alignment haben, dass sich dann nicht anpassen kann oder sogar schlechter wird.
-Es kann also passieren, dass diese Kurven nie gut dran rotiert und einfach klein werden \dots
-Bin mir noch nicht sicher, ob ich das als Bug oder Feature der Methode sehen soll.
-Die Means sehen am Ende ja trotzdem sehr gut aus (oder gerade deswegen? 
-Der full Procrustes Mean ist ja angeblich am "robustesten" unter den Procrustes Means). 
-Vielleicht gibt es für diese Kurven einfach kein gutes Alignment.
+%Außerdem sind die Procrustes Fits auch ein Punkt bei der MA, wo am ehesten etwas schieflaufen kann.
+%Manche "Outlier Kurven" werden ja sehr schlecht dran-rotiert und dann auch recht klein. 
+%As can be seen in \cref{fig:4-outliers}.
+%Das kann natürlich Konsequenzen für das Warping-Alignment haben, dass sich dann nicht anpassen kann oder sogar schlechter wird.
+%Es kann also passieren, dass diese Kurven nie gut dran rotiert und einfach klein werden \dots
+%Bin mir noch nicht sicher, ob ich das als Bug oder Feature der Methode sehen soll.
+%Die Means sehen am Ende ja trotzdem sehr gut aus (oder gerade deswegen? 
+%Der full Procrustes Mean ist ja angeblich am "robustesten" unter den Procrustes Means). 
+%Vielleicht gibt es für diese Kurven einfach kein gutes Alignment.
+%
+%Anhand des Kapitels kann man schön verdeutlichen, wo man wahrscheinlich noch etwas verbessern kann (z.B. mit dem von dir vorgeschlagenen Glätten der beobachteten Kurven mit Hilfe der geschätzten Kovarianz). 
+%Aber ja, ab jetzt haben die Zungendaten auf jeden Fall Prio.
 
-Anhand des Kapitels kann man schön verdeutlichen, wo man wahrscheinlich noch etwas verbessern kann (z.B. mit dem von dir vorgeschlagenen Glätten der beobachteten Kurven mit Hilfe der geschätzten Kovarianz). 
-Aber ja, ab jetzt haben die Zungendaten auf jeden Fall Prio.
-See also \cref{sec:a-warping}.
-
-
-\begin{itemize}
-  \item Discuss elastic Procrustes fits.
-  \item Discuss warping aligned Procrustes fits in last iteration
-  \item Discuss outliers that get shrinked away $\rightarrow$ plot.
-\end{itemize}
-
-\begin{figure}
-  \centering
-  \begin{subfigure}{0.48\textwidth}
-    \inputTikz{4-digits3-pfits-srv}
-  \end{subfigure}
-  \begin{subfigure}{0.48\textwidth}
-    \inputTikz{4-spirals-pfits-srv}
-  \end{subfigure}
-  \caption{Elastic full Procrustes fits (grey) and piecewise-linear mean (red) on SRV level for digits (left) and spirals (right).
-  Parameters: See \cref{fig:4-pfits}.
-  Data: See \cref{fig:41-digit3-means-b,fig:41-spiral-means-b}}
-  \label{fig:4-pfits-srv}
-\end{figure}
-
+See Figure \cref{fig:4-outliers}. \dots \todo{Outlier diskutieren} See also \cref{app:a-warping}.
 \begin{figure}
   \centering
   \begin{subfigure}{0.24\textwidth}
@@ -183,31 +175,53 @@ See also \cref{sec:a-warping}.
 \end{figure}
 
 
-
-\section{Mean Differences of Tounge Shapes in a Phonetics Dataset}
+\section{Variability in Tounge Shapes in a Phonetics Dataset}
 \label{sec:4-tounges}
-\todo[inline]{Fertig machen und aufschreiben!}
-In dem Consulting Projekt wurde der Einfluss der \emph{flankierenden Vokale des Konsonanten auf die Zungenkontur} untersucht.
-Also z.B. wie sich die Zungenkontur "pada" vs. "pidi" unterscheidet. Dabei hat man in den Zungenkonturen drei Arten der Varibilität, einmal über die Vokalkontexte, einmal über die Versuchspersonen und einmal über die Wiederholungen pro Versuchsperson.
-An sich würde ich einfach vorschlagen genau die Varibilität entlang der Zunge zwischen den Vokalkontexten zu untersuchen und dabei für die Versuchspersonen zu kontrollieren.
-Die Unterschiede über die Wiederholungen sollten ja eher random noise sein.
+\textbf{[Paragraph: Einleitung, Ultraschallaufnahmen, Zungendaten]}
 
-\paragraph{Estimation via Regression}
-Also man hat dann sowas wie:
-$$ y_i(t) = \beta_0(t) + D_{Vokal,i} * \beta_{Vokal}(t) + D_{Pers, i} * \beta_{Pers}(t) + \epsilon_i(t) $$
-Und was einen dann interessiert ist sowas wie:
-$$ \mathbb{E}\left[ (y_i | D_{Vokal, i} = \text{"a"})  - (y_i | D_{Vokal, i} = \text{"i"}) \right](t) = \beta_{\text{Vokal "a"}}(t) - \beta_{\text{Vokal "i"}}(t) $$
+\textbf{[Paragraph: Datensatz, $(r,\theta)$ zu $(x_1, x_2)$, Arten der Varibilität $\rightarrow$ Wörter + Versuchspersonen + Wiederholungen]}
 
-\paragraph{Estimation via step-wise Means}
-Da uns nur Mean-Berechnung zur Verfügung steht, können wir obiges Modell nicht einfach schätze. Am einfachsten wäre es daher für jede Beobachtung
-$$ d_i(t) = (y_i(t) | D_{Vokal, i} = \text{"a"})  - (y_i(t) | D_{Vokal, i} = \text{"i"}) $$
-direkt auszurechnen und dann einfach den Mean über $d_i$ zu bilden.
-Allerdings haben wir pro Beobachtung nur entweder $y_i | D_{Vokal, i} = \text{"a"}$ oder $y_i | D_{Vokal, i} = \text{"i"}$ beobachtet, aber nie beides.
-Wir müssen $d_i(t)$ also irgendwie abschätzen. Der Erwartungswert von $d_i(t)$ ist gegeben als:
-$$ \mathbb{E}\left[d_i\right](t) = \mathbb{E}\left[y_i | D_{Vokal, i} = \text{"a"}\right](t)  - \mathbb{E}\left[y_i | D_{Vokal, i} = \text{"i"}\right](t) $$
-Was mir mit LIE umschreiben können als
-$$ \mathbb{E}\left[d_i\right](t) = \mathbb{E}\left[ \mathbb{E}\left[d_i | D_{Pers} \right]\right](t) = \mathbb{E}\left[ \mathbb{E}\left[y_i | D_{Vokal, i} = \text{"a"}, D_{Pers, i} \right]  - \mathbb{E}\left[y_i | D_{Vokal, i} = \text{"i"}, D_{Pers, i}\right] \right](t) $$
-Da uns pro Versuchsperson und pro Vokal mehrere Wiederholungen zur Verfügung stehen, können wir $\mathbb{E}\left[y_i | D_{Vokal, i}, D_{Pers, i} \right] $ über Mean-Berechnung schätzen und bekommen dadurch einen Schätzer für $\mathbb{E}\left[d_i | D_{Pers} \right]$:
-$$ \hat{d}_{D_{Pers}} (t) = \bar{y}(t)|_{D_{Vokal} = \text{"a"}, D_{Pers}} - \bar{y}(t)|_{D_{Vokal} = \text{"i"}, D_{Pers}}$$
-Schlussendlich bekommen wir einen Schätzer für $d(t)$ als Mean $\bar{d}(t)$ der $\hat{d}_{D_{Pers}}(t)$.
-Am Ende interessiert uns dann vielleicht auch eher $\lVert d(t) \rVert$ (Größe der Differenz entlang $t$, also entlang der Zunge).
+\textbf{[Paragraph: Fragestellung, Variabilität über Vokalkontext (quasi Wiederholung der Untersuchung aus dem Consulting Projekt)]}
+
+\subsection*{Summary for Almond}
+\begin{itemize}
+  \item Want investiage how the effect of the flanking vowels \enquote*{aa} and \enquote*{ii} on tounge shape differs for the consonants 'd', 'l', 'n' and 's', while controlling for variability over six speakers and 5--7 repetitions of the same word per speaker.
+  \item Analysis should be invariant with respect to size, rotation, translation and parametrization of the tounges.
+    This can e.g.\ account for anatomical differences between speakers, or inaccuracies in the measurement process.
+  \item \textbf{Idea:} Estimate a global mean function $q_0(t)$ from all curves and calculate the elastic full Procrustes residuals.
+    They are given by the difference of elastic full Procrustes fits and the mean function on SRV level
+    $$ \hat r_i = \left( \omega_i^\mathrm{opt} \cdot \widetilde q_i \circ \gamma_i^\mathrm{opt} \right) \sqrt{\dot\gamma_i^\mathrm{opt}} - \hat q_0 \,.$$
+    We can perform analysis over the $\hat r_i(t)$. 
+  \item A word is a combination of vowels and consonants $(C_v, C_c)$ with $C_v \in \{\mathrm{aa}, \mathrm{ii}\}$ and $C_c \in \{\mathrm{d},\mathrm{l},\mathrm{n},\mathrm{s}\}$, e.g.\ \enquote*{pada} corresponds to $(\mathrm{aa},\mathrm{d})$ as all words start with 'p'.
+    We can index each word--speaker pair $\left( C_v, C_c, C_s \right)$ by $k$, where $C_s \in \{1,\dots,6\}$ and $k = 1, \dots, K$ with $K = 2 \cdot 4 \cdot 6 = 48$.
+  \item Then we can gather the residuals $\hat r_{(k, rep_k)}(s_{(k,rep_k,j)})$ of the repetitions $rep_k$ (their number varies with $k$) of each word--speaker pair $k$, and estimate a \enquote*{mean} residual function for that word and speaker:
+    $$ \hat r_k (t) = \hat r_{\left( C_v, C_c, C_s \right)} (t) \approx \hat \theta_k^\top b(t)$$
+    Atm I use the mean basis here, which means linear B-Splines. Might be nicer to have something that is smoother.
+  \item We are interested in the effect of the flanking vowels on tounge shape given, for each consonant-speaker pair, by this difference:
+    $$ \hat d_{(C_c, C_s)}(t) = \hat r_{(\mathrm{aa}, C_c, C_s)} (t) - \hat r_{(\mathrm{ii}, C_c, C_s)} (t) = 
+      \left( \hat\theta^\top_{(\mathrm{aa}, C_c, C_s)} - \hat\theta^\top_{(\mathrm{aa}, C_c, C_s)} \right) b(t)\,. $$
+    Note that $\hat d(t) : [0,1] \rightarrow \mathbb{C}$ (two-dimensional)! The absolute differences over speakers and consonants are given by $\abs{\hat d_{(C_c, C_s)}(t)}$ are plotted in \cref{fig:4-diffs-vpn}.
+\end{itemize}
+\begin{figure}
+  \centering
+  \inputTikz{4-diffs-vpn}
+  \caption{a caption}
+  \label{fig:4-diffs-vpn}
+\end{figure}
+\begin{itemize}
+  \item Finally we can average the differences over each speaker as
+    $$ \hat d_{(C_c)} (t) = \left(\frac{1}{6} \sum_{C_s} \hat \theta^\top_{(C_c, C_s)} \right) b(t)$$
+    or likewise as absolute difference  $\abs{\hat d_{(C_c)}(t)}$ plotted in \cref{fig:4-diffs}.
+\end{itemize}
+\begin{figure}
+  \centering
+  \inputTikz{4-diffs}
+  \caption{Another caption}
+  \label{fig:4-diffs}
+\end{figure}
+\begin{itemize}
+  \item Man sieht, dass der Einfluss des flankierenden Vokals unabhängig vom Konsanten zu sein scheint.
+    Das ist zumindest ein anderes Ergebniss, als in dem Consulting Projekt.
+  \item Die Analysie ist hier auf SRV level.
+  \item Sofern das alles so Sinn macht, könnte man jetzt noch Konfidenzintervalle undsowas dazu berechnen.
+\end{itemize}
