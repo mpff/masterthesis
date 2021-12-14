@@ -10,7 +10,7 @@ Landmarks have the drawback that there is no clear way of choosing which points 
 Furthermore, using landmarks leads to an inherently discrete treatment of the available data, which means modes of variation that lie in between landmarks may not be picked up by the analysis.  
 By using curves, the analysis is not restricted to a fixed set of $k$ discrete points, but instead uses all the available information.
 At the same time, the subjectivity in choosing the landmarks is eliminated.
-As each object then corresponds to one observation, this opens up a connection to the branch of statistics concerned with observations that are whole functions: Functional Data Analysis \parencite[see e.g.][]{RamsaySilverman2005}.
+As each object then corresponds to one observation, this opens up a connection to the branch of statistics concerned with observations that are whole functions: Functional Data Analysis \parencite[see e.g.][]{RamsaySilverman2005,WangChiouMueller2016}.
 
 When analysing the geometry of objects, differences in location, rotation, and size are often not of interest.
 Instead, the focus lies purely on their differences in  \textit{shape}, a widely adapted definition of which was established by \cite{Kendall1977} and which might be formulated in the following way: \textquote[{\parencite[1]{DrydenMardia2016}}]{\textins*{A}ll the geometrical information that remains when location, scale and rotational effects are removed from an object}.
@@ -79,7 +79,7 @@ The aim of this thesis, as illustrated in \cref{fig:1-mean}, is to extend existi
 \end{figure}
 The later will be achieved by generalising the concept of the full Procrustes mean from landmark to functional data and by iteratively applying full Procrustes mean estimation, rotation-alignment and parametrization-alignment, leading to the estimation of elastic full Procrustes means.
 Here, techniques for Hermitian smoothing of the complex covariance surfaces as available in the \texttt{R} package \texttt{sparseFLMM} \parencite{sparseFLMM} will be used.
-
+While \citeauthor{Steyer2021} also propose methods for elastic mean estimation over closed curves, given by $\beta:\mathbb{S}^1 \rightarrow \mathbb{C}$, this thesis will only consider means for open curves. 
 
 The thesis is organised as follows.
 In \cref{sec:2} relevant background material is reviewed and the elastic full Procrustes mean is derived, in the case where curves $\beta:[0,1] \rightarrow \mathbb{R}^2$ are fully observed. 
