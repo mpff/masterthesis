@@ -1,2 +1,32 @@
 \label{sec:5}
-\todo[inline]{Summary zum Schluss schreiben}
+In this thesis a method for shape mean estimation of open planar curves was
+proposed.
+The estimation method is especially suitable for sparse and irregular
+observations as it makes use of covariance smoothing methods.
+
+The method and its implementation were validated over toy datasets, where it was
+shown that the estimated shape means are elastic and invariant with respect to
+shape preserving transformations of the input curves.
+The penalty used in the estimation of the Hermitian covariance
+surface provides stable estimates in regions where observations are sparse,
+where good results were achieved for first and second order penalties.
+The estimated mean may be plotted together with the elastic full Procrustes
+fits, however, care has to be taken when interpreting these plots, as the
+estimated mean curve is not a simple functional mean of the aligned curves, due to
+their shrinkage.
+However, for this same reason the elastic full Procrustes mean is quite robust to
+outliers, as they tend to get shrunk towards zero, restricting their influence
+on the mean estimation.
+Finally, the method was used to analyse variability in an empirical dataset of
+tongue contours during consonant articualtion.
+Here it was found that the vowel context has the largest influence on the tongues
+shape, while the effect of the spoken consonant seems to vary between speakers.
+
+The proposed methods might be improved by including some form of smoothing into
+the estimation of the elastic full Procrustes fits, such as a variation of the
+curve smoothing proposed in \cref{app:a-smooth}, or by directly solving the
+warping optimisation over the analytical solution to the rotation and scaling
+alignment.
+Two important extension that seem quite challanging would be elastic full Procrustes mean estimation for
+closed curves and for higher-dimensional curves.
+

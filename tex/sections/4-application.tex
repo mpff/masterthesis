@@ -138,40 +138,38 @@ In general, one has to be careful when interpreting these plots.
 For example, it can be seen that the estimated mean does not necessarily follow the \enquote{centre of mass} of the aligned curves. 
 One reason for this is that the mean is calculated on SRV level, meaning we may set an arbitrary translation for the mean on data curve level.
 Here, the Procrustes fits and the mean function are centred, but a natural alternative might be to have all curves start at the origin, with both choices leading to very different, but equally valid, visual representations.
-On SRV level, displayed in \cref{fig:4-pfits-srv}, it should also be taken into account that the mean is calculated from a smooth covariance surface, which was estimated using a roughness penalty where the SRV curves were assumed to be observed at the centre between the original curves observed corners (see \cref{sec:3-cov}).
-On the other hand, the optimal rotation and scaling alignment was calculated by treating the normalised SRV curves as piece-wise-constant (see \cref{sec:3-pfits}).
-It follows that the estimated mean on SRV level is also not necessarily the functional mean of the elastic full Procrustes fits.
-This mismatch in estimation strategies might be a possible avenue of further research, and could be addressed by incorporating some form of smoothing into the estimation of the elastic full Procrustes fits, such as a variation of the curve smoothing proposed in \cref{app:a-smooth}.
-
-Because of the great variation in '3' shapes in the \texttt{digits3.dat} dataset, there are some curves that cannot be properly aligned.
+Another reason is the scaling alignment, especially with respect to outliers.
+This is more noticeable in the \texttt{digits3.dat}, because of the greater variation in '3' shapes, where some curves cannot be properly aligned.
 Four outlier shapes are shown in \cref{fig:4-outliers}, which were classified using their distance to the mean (left). 
 \begin{figure}
   \centering
-  \begin{subfigure}[t]{0.60\textwidth}
-    \begin{subfigure}{0.40\textwidth}
+  \begin{subfigure}[t]{0.59\textwidth}
+    \begin{subfigure}[t]{0.40\textwidth}
       \centering
       \inputTikz{4-outlier-dist}
     \end{subfigure}
-    \begin{subfigure}{0.60\textwidth}
+    \begin{subfigure}[t]{0.60\textwidth}
       \centering
       \inputTikz{4-outlier}
     \end{subfigure}
     \caption{Distribution of elastic full Procrustes distances to the estimated mean (red) with four largest outliers (grey).}
+  \label{fig:4-outliers}
   \end{subfigure}
-  \begin{subfigure}[t]{0.40\textwidth}
+  \begin{subfigure}[t]{0.39\textwidth}
     \centering
     \inputTikz{4-outlier-bopt}
     \caption{Distribution of the optimal scaling alignment parameter of each elastic Procrustes fit.}
+    \label{fig:4-bopts}
   \end{subfigure}
   \caption{Elastic full Procrustes distances, outliers and estimated optimal scaling. Parameters: See \cref{fig:4-pfits}. 
   Data: See \cref{fig:41-digit3-means-b,fig:41-spiral-means-b}}
-  \label{fig:4-outliers}
 \end{figure}
 One prominent feature of the full Procrustes mean is its relative robustness to outliers, when compared to the normal and partial Procrustes means.
-This comes from the additional scaling alignment, which allows for shrinkage of any outlier curve towards zero, which can be seen for curves $1$ and $4$ in \cref{fig:4-outliers} (right).
+This comes from the additional scaling alignment, which allows for shrinkage of any outlier curve towards zero, as can be seen for curves $1$ and $4$ in \cref{fig:4-outliers}.
+This shrinkage, indicated by a value of $\lambda^\mathrm{opt} < 1$ in \cref{fig:4-bopts}, does occur for all curves, not only occur for outlier curves, which should not be surprising, as the alignment minimizes the distance to the mean, which always makes it advantageous to shrink the aligned curves slightly rather than scaling them up.
 Because the warping alignment is performed between the elastic full Procrustes fit and the mean curve, it might be important to better understand how it is affected by bad rotation and scaling alignment.
 While a bad scaling alignment does not seem to be immediately problematic, as the warping alignment only takes into account the \emph{relative} distances over $t$ between the aligned and the mean curve, a bad rotation alignment will most likely always lead to a bad warping alignment.
-However, because of the discussed shrinkage, these outliers are only problematic when considering the alignment of single curves and do not have a strong influence on the estimated means shape when their number is small.
+However, because of the discussed shrinkage, these outliers are only problematic when considering the alignment of single curves, as their influence on the estimated means shape is always limited by a shrinkage to zero.
 
 
 \section{Analysis of Variations in Tongue Shapes}
@@ -228,4 +226,4 @@ It seems that without accounting for the individual speaker, the consonant only 
 This indicates that there is no strong effect of the spoken consonant on tongue shape over all speakers, but rather that this effect depends on each speaker individually.
 Finally, the smallest variability is measured over the per-speaker means for repetitions of the same word (central eight plots), indicating that tongue shape is very consistent on a per-speaker basis.
 
-\todo[inline]{One paragraph for possible future extensions.}
+

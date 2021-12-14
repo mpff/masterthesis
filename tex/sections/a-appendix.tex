@@ -36,81 +36,140 @@ Then
 
 \section{Shape-Smoothing Using the Estimated Covariance-Surface}
 \label{app:a-smooth}
-Instead of treating $\widetilde q_i^{(k)}$ as piecewise constant,  in mean basis $b(t)$, so that $\hat{q}(t) = b(t)^T \hat{\theta}_q$. Then the scalar products simplify to
-$$ \langle q, \hat{p} \rangle \approx \hat{\theta}_q^H G \hat{\theta} $$
-$$ \langle q, q \rangle \approx \hat{\theta}_q^H G \hat{\theta}_q $$
+Instead of treating $\widetilde q_i$ as piecewise constant, we might want to smooth each curve in the mean basis $b(t)$, so that $\widetilde q_i \approx b(s)^\top \hat\theta_i$.
+The optimal rotation and scaling alignment is then simply given by the scalar product 
+$ \omega_i = \langle \widetilde q_i, \hat\mu_q \rangle \approx (\hat\theta_i)^H G \hat\theta$.
+To make use of information from the other observations, we can estimate the coefficient vector $\theta_i$ in way that penalises deviations from the estimated mean covariance-structure $\hat\Xi$.
+This may be achieved by using a ridge penalty, where we assume $\widetilde q_i \sim \mathcal{N}_{\mathbb{C}^k}(B \theta_i, \sigma^2 I_{m_i})$, with $B$ the $m_i \times k$ design matrix and $q_i$ now the stacked vector of observations, and place a complex normal prior $\theta_q \sim \mathcal{N}_{\mathbb{C}^k}(0, \tau^2 \hat\Xi)$ on the coeficient vector.
+See e.g.\ \parencite{Picinbono1996} for information on the complex normal distribution.
+Here, $\lambda = \frac{\sigma^2}{\tau^2}$ is a hyperparameter controlling the strength of the penalisation.
+\begin{equation}
+  \argmax_{\theta_i \in \mathbb{C}^k} \,\, (\widetilde q_i - B\theta_i)^H (\widetilde q_i - B \theta_i) - \lambda {\theta_i}^H {\hat\Xi}^H \theta_i
+\end{equation}
+The penalised estimate is then given by the solution to the above optimisation problem, and therefore after some derivation
+\begin{equation}
+  \hat\theta_i = (B^T B + \lambda {\hat\Xi}^{-1})^{-1} B^T \widetilde q_i.
+\end{equation}
+The results of this smoothing procedure can be seen in \cref{fig:a-smooth-lm} for $\lambda = 0.4$.
+%\begin{figure}
+%  \centering
+%  \begin{subfigure}{\textwidth}
+%    \begin{subfigure}{0.48\textwidth}
+%      \inputTikz{A-smooth-d3}
+%    \end{subfigure}\hfill%
+%    \begin{subfigure}{0.48\textwidth}
+%      \inputTikz{A-smooth-sp}
+%    \end{subfigure}
+%    \caption{Centred elastic full Procrustes fits (grey) and smooth means (red).}
+%    \label{fig:a-smooth-means-lm}
+%  \end{subfigure}
+%  \begin{subfigure}{\textwidth}
+%    \centering
+%    \begin{subfigure}{\textwidth}
+%    \centering
+%      \inputTikz{A-smooth-pfits-d3}
+%    \end{subfigure}
+%    \begin{subfigure}{\textwidth}
+%    \centering
+%      \inputTikz{A-smooth-pfits-sp}
+%    \end{subfigure}
+%    \caption{Smooth (red) and original (grey) observations.}
+%    \label{fig:a-smooth-pfits-lm}
+%  \end{subfigure}
+%  \caption{Elastic full Procrustes means and fits for digits with smoothed observations ($\lambda = 1$). Parameters: Second order penalty and linear B-splines, with 13 equidistant knots. Data: See \cref{fig:41-digit3-means-b,fig:41-spiral-means-b}}
+%  \label{fig:a-smooth}
+%\end{figure}
+\begin{figure}
+  \centering
+  \begin{subfigure}{\textwidth}
+    \begin{subfigure}{0.48\textwidth}
+      \inputTikz{A-smooth-d3-lamb}
+    \end{subfigure}\hfill%
+    \begin{subfigure}{0.48\textwidth}
+      \inputTikz{A-smooth-sp-lamb}
+    \end{subfigure}
+    \caption{Centred elastic full Procrustes fits (grey) and smooth means (red).}
+    \label{fig:a-smooth-means-lm}
+  \end{subfigure}
+  \begin{subfigure}{\textwidth}
+    \centering
+    \begin{subfigure}{\textwidth}
+    \centering
+      \inputTikz{A-smooth-pfits-d3-lamb}
+    \end{subfigure}
+    \begin{subfigure}{\textwidth}
+    \centering
+      \inputTikz{A-smooth-pfits-sp-lamb}
+    \end{subfigure}
+    \caption{Smooth (red) and original (grey) observations.}
+    \label{fig:a-smooth-pfits-lm}
+  \end{subfigure}
+  \caption{Elastic full Procrustes means and fits for digits with smoothed observations ($\lambda = 0.4$). Parameters: Second order penalty and linear B-splines, with 13 equidistant knots. Data: See \cref{fig:41-digit3-means-b,fig:41-spiral-means-b}}
+  \label{fig:a-smooth-lm}
+\end{figure}
+The method succeeds in estimating very natural looking smooth SRV curves, however, the smoothed curves tend to get shrinked towards 0, because of the ridge penalty.
+While this shrinking may be prevented by normalizing the smoothed SRV curve (leading to unit-length curves on original curve leve), a normal prior is probably simply not the appropriate prior in this setting.
+For the individual coefficients $\theta_{ik}$ it is true that $\mathbb{E}[\theta_{ik}] = 0$ (due to rotational symmetry), however, in general $\mathbb{E}[\abs{\theta_{ik}}] \neq 0$. 
+A distribution more like a Normal distribution lying on a ring around 0 with radius $r = \abs\theta$, or a proper shape distribution such as the complex Bingham distribution \parencite[see e.g.][Chap.\ 10]{DrydenMardia2016} might be more appropriate.
+Using those, the estimates would not be shrinked towards zero and instead would be smoothed toworads a curve of size equal to the estimated mean.
+The smoothing could be further improved by providing true interpolation, so that the interpolated curve goes through the observed points on original curve level.
+As the smoothed original curve is calculated by integrating the smoothed SRV curves, this means one has to implement a nonlinear constraint ensuring that the curve integrates to the difference between the observed points on the interval between them.
 
-As $q$ can be sparse, we may want to use the estimated covariance matrix $\hat{\Xi}$ when estimating $\theta_q$ in the form of a Normal prior $\theta_q \sim \mathcal{N}_{\mathbb{C}^k}(0, \hat\Xi)$ leading to
 
-$$ \hat\theta_q = (B^T B + \Xi^{-1})^{-1} B^T q $$
-
-or equivalently using eigendecompositon $\Xi = V \Lambda V^{-1}$ with $V^H V = \mathcal{I}$ and $\Lambda = diag(\lambda_1, \dots, \lambda_k)$
-
-$$ \hat\theta_q = V ( V^H B^T B V + \Lambda^{-1})^{-1} V^H B^T q$$
-
-In general how well this works tends to depend on how close the curve is to the estimated mean.
-
-Maybe using a penalty parameter - controling the strength of the regularization - is also thinkable? Something like this:
-
-$$ \hat\theta_q(\lambda) = V ( V^H B^T B V + \lambda \cdot \Lambda^{-1})^{-1} V^H B^T q$$
-
-**Thought**: A normal prior is probably not appropriate, because while its true that $\mathbb{E}[\theta] = 0$ (due to rotational symmetry) I would think that in general $\mathbb{E}[\lVert\theta\rVert] \neq 0$. A distribution more like a Normal distribution lying on a ring around 0 with radius $r = \lVert\theta\rVert$ is probably better? Then estimates wouldn't be pressed to zero so strongly, and instead would be pressed to curve of size equal to the mean.
-
-
-\section{Removing the Iteration over Rotation}
+\section{Implicit Rotation and Scaling Alignment}
 \label{app:a-warping}
-\todo[inline]{As suggested to Lisa}
-Ich habe mich noch gefragt ob man anstatt Iteration über Eq.\ \ref{eq:argmin_rot} und Eq.\ \ref{eq:argmin_wrp} die Distanz in Lemma \ref{lem:dist} ii.) auch direkter optimieren kann.
+Instead of solving for the optimal warping and rotation and scaling alignment iteratively, we might optimse the warping alignment directly over the analytical solution to the rotation and scaling alignment (see \cref{lem:2-fpdist} i.).
+Then we have an alternative optimisation problem
 \begin{align*}
-  \gamma^* = & \argmin_{\gamma \in \Gamma} \sqrt{1 - \langle z_1, \widetilde z_2 \rangle \langle \widetilde z_2, z_1 \rangle } \\
-    = & \argmax_{\gamma \in \Gamma} \langle z_1, \widetilde z_2 \rangle \langle \widetilde z_2, z_1 \rangle \\
-    = & \argmax_{\gamma \in \Gamma} \int_0^1 \int_0^1
-    \overline{z_1(t)} \underbrace{\widetilde z_2(t) \overline{\widetilde z_2(s)}}_{\coloneqq \, {\widetilde C}(s,t)} z_1(s) \, dt ds \\
-    = & \argmax_{\gamma \in \Gamma} \langle \widetilde C \, z_1, z_1 \rangle
+  \gamma^\mathrm{opt} = & \argmin_{\gamma \in \Gamma}\, \sqrt{1 - \langle \widetilde q_1, (\widetilde q_2  \circ \gamma ) \sqrt{\dot\gamma} \rangle \langle (\widetilde q_2 \circ \gamma) \sqrt{\dot\gamma}, \widetilde q_1 \rangle } \\
+    & \argmin_{\gamma \in \Gamma} \, \sqrt{1 - \langle (\widetilde q_2  \circ \gamma ) \sqrt{\dot\gamma}, \widetilde q_1 \rangle \langle \widetilde q_1, (\widetilde q_2 \circ \gamma) \sqrt{\dot\gamma} \rangle } \\
+    = & \argmax_{\gamma \in \Gamma} \, \langle (\widetilde q_2  \circ \gamma ) \sqrt{\dot\gamma}, \widetilde q_1 \rangle \langle \widetilde q_1, (\widetilde q_2 \circ \gamma) \sqrt{\dot\gamma} \rangle \\
+    = & \argmax_{\gamma \in \Gamma} \langle C_1 \, (\widetilde q_2 \circ \gamma ) \sqrt{\dot \gamma}, (\widetilde q_2 \circ \gamma)\sqrt{\dot\gamma} \rangle
 \end{align*}
-Mit $\widetilde C(s,t)$ der Kovarianz-Funktion von $\widetilde z_2 = (z_2 \circ \gamma) \sqrt{\dot\gamma}$.
-Habe das jetzt nicht weiter verfolgt (weil Zeit), aber vielleicht ist das ganz interessant?
-Man kann das glaube ich auch umschreiben mit $\breve z_1 = (z_1 \circ \gamma^{-1}) \sqrt{\dot{\gamma^{-1}}}$ als $\argmax_{\gamma \in \Gamma} \langle C \, \breve z_1, \breve z_1 \rangle$.
+with $C_1$ the covariance operator belonging to the covariance function $C_1(s,t) = \widetilde q_1(s) \overline{\widetilde q_1 (t)}$ of $\widetilde q_1$ (compare also the derivation of the elastic full Procrustes mean).
+In the mean estimation step, $C_1$ can be replaced with the estimated covariance surface, making the rotation and scaling alignment unneccessary and possibly providing a computational advantage.
+However, this approach does not integrate with existing approaches for warping alignment such as \cite{Steyer2021}.
+Further work might focus on solving the above optimisation problem for sparse and irregular planar curves.
 
-\section{Analysis of Tounge Shape Variability using Procrustes Residuals}
-\begin{itemize}
-  \item Want investiage how the effect of the flanking vowels \enquote*{aa} and \enquote*{ii} on tounge shape differs for the consonants 'd', 'l', 'n' and 's', while controlling for variability over six speakers and 5--7 repetitions of the same word per speaker.
-  \item Analysis should be invariant with respect to size, rotation, translation and parameterisation of the tounges.
-    This can e.g.\ account for anatomical differences between speakers, or inaccuracies in the measurement process.
-  \item \textbf{Idea:} Estimate a global mean function $q_0(t)$ from all curves and calculate the elastic full Procrustes residuals.
-    They are given by the difference of elastic full Procrustes fits and the mean function on SRV level
-    $$ \hat r_i = \left( \omega_i^\mathrm{opt} \cdot \widetilde q_i \circ \gamma_i^\mathrm{opt} \right) \sqrt{\dot\gamma_i^\mathrm{opt}} - \hat q_0 \,.$$
-    We can perform analysis over the $\hat r_i(t)$. 
-  \item A word is a combination of vowels and consonants $(C_v, C_c)$ with $C_v \in \{\mathrm{aa}, \mathrm{ii}\}$ and $C_c \in \{\mathrm{d},\mathrm{l},\mathrm{n},\mathrm{s}\}$, e.g.\ \enquote*{pada} corresponds to $(\mathrm{aa},\mathrm{d})$ as all words start with 'p'.
-    We can index each word--speaker pair $\left( C_v, C_c, C_s \right)$ by $k$, where $C_s \in \{1,\dots,6\}$ and $k = 1, \dots, K$ with $K = 2 \cdot 4 \cdot 6 = 48$.
-  \item Then we can gather the residuals $\hat r_{(k, rep_k)}(s_{(k,rep_k,j)})$ of the repetitions $rep_k$ (their number varies with $k$) of each word--speaker pair $k$, and estimate a \enquote*{mean} residual function for that word and speaker:
-    $$ \hat r_k (t) = \hat r_{\left( C_v, C_c, C_s \right)} (t) \approx \hat \theta_k^\top b(t)$$
-    Atm I use the mean basis here, which means linear B-Splines. Might be nicer to have something that is smoother.
-  \item We are interested in the effect of the flanking vowels on tounge shape given, for each consonant-speaker pair, by this difference:
-    $$ \hat d_{(C_c, C_s)}(t) = \hat r_{(\mathrm{aa}, C_c, C_s)} (t) - \hat r_{(\mathrm{ii}, C_c, C_s)} (t) = 
-      \left( \hat\theta^\top_{(\mathrm{aa}, C_c, C_s)} - \hat\theta^\top_{(\mathrm{aa}, C_c, C_s)} \right) b(t)\,. $$
-    Note that $\hat d(t) : [0,1] \rightarrow \mathbb{C}$ (two-dimensional)! The absolute differences over speakers and consonants are given by $\abs{\hat d_{(C_c, C_s)}(t)}$ are plotted in \cref{fig:4-diffs-vpn}.
-\end{itemize}
-\begin{figure}
-  \centering
-  \inputTikz{4-diffs-vpn}
-  \caption{a caption}
-  \label{fig:4-diffs-vpn}
-\end{figure}
-\begin{itemize}
-  \item Finally we can average the differences over each speaker as
-    $$ \hat d_{(C_c)} (t) = \left(\frac{1}{6} \sum_{C_s} \hat \theta^\top_{(C_c, C_s)} \right) b(t)$$
-    or likewise as absolute difference  $\abs{\hat d_{(C_c)}(t)}$ plotted in \cref{fig:4-diffs}.
-\end{itemize}
-\begin{figure}
-  \centering
-  \inputTikz{4-diffs}
-  \caption{Another caption}
-  \label{fig:4-diffs}
-\end{figure}
-\begin{itemize}
-  \item Man sieht, dass der Einfluss des flankierenden Vokals unabhängig vom Konsanten zu sein scheint.
-    Das ist zumindest ein anderes Ergebniss, als in dem Consulting Projekt.
-  \item Die Analysie ist hier auf SRV level.
-  \item Sofern das alles so Sinn macht, könnte man jetzt noch Konfidenzintervalle undsowas dazu berechnen.
-\end{itemize}
+%\section{Analysis of Tongue Shape Variability using Procrustes Residuals}
+%\begin{itemize}
+%  \item Want investiage how the effect of the flanking vowels \enquote*{aa} and \enquote*{ii} on tounge shape differs for the consonants 'd', 'l', 'n' and 's', while controlling for variability over six speakers and 5--7 repetitions of the same word per speaker.
+%  \item Analysis should be invariant with respect to size, rotation, translation and parameterisation of the tounges.
+%    This can e.g.\ account for anatomical differences between speakers, or inaccuracies in the measurement process.
+%  \item \textbf{Idea:} Estimate a global mean function $q_0(t)$ from all curves and calculate the elastic full Procrustes residuals.
+%    They are given by the difference of elastic full Procrustes fits and the mean function on SRV level
+%    $$ \hat r_i = \left( \omega_i^\mathrm{opt} \cdot \widetilde q_i \circ \gamma_i^\mathrm{opt} \right) \sqrt{\dot\gamma_i^\mathrm{opt}} - \hat q_0 \,.$$
+%    We can perform analysis over the $\hat r_i(t)$. 
+%  \item A word is a combination of vowels and consonants $(C_v, C_c)$ with $C_v \in \{\mathrm{aa}, \mathrm{ii}\}$ and $C_c \in \{\mathrm{d},\mathrm{l},\mathrm{n},\mathrm{s}\}$, e.g.\ \enquote*{pada} corresponds to $(\mathrm{aa},\mathrm{d})$ as all words start with 'p'.
+%    We can index each word--speaker pair $\left( C_v, C_c, C_s \right)$ by $k$, where $C_s \in \{1,\dots,6\}$ and $k = 1, \dots, K$ with $K = 2 \cdot 4 \cdot 6 = 48$.
+%  \item Then we can gather the residuals $\hat r_{(k, rep_k)}(s_{(k,rep_k,j)})$ of the repetitions $rep_k$ (their number varies with $k$) of each word--speaker pair $k$, and estimate a \enquote*{mean} residual function for that word and speaker:
+%    $$ \hat r_k (t) = \hat r_{\left( C_v, C_c, C_s \right)} (t) \approx \hat \theta_k^\top b(t)$$
+%    Atm I use the mean basis here, which means linear B-Splines. Might be nicer to have something that is smoother.
+%  \item We are interested in the effect of the flanking vowels on tounge shape given, for each consonant-speaker pair, by this difference:
+%    $$ \hat d_{(C_c, C_s)}(t) = \hat r_{(\mathrm{aa}, C_c, C_s)} (t) - \hat r_{(\mathrm{ii}, C_c, C_s)} (t) = 
+%      \left( \hat\theta^\top_{(\mathrm{aa}, C_c, C_s)} - \hat\theta^\top_{(\mathrm{aa}, C_c, C_s)} \right) b(t)\,. $$
+%    Note that $\hat d(t) : [0,1] \rightarrow \mathbb{C}$ (two-dimensional)! The absolute differences over speakers and consonants are given by $\abs{\hat d_{(C_c, C_s)}(t)}$ are plotted in \cref{fig:4-diffs-vpn}.
+%\end{itemize}
+%\begin{figure}
+%  \centering
+%  \inputTikz{4-diffs-vpn}
+%  \caption{a caption}
+%  \label{fig:4-diffs-vpn}
+%\end{figure}
+%\begin{itemize}
+%  \item Finally we can average the differences over each speaker as
+%    $$ \hat d_{(C_c)} (t) = \left(\frac{1}{6} \sum_{C_s} \hat \theta^\top_{(C_c, C_s)} \right) b(t)$$
+%    or likewise as absolute difference  $\abs{\hat d_{(C_c)}(t)}$ plotted in \cref{fig:4-diffs}.
+%\end{itemize}
+%\begin{figure}
+%  \centering
+%  \inputTikz{4-diffs}
+%  \caption{Another caption}
+%  \label{fig:4-diffs}
+%\end{figure}
+%\begin{itemize}
+%  \item Man sieht, dass der Einfluss des flankierenden Vokals unabhängig vom Konsanten zu sein scheint.
+%    Das ist zumindest ein anderes Ergebniss, als in dem Consulting Projekt.
+%  \item Die Analysie ist hier auf SRV level.
+%  \item Sofern das alles so Sinn macht, könnte man jetzt noch Konfidenzintervalle undsowas dazu berechnen.
+%\end{itemize}
