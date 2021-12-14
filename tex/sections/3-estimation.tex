@@ -7,16 +7,16 @@ Following the steps laid out in \cref{algo:mean}, this chapter proposes a mean e
 In a first step, the construction of SRV and warped SRV curves from discrete (and possibly sparse) observations will be shown in \cref{sec:3-discrete}.
 \cref{sec:3-cov} discusses efficient estimation of the complex covariance surface $C^{(k)}(s,t)$ from sparse observations.
 In \cref{sec:3-mean}, calculation of the leading eigenfunction $\hat u^{(k)}_1$ of $C^{(k)}(s,t)$ in a fixed basis will be shown.
-\cref{sec:3-pfits} deals with the estimation of the optimal rotation and scaling alignment $\omega_i^{(k)} = \langle \widetilde q_i^{(k)}, \hat\mu^{(k)}_q \rangle$, where $\widetilde q_i^{(k)}$ is a sparsely observed normalized SRV curve, while $\hat\mu^{(k)}_q$ is a smooth SRV mean function.
+\cref{sec:3-pfits} deals with the estimation of the optimal rotation and scaling alignment $\omega_i^{(k)} = \langle \widetilde q_i^{(k)}, \hat\mu^{(k)}_q \rangle$, where $\widetilde q_i^{(k)}$ is a sparsely observed normalised SRV curve, while $\hat\mu^{(k)}_q$ is a smooth SRV mean function.
 Note that the final warping alignment step in \cref{algo:mean} is solved by using methods for warping alignment of sparse and irregular curves provided in \cite{Steyer2021}.
 
 
 \section{Discrete Treatment of SRV Curves}
 \label{sec:3-discrete}
-As a first step, we need to calculate the \emph{normalized SRV curves} $\widetilde q_i = \frac{q}{\norm{q}}$ from sparse observations.
-As the SRV curve of $\beta \in \mathcal{AC}([0,1],\,\mathbb{C})$ is defined as $q = \dot\beta / \sqrt{\norm{\dot\beta}}$ (for $\dot\beta \neq 0$), we have to be able to calculate a derivate of $\beta$.
-However, as we never observe the whole function $\beta$ but only a discrete set of points $\beta(t_1),\dots,\beta(t_n)$, as seen in \cref{fig:3-disc}, we cannot simply calculate a pointwise derivative.
-Following \cite{Steyer2021}, we may treat a discretely observed curve $\beta$ as piecewise linear between its observed corners $\beta(t_1),\dots,\beta(t_n)$, which allows us to calculate a piecewise constant derivative on the intervalls $[t_j,\,t_{j+1}]$ for $j=1,\dots,n-1$.
+As a first step, we need to calculate the \emph{normalised SRV curves} $\widetilde q_i = \frac{q}{\norm{q}}$ from sparse observations.
+As the SRV curve of $\beta \in \mathcal{AC}([0,1],\,\mathbb{C})$ is defined as $q = \dot\beta / \sqrt{\norm{\dot\beta}}$ (for $\dot\beta \neq 0$), we have to be able to calculate a derivative of $\beta$.
+However, as we never observe the whole function $\beta$ but only a discrete set of points $\beta(t_1),\dots,\beta(t_n)$, as seen in \cref{fig:3-disc}, we cannot simply calculate a point-wise derivative.
+Following \cite{Steyer2021}, we may treat a discretely observed curve $\beta$ as piece-wise linear between its observed corners $\beta(t_1),\dots,\beta(t_n)$, which allows us to calculate a piece-wise constant derivative on the intervals $[t_j,\,t_{j+1}]$ for $j=1,\dots,n-1$.
 As usually only the image $\beta(t_1),\dots,\beta(t_n)$ but not the parametrisation $t_1,\dots,t_n$ is observed, it is first necessary to construct an initial parameterisation.
 A common choice is an \emph{arc-length-parametrisation}, where we set $t_j = l_j/l$ with $l_j = \sum_{k=1}^{j-1} \abs{\beta(t_{k+1}) - \beta(t_k)}$ the polygon-length up to point $j$ for $j \leq 2$ with $l_1 = 0$ and $l= l_n$.
 
@@ -41,18 +41,18 @@ A common choice is an \emph{arc-length-parametrisation}, where we set $t_j = l_j
   \label{fig:3-disc}
 \end{figure}
 
-Consider the piecewise-constant derivative $\Delta \beta \big\rvert_{[t_j, t_{j+1}]} = \frac{\beta(t_{j+1}) - \beta(t_{j})}{t_{j+1} - t_j}$, which assumes that $\beta$ is linear between its observed corners. 
-The corresponding SRV curve $q$ can then similarly be treated as piecewise constant $q\big\rvert_{[t_{j},t_{j+1}]} = q_j$ with 
+Consider the piece-wise-constant derivative $\Delta \beta \big\rvert_{[t_j, t_{j+1}]} = \frac{\beta(t_{j+1}) - \beta(t_{j})}{t_{j+1} - t_j}$, which assumes that $\beta$ is linear between its observed corners. 
+The corresponding SRV curve $q$ can then similarly be treated as piece-wise constant $q\big\rvert_{[t_{j},t_{j+1}]} = q_j$ with 
 \begin{equation}
   q_j = \Delta \beta \big\rvert_{[t_j, t_{j+1}]} \Big/ \sqrt{\norm{\Delta \beta \big\rvert_{[t_j, t_{j+1}]}}} = \frac{\beta(t_{j+1}) - \beta(t_j)}{\sqrt{t_{j+1} - t_j} \cdot \sqrt{\norm{\beta(t_{j+1}) - \beta(t_j)}}}
 \end{equation}
 the constant \emph{square-root-velocity} of $\beta$ between its corners $\beta(t_j)$ and $\beta(t_{j+1})$.
-As shown in \cite[][Fig.\ 3]{Steyer2021}, treating the SRV curves as piecewise-constant functions can lead to overfitting, where the mean shape is estimated too polygon-like.
-As an alternative they propose to approximate the derivative, by assuming that it attains the value of the piecwise-constant derivative $\Delta \beta \big\rvert_{[t_j,t_{j+1}]}$ at the center $s_j = \frac{t_{j+1} - t_j}{2}$ of the interval $[t_j, t_{j+1}]$.
+As shown in \cite[][Fig.\ 3]{Steyer2021}, treating the SRV curves as piece-wise-constant functions can lead to over-fitting, where the mean shape is estimated too polygon-like.
+As an alternative they propose to approximate the derivative, by assuming that it attains the value of the piecwise-constant derivative $\Delta \beta \big\rvert_{[t_j,t_{j+1}]}$ at the centre $s_j = \frac{t_{j+1} - t_j}{2}$ of the interval $[t_j, t_{j+1}]$.
 Here, this will be used for approximating observations $q(s_j) \approx q_j$ of the SRV curve $q$ in the covariance estimation step.
-See \cref{fig:3-disc-srv} for a visualization of both approaches.
-Finally, we can approximate the normalized SRV curve $\widetilde q = q / \norm{q}$ using the polygon-length $l$ of $\beta$ by $\widetilde q_j = q_j \big/ \sqrt{l}$ (see \cref{eq:2-norm}).
-\todo{Discuss normalization?}
+See \cref{fig:3-disc-srv} for a visualisation of both approaches.
+Finally, we can approximate the normalised SRV curve $\widetilde q = q / \norm{q}$ using the polygon-length $l$ of $\beta$ by $\widetilde q_j = q_j \big/ \sqrt{l}$ (see \cref{eq:2-norm}).
+\todo{Discuss normalisation?}
 \begin{figure}
   \centering
   \begin{subfigure}{.48\textwidth}
@@ -70,29 +70,29 @@ Finally, we can approximate the normalized SRV curve $\widetilde q = q / \norm{q
       \inputTikz{3-srv-discrY}
     \end{subfigure}
   \end{subfigure}
-  \caption{Discretely approximated (black, dashed) and piecewise constant (gray) SRV curve of the digit \enquote*{3} in \cref{fig:3-disc}. Data: \texttt{digits3.dat}.}
+  \caption{Discretely approximated (black, dashed) and piece-wise constant (gray) SRV curve of the digit \enquote*{3} in \cref{fig:3-disc}. Data: \texttt{digits3.dat}.}
   \label{fig:3-disc-srv}
 \end{figure}
-When considering the warped normalized SRV curve $(q \circ \gamma ) \sqrt{\dot\gamma}$, the warped discrete derivative is given by $\Delta (\beta \circ \gamma) \big\rvert_{[\gamma^{-1}(t_j), \gamma^{-1}(t_{j+1})]} = \frac{\beta(t_{j+1}) - \beta(t_{j})}{\gamma^{-1}(t_{j+1}) - \gamma^{-1}(t_j)}$.
+When considering the warped normalised SRV curve $(q \circ \gamma ) \sqrt{\dot\gamma}$, the warped discrete derivative is given by $\Delta (\beta \circ \gamma) \big\rvert_{[\gamma^{-1}(t_j), \gamma^{-1}(t_{j+1})]} = \frac{\beta(t_{j+1}) - \beta(t_{j})}{\gamma^{-1}(t_{j+1}) - \gamma^{-1}(t_j)}$.
 The corresponding warped SRV curve is then given by $(q \circ \gamma) \sqrt{\dot\gamma} \big\rvert_{[\gamma^{-1}(t_j), \gamma^{-1}(t_{j+1})]} = \frac{1}{\sqrt{\gamma^{-1}(t_{j+1}) - \gamma^{-1}(t_j)}} \cdot \frac{\beta(t_{j+1}) - \beta(t_j)}{\sqrt{\norm{\beta(t_{j+1}) - \beta(t_j)}}}$ \parencite[see][]{Steyer2021}.
-Note that this does not change the normalization as re-parametrization is norm-preserving on SRV level.
+Note that this does not change the normalisation as re-parametrization is norm-preserving on SRV level.
 
 
 \section{Efficient Estimation using Hermitian Covariance Smoothing}
 \label{sec:3-cov}
-Given approximate observations of the warped normalized SRV curves $\widetilde q^{(k)}_i(s_{ij})$ for $j = 1,\dots,n_i-1$ and $i=1,\dots,N$, where $n_i$ denotes the number of observed points per curve, we want to estimate the warping aligned complex covariance surface $C^{(k)}(s,t) = \mathbb{E}[\widetilde q^{(k)}(s)\overline{\widetilde q^{(k)}(t)}]$.
+Given approximate observations of the warped normalised SRV curves $\widetilde q^{(k)}_i(s_{ij})$ for $j = 1,\dots,n_i-1$ and $i=1,\dots,N$, where $n_i$ denotes the number of observed points per curve, we want to estimate the warping aligned complex covariance surface $C^{(k)}(s,t) = \mathbb{E}[\widetilde q^{(k)}(s)\overline{\widetilde q^{(k)}(t)}]$.
 We can treat this estimation as a smoothing problem\todo{Cov smoothing citations}, by constructing responses $y^{(k)}_{ilm} = \widetilde q^{(k)}_i(s_{il}) \overline{\widetilde q^{(k)}_i(s_{im})}$ and treating the pairs $s_{il}$, $s_{im}$ as covariates $s$ and $t$.
 Smoothing the responses $y^{(k)}_{ilm}$ gives an estimate $\hat C^{(k)}(s,t)$ of $C^{(k)}(s,t)$, as each response has expectation $\mathbb{E}[y^{(k)}_{ilm}|s_{il},s_{im}] = C^{(k)}(s_{il},s_{im})$. 
-We carry out the smoothing in a flexible \emph{penalized tensor product spline} basis 
+We carry out the smoothing in a flexible \emph{penalised tensor product spline} basis 
 \begin{equation}
   C^{(k)}(s,t) = b(s)^\top \Xi^{(k)} b(t) 
 \end{equation}
-where $b(s) = (b_1(s),\dots,b_K(s))$ denotes the vector of a spline basis and $\Xi^{(k)}$ is a $K \times K$ coefficient matrix to be estimated under a roughness penalty to prevent overfitting. 
+where $b(s) = (b_1(s),\dots,b_K(s))$ denotes the vector of a spline basis and $\Xi^{(k)}$ is a $K \times K$ coefficient matrix to be estimated under a roughness penalty to prevent over-fitting. 
 As $C^{(k)}(s,t)$ is complex, we choose the spline basis to be real-valued with $b_j : [0,1] \rightarrow \mathbb{R}$ for $j = 1,\dots,K$ and the coefficient matrix to be complex-valued with $\Xi^{(k)} \in \mathbb{C}^{K \times K}$ without loss of generality.
 The exact choice of basis and penalty will be discussed in \cref{sec:3-mean}.
 
 Taking into account the symmetry properties of the covariance surface by considering every unique pair $(s_{il}$, $s_{im})$ only once allows for more efficient estimation, as shown in \cite{CederbaumScheiplGreven2018}. 
-In the complex case the covariance surface is Hermitian with $C^{(k)}(s,t) = \overline{C^{(k)}(t,s)}$, which means we can decompose the estimation into two seperate regression problems over the symmetric real and skew-symmetric imaginary parts of $C^{(k)}(s,t)$.
+In the complex case the covariance surface is Hermitian with $C^{(k)}(s,t) = \overline{C^{(k)}(t,s)}$, which means we can decompose the estimation into two separate regression problems over the symmetric real and skew-symmetric imaginary parts of $C^{(k)}(s,t)$.
 We estimate the two models\todo{Formal ok?}
 \begin{align}
   \mathbb{E}[\Re(y^{(k)})|s,t] &= b(s)^\top \Xi^{(k)}_{\Re} b(t) \\
@@ -101,18 +101,18 @@ We estimate the two models\todo{Formal ok?}
 with $\Xi^{(k)}_\Re, \Xi^{(k)}_\Im \in \mathbb{R}^{K\times K}$ and $\Xi^{(k)} = \Xi^{(k)}_\Re + \iu \Xi^{(k)}_\Im$, under the constraints that $(\Xi^{(k)}_\Re)^\top = \Xi^{(k)}_\Re$ and $(\Xi^{(k)}_\Im)^\top = - \Xi^{(k)}_\Im$.
 
 In this thesis  $\Xi^{(k)}_\Re$ and $\Xi^{(k)}_\Im$ are estimated using the \texttt{gam} function from the \texttt{R} package \texttt{mgcv} \parencite{Wood2017}, where the smoothing parameters are selected via restricted maximum likelihood (REML) estimation.
-Two \texttt{mgcv} smooths provided in the package \texttt{sparseFLMM} \parencite{sparseFLMM} are used for efficient Hermitian smoothing, which generalize the approach proposed by \cite{CederbaumScheiplGreven2018} for symmetric tensor product P-splines to the skew-symmetric case.
+Two \texttt{mgcv} smooths provided in the package \texttt{sparseFLMM} \parencite{sparseFLMM} are used for efficient Hermitian smoothing, which generalise the approach proposed by \cite{CederbaumScheiplGreven2018} for symmetric tensor product P-splines to the skew-symmetric case.
 Note that \texttt{mgcv} automatically adds a sum-to-zero constraint to a specified basis \parencite[see][175]{Wood2017}, which makes it is necessary to transform the coefficient matrices $\widetilde \Xi_\Re^{(k)}$, $\widetilde \Xi_\Im^{(k)}$ recovered from \texttt{gam} with an appropriate transformation matrix $D$.
 The coefficient matrices in the specified basis are given by $\Xi_{\Re/\Im}^{(k)} = D \cdot \widetilde \Xi_ {\Re/\Im}^{(k)}$, where $D$ may be calculated from the constrained and unconstrained design matrices via $X = D \cdot \widetilde X$.
 
 \section{Estimating the Elastic Full Procrustes Mean in a Fixed Basis}
 \label{sec:3-mean}
-Our goal is to estimate a smooth mean function, which might be constructed with the same univariate basis $b(s)$ used in the tensor product basis of the covariance surface, so that the mean is given by $\mu_q(s) = b(s)^\top \theta$.
+Our goal is to estimate a smooth mean function, which might be constructed with the same uni-variate basis $b(s)$ used in the tensor product basis of the covariance surface, so that the mean is given by $\mu_q(s) = b(s)^\top \theta$.
 We can choose an appropriate basis $b(s)$ by considering which, e.g., smoothness properties we want the estimated mean to have.
-In this thesis we will use penalized B-spline basis functions (P-splines), which are piecewise polynomials of degree $l$, fused at $m$ knots $\left\{\kappa_j\right\}_{j=1,\dots,m}$, where the $p$-th order differences between coefficients of neighbouring splines are penalized in the covariance estimation \parencite[see][Chap.~8.1]{FahrmeierEtAl2013}.
-It shold be noted that by using a penalty, the number and location of knots do not have an influence on the estimated function when their number is high enough and they are evenly distributed.
-Furthermore, because of results relating to the identifiability of spline SRV curves modulo warping and translation, only piecewise linear ($l = 1$) and piecewise constant ($l = 0$) B-splines will be considered in the estimation \parencite[see][]{Steyer2021}.
-See \cref{fig:3-cov} for examples of a covariance surface estimated using piecewise constant and piecewise linear P-splines.
+In this thesis we will use penalised B-spline basis functions (P-splines), which are piece-wise polynomials of degree $l$, fused at $m$ knots $\left\{\kappa_j\right\}_{j=1,\dots,m}$, where the $p$-th order differences between coefficients of neighbouring splines are penalised in the covariance estimation \parencite[see][Chap.~8.1]{FahrmeierEtAl2013}.
+It should be noted that by using a penalty, the number and location of knots do not have an influence on the estimated function when their number is high enough and they are evenly distributed.
+Furthermore, because of results relating to the identifiable of spline SRV curves modulo warping and translation, only piece-wise linear ($l = 1$) and piece-wise constant ($l = 0$) B-splines will be considered in the estimation \parencite[see][]{Steyer2021}.
+See \cref{fig:3-cov} for examples of a covariance surface estimated using piece-wise constant and piece-wise linear P-splines.
 \begin{figure}[t]
   \centering
   \begin{subfigure}{.48\textwidth}
@@ -135,13 +135,13 @@ See \cref{fig:3-cov} for examples of a covariance surface estimated using piecew
     \inputTikz{3-cov-im}%
     \caption{Skew-symmetric imaginary part ($l =1$)}
   \end{subfigure}
-  \caption{Complex covariance surface on SRV curve level. Estimated using 13 equidistant knots, a 2nd order penalty and piecewise constant (top) or piecewise linear (bottom) B-splines. Data: \texttt{digits3.dat}}
+  \caption{Complex covariance surface on SRV curve level. Estimated using 13 equidistant knots, a 2nd order penalty and piece-wise constant (top) or piece-wise linear (bottom) B-splines. Data: \texttt{digits3.dat}}
   \label{fig:3-cov}
 \end{figure}
 This still provides the flexibility of estimating either polygonal or smooth means, as the mean function on original curve level is calculated by integration (see \cref{fig:3-mean}). 
 
 To calculate the elastic full Procrustes Mean, a functional eigenvalue problem on the estimated covariance surface $\hat{C}(s,t) = b(s)^\top \hat\Xi b(t)$ had to be solved (omitting \enquote*{$\cdot^{(k)}$} in this section).
-Remember that the elastic full Procrustes mean (for fixed warping) is estimated by the solution to the optimization problem
+Remember that the elastic full Procrustes mean (for fixed warping) is estimated by the solution to the optimisation problem
 \begin{equation}
 \hat\mu_q = \, \argmax_{\mu_q \in \mathbb{L}^2,\,\norm{\mu_q} = 1}\,\,
    \int_0^1 \int_0^1 \overline{\mu_q (s)} \hat C(s,t) \mu_q(t) \ds\dt\,\,.
@@ -159,11 +159,11 @@ where $(\cdot)^H = \overline{(\cdot)}^\top$ denotes the conjugate transpose and 
 For an orthonormal basis the Gram matrix is an identity matrix as $\langle b_i, b_j \rangle = \delta_{ij}$, however, this is not the case for many basis representations such as, e.g.,the B-spline basis.
 In thesis the \texttt{R} package \texttt{orthogonalsplinebasis} \parencite{orthogonalsplinebasis} is used to calculate Gram matrices for B-splines analytically, using the methods laid out in \cite{Redd2012}.
 
-Having reduced the functional eigenvalue problem to a multivariate eigenvalue problem over the covariance coefficient matrix, we may solve it using Lagrange optimization with the following Langrangian:
+Having reduced the functional eigenvalue problem to a multivariate eigenvalue problem over the covariance coefficient matrix, we may solve it using Lagrange optimisation with the following Lagrangian:
 \begin{equation}
   \mathcal{L}(\theta,\lambda) = \, \theta^H G \hat{\Xi} G \theta - \lambda ( \theta^H G \theta - 1)
 \end{equation}
-Taking into account that we identified $\mathbb{R}^2$ with $\mathbb{C}$ we can split everything into real and imaginary parts and optimize with respect to $\Re(\theta)$ and $\Im(\theta)$ seperately, which avoids having to take complex derivatives.
+Taking into account that we identified $\mathbb{R}^2$ with $\mathbb{C}$ we can split everything into real and imaginary parts and optimise with respect to $\Re(\theta)$ and $\Im(\theta)$ separately, which avoids having to take complex derivatives.
 Using $\theta = \theta_\Re + \iu \theta_\Im$ and $\hat{\Xi} = \hat\Xi_\Re + \iu \hat\Xi_\Im$ we can write
 \begin{align*}
   \mathcal{L}(\theta_\Re,\theta_\Im,\lambda) & = 
@@ -203,7 +203,7 @@ Adding both equations finally leads to
 \end{equation}
 which is an eigenvalue problem on the product of the complex coefficient matrix and the Gram matrix.
 Note that this mirrors the result by \cite{ReissXu2020} for FPCA on real-valued tensor product spline coefficient matrices.
-Multiplying by $\theta^H G$ from the left and using $\theta^H G \theta = 1$ yields $\lambda = \theta^H G \hat\Xi G \theta$, i.e.\ the eigenvalues $\lambda$ correspond to the target function to maximize (see \cref{eq:3-target}).
+Multiplying by $\theta^H G$ from the left and using $\theta^H G \theta = 1$ yields $\lambda = \theta^H G \hat\Xi G \theta$, i.e.\ the eigenvalues $\lambda$ correspond to the target function to maximise (see \cref{eq:3-target}).
 It follows that the estimate for the coefficient vector of the elastic full Procrustes mean $\hat\theta$ is given by the eigenvector of the leading eigenvalue of $\hat\Xi G$ or likewise of $\hat\Xi^{(k)} G$, when taking into account the warping alignment in step $k$ of \cref{algo:mean}.
 
 \begin{figure}[t]
@@ -246,7 +246,7 @@ It follows that the estimate for the coefficient vector of the elastic full Proc
     \caption{Mean function $\hat\mu(t) = \int_0^t \hat\mu_q(s) \norm{\hat\mu_q(s)} \ds$ on (unit-length) original curve level.}
   \end{subfigure}
   \caption{Elastic full Procrustes mean of handwritten digits \enquote*{3}.
-    Estimated using 13 equidistant knots, a 2nd order penalty and piecewise linear B-splines.
+    Estimated using 13 equidistant knots, a 2nd order penalty and piece-wise linear B-splines.
     Data: \texttt{digits3.dat}}
   \label{fig:3-mean}
 \end{figure}
@@ -260,7 +260,7 @@ In the sparse and irregular setting, calculating a scalar product such as $\lang
 \langle \widetilde q_i^{(k)}, \hat\mu_q^{(k)} \rangle =
   \int_0^1 \langle \widetilde q_i^{(k)}(t), \hat\mu_q^{(k)}(t) \rangle \dt
 \end{equation}
-Following \cite{Steyer2021} and as discussed in \cref{sec:3-discrete}, this may be approximated by treating $\widetilde q_i^{(k)}$ as piecewise constant between the warping-aligned corners of the original curve $\beta_i$, with the normalized and warping aligned values given by
+Following \cite{Steyer2021} and as discussed in \cref{sec:3-discrete}, this may be approximated by treating $\widetilde q_i^{(k)}$ as piece-wise constant between the warping-aligned corners of the original curve $\beta_i$, with the normalised and warping aligned values given by
 \begin{equation}
    \widetilde q_i^{(k)} \Big\rvert_{\left[\left(\gamma_i^{(k)}\right)^{-1}(t_{ij}),\, \left(\gamma_i^{(k)} \right)^{-1}(t_{ij+1})\right]} =
   \widetilde q_{ij}^{(k)}
@@ -277,7 +277,7 @@ Given a fully observed smooth mean function $\hat\mu_q^{(k)}$ we can then calcul
   \sum_{j=0}^{m_i-1} \int_{\left(\gamma_i^{(k)}\right)^{-1}(t_{ij})}^{\left(\gamma_i^{(k)}\right)^{-1}(t_{ij+1})} \langle \widetilde q_{ij}^{(k)},\, \hat\mu_q^{(k)} (t) \rangle \dt \,.
 \end{equation}
 An alternative approach is discussed in \cref{app:a-smooth}.
-There, instead of treating the SRV curves as piecewise-constant, they are smoothed in the mean basis $\widetilde q^{(k)} \approx b(s)^\top \hat\theta_i^{(k)}$, where the coefficient vector $\hat\theta_i^{(k)}$ is estimated in way that penalizes deviations from the mean covariance-structure.
+There, instead of treating the SRV curves as piece-wise-constant, they are smoothed in the mean basis $\widetilde q^{(k)} \approx b(s)^\top \hat\theta_i^{(k)}$, where the coefficient vector $\hat\theta_i^{(k)}$ is estimated in way that penalises deviations from the mean covariance-structure.
 The scalar product is then given by $\langle \widetilde q_i^{(k)}, \hat\mu_q^{(k)} \rangle \approx (\hat\theta_i^{(k)})^H G \hat\theta^{(k)}$.
-While this method suceeds in estimating very natural looking smooth SRV curves, their integral is not guaranteed to go through the observed points on data curve level.
+While this method succeeds in estimating very natural looking smooth SRV curves, their integral is not guaranteed to go through the observed points on data curve level.
 Because of these and other theoretical concerns this approach did not end up getting used in this thesis

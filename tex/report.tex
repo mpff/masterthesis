@@ -1,16 +1,17 @@
 % Document type
-\documentclass[a4paper,12pt,english,headings=small]{scrreprt}
+\documentclass[a4paper,12pt,english,headings=small,oneside]{scrreprt}
 
 %% Packages
 
 %%%% QUALITY OF LIVE DURING WRITING (REMOVE BEFORE PUBLISHING) %%%%
 \RequirePackage[l2tabu, orthodox]{nag}  % detect depreceated latex pkgs
 %\usepackage[notref,notcite]{showkeys}  % show labels
-\overfullrule=2cm   % mark overfull hboxes with a black box
+%\overfullrule=2cm   % mark overfull hboxes with a black box
 \usepackage{todonotes}  % create TODO marks
 
 % Document margins/formating
-\usepackage[margin=2.5cm,footskip=\dimexpr1.25cm+\dp\strutbox\relax]{geometry}
+\usepackage[left=3cm,right=2cm,top=2.5cm,bottom=2.5cm,footskip=\dimexpr1.25cm+\dp\strutbox\relax]{geometry}
+%\usepackage[margin=2.5cm,footskip=\dimexpr1.25cm+\dp\strutbox\relax]{geometry}
 \usepackage{setspace} 
 \setstretch{1.5}  % Zeilenabstand definieren
 
@@ -36,7 +37,7 @@
 \usepackage{enumitem}
 \usepackage{graphicx}
 \usepackage{tikz}
-\tikzset{every picture/.append style={font=\footnotesize}}  % smaller font inside figure
+\tikzset{every picture/.append style={font=\scriptsize}}  % smaller font inside figure
 \usepackage[margin=15pt,hang,small,labelfont={bf,sf},up,up]{caption}  % Custom captions 
 \usepackage{subcaption}
 \usepackage{array}
@@ -225,9 +226,9 @@
 \chapter{Appendix}
 \input{sections/a-appendix}
 
-\newpage
-\chapter{Implementation Notes}
-\input{sections/b-supplements}
+%\newpage
+%\chapter{Implementation Notes}
+%\input{sections/b-supplements}
 
 \newpage
 \chapter*{Statutory Declaration}

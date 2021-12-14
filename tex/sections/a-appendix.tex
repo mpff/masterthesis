@@ -36,8 +36,7 @@ Then
 
 \section{Shape-Smoothing Using the Estimated Covariance-Surface}
 \label{app:a-smooth}
-\todo[inline]{In Form schreiben.}
-Idea: Smooth $q$ in mean basis $b(t)$, so that $\hat{q}(t) = b(t)^T \hat{\theta}_q$. Then the scalar products simplify to
+Instead of treating $\widetilde q_i^{(k)}$ as piecewise constant,  in mean basis $b(t)$, so that $\hat{q}(t) = b(t)^T \hat{\theta}_q$. Then the scalar products simplify to
 $$ \langle q, \hat{p} \rangle \approx \hat{\theta}_q^H G \hat{\theta} $$
 $$ \langle q, q \rangle \approx \hat{\theta}_q^H G \hat{\theta}_q $$
 
@@ -61,5 +60,57 @@ $$ \hat\theta_q(\lambda) = V ( V^H B^T B V + \lambda \cdot \Lambda^{-1})^{-1} V^
 \section{Removing the Iteration over Rotation}
 \label{app:a-warping}
 \todo[inline]{As suggested to Lisa}
+Ich habe mich noch gefragt ob man anstatt Iteration über Eq.\ \ref{eq:argmin_rot} und Eq.\ \ref{eq:argmin_wrp} die Distanz in Lemma \ref{lem:dist} ii.) auch direkter optimieren kann.
+\begin{align*}
+  \gamma^* = & \argmin_{\gamma \in \Gamma} \sqrt{1 - \langle z_1, \widetilde z_2 \rangle \langle \widetilde z_2, z_1 \rangle } \\
+    = & \argmax_{\gamma \in \Gamma} \langle z_1, \widetilde z_2 \rangle \langle \widetilde z_2, z_1 \rangle \\
+    = & \argmax_{\gamma \in \Gamma} \int_0^1 \int_0^1
+    \overline{z_1(t)} \underbrace{\widetilde z_2(t) \overline{\widetilde z_2(s)}}_{\coloneqq \, {\widetilde C}(s,t)} z_1(s) \, dt ds \\
+    = & \argmax_{\gamma \in \Gamma} \langle \widetilde C \, z_1, z_1 \rangle
+\end{align*}
+Mit $\widetilde C(s,t)$ der Kovarianz-Funktion von $\widetilde z_2 = (z_2 \circ \gamma) \sqrt{\dot\gamma}$.
+Habe das jetzt nicht weiter verfolgt (weil Zeit), aber vielleicht ist das ganz interessant?
+Man kann das glaube ich auch umschreiben mit $\breve z_1 = (z_1 \circ \gamma^{-1}) \sqrt{\dot{\gamma^{-1}}}$ als $\argmax_{\gamma \in \Gamma} \langle C \, \breve z_1, \breve z_1 \rangle$.
 
-
+\section{Analysis of Tounge Shape Variability using Procrustes Residuals}
+\begin{itemize}
+  \item Want investiage how the effect of the flanking vowels \enquote*{aa} and \enquote*{ii} on tounge shape differs for the consonants 'd', 'l', 'n' and 's', while controlling for variability over six speakers and 5--7 repetitions of the same word per speaker.
+  \item Analysis should be invariant with respect to size, rotation, translation and parametrization of the tounges.
+    This can e.g.\ account for anatomical differences between speakers, or inaccuracies in the measurement process.
+  \item \textbf{Idea:} Estimate a global mean function $q_0(t)$ from all curves and calculate the elastic full Procrustes residuals.
+    They are given by the difference of elastic full Procrustes fits and the mean function on SRV level
+    $$ \hat r_i = \left( \omega_i^\mathrm{opt} \cdot \widetilde q_i \circ \gamma_i^\mathrm{opt} \right) \sqrt{\dot\gamma_i^\mathrm{opt}} - \hat q_0 \,.$$
+    We can perform analysis over the $\hat r_i(t)$. 
+  \item A word is a combination of vowels and consonants $(C_v, C_c)$ with $C_v \in \{\mathrm{aa}, \mathrm{ii}\}$ and $C_c \in \{\mathrm{d},\mathrm{l},\mathrm{n},\mathrm{s}\}$, e.g.\ \enquote*{pada} corresponds to $(\mathrm{aa},\mathrm{d})$ as all words start with 'p'.
+    We can index each word--speaker pair $\left( C_v, C_c, C_s \right)$ by $k$, where $C_s \in \{1,\dots,6\}$ and $k = 1, \dots, K$ with $K = 2 \cdot 4 \cdot 6 = 48$.
+  \item Then we can gather the residuals $\hat r_{(k, rep_k)}(s_{(k,rep_k,j)})$ of the repetitions $rep_k$ (their number varies with $k$) of each word--speaker pair $k$, and estimate a \enquote*{mean} residual function for that word and speaker:
+    $$ \hat r_k (t) = \hat r_{\left( C_v, C_c, C_s \right)} (t) \approx \hat \theta_k^\top b(t)$$
+    Atm I use the mean basis here, which means linear B-Splines. Might be nicer to have something that is smoother.
+  \item We are interested in the effect of the flanking vowels on tounge shape given, for each consonant-speaker pair, by this difference:
+    $$ \hat d_{(C_c, C_s)}(t) = \hat r_{(\mathrm{aa}, C_c, C_s)} (t) - \hat r_{(\mathrm{ii}, C_c, C_s)} (t) = 
+      \left( \hat\theta^\top_{(\mathrm{aa}, C_c, C_s)} - \hat\theta^\top_{(\mathrm{aa}, C_c, C_s)} \right) b(t)\,. $$
+    Note that $\hat d(t) : [0,1] \rightarrow \mathbb{C}$ (two-dimensional)! The absolute differences over speakers and consonants are given by $\abs{\hat d_{(C_c, C_s)}(t)}$ are plotted in \cref{fig:4-diffs-vpn}.
+\end{itemize}
+\begin{figure}
+  \centering
+  \inputTikz{4-diffs-vpn}
+  \caption{a caption}
+  \label{fig:4-diffs-vpn}
+\end{figure}
+\begin{itemize}
+  \item Finally we can average the differences over each speaker as
+    $$ \hat d_{(C_c)} (t) = \left(\frac{1}{6} \sum_{C_s} \hat \theta^\top_{(C_c, C_s)} \right) b(t)$$
+    or likewise as absolute difference  $\abs{\hat d_{(C_c)}(t)}$ plotted in \cref{fig:4-diffs}.
+\end{itemize}
+\begin{figure}
+  \centering
+  \inputTikz{4-diffs}
+  \caption{Another caption}
+  \label{fig:4-diffs}
+\end{figure}
+\begin{itemize}
+  \item Man sieht, dass der Einfluss des flankierenden Vokals unabhängig vom Konsanten zu sein scheint.
+    Das ist zumindest ein anderes Ergebniss, als in dem Consulting Projekt.
+  \item Die Analysie ist hier auf SRV level.
+  \item Sofern das alles so Sinn macht, könnte man jetzt noch Konfidenzintervalle undsowas dazu berechnen.
+\end{itemize}
