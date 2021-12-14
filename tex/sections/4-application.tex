@@ -56,7 +56,7 @@ The full Procrustes (green) and the elastic full Procrustes mean (red) are estim
 Note that the full Procrustes mean calculated in this way is not exactly a minimizer of the sum of squared full Procrustes distance defined in \cref{def:2-fpdist}, but instead is a minimizer of the sum of squared full Procrustes distances on SRV level.
 When comparing the different mean types in \cref{fig:4-means} we can see that, unlike the elastic mean, both Procrustes means are invariant with respect to all Euclidean similarity transforms, as the estimated mean is the same for the transformed and original datasets.
 However for this very same reason, both Procrustes means hold no information about the scale or rotation of the original curves, as they are of unit-length and have a rotation dependent on the eigendecomposition of the covariance surface.
-The elastic mean is invariant only with respect to re-parametrization and translation, so that its scale and rotation match the original data curves.
+The elastic mean is invariant only with respect to re-parameterisation and translation, so that its scale and rotation match the original data curves.
 It can therefore be meaningfully plotted together with the original curves, when they are centred.
 
 Apart from illustrating these properties, \cref{fig:4-means} provides two important validation checks for the estimation procedure proposed in \cref{sec:2,sec:3}.
@@ -66,7 +66,7 @@ This is especially notable when comparing the means in \cref{fig:4-means} (a) wh
 Taken together this shows that the proposed mean estimation method provides elastic mean estimates in the setting of sparse and irregular curves, which are invariant to all shape-preserving transformations.
 
 
-\section{Effect of the Penalty on the Estimated Mean}
+\section{Effect of the Penalty Parameter on Estimated Means}
 \label{sec:4-penalty}
 The elastic full Procrustes mean is given by the leading eigenfunction of the complex covariance surface, which was estimated using tensor product P-splines.
 As a consequence, the order of the roughness penalty applied in the estimation of the covariance surface directly influences the shape of the estimated mean function.
@@ -144,21 +144,26 @@ It follows that the estimated mean on SRV level is also not necessarily the func
 This mismatch in estimation strategies might be a possible avenue of further research, and could be addressed by incorporating some form of smoothing into the estimation of the elastic full Procrustes fits, such as a variation of the curve smoothing proposed in \cref{app:a-smooth}.
 
 Because of the great variation in '3' shapes in the \texttt{digits3.dat} dataset, there are some curves that cannot be properly aligned.
-Four outlier shapes are shown in \cref{fig:4-outliers}, which were classified using their distance to the mean. 
+Four outlier shapes are shown in \cref{fig:4-outliers}, which were classified using their distance to the mean (left). 
 \begin{figure}
   \centering
-  \begin{subfigure}{0.40\textwidth}
-    \centering
-    \inputTikz{4-outlier-dist}
+  \begin{subfigure}[t]{0.60\textwidth}
+    \begin{subfigure}{0.40\textwidth}
+      \centering
+      \inputTikz{4-outlier-dist}
+    \end{subfigure}
+    \begin{subfigure}{0.60\textwidth}
+      \centering
+      \inputTikz{4-outlier}
+    \end{subfigure}
+    \caption{Distribution of elastic full Procrustes distances to the estimated mean (red) with four largest outliers (grey).}
   \end{subfigure}
-  \begin{subfigure}{0.48\textwidth}
+  \begin{subfigure}[t]{0.40\textwidth}
     \centering
-    \inputTikz{4-outlier}
+    \inputTikz{4-outlier-bopt}
+    \caption{Distribution of the optimal scaling alignment parameter of each elastic Procrustes fit.}
   \end{subfigure}
-  \caption{Left: Distribution of each curves elastic full Procrustes distance to the estimated mean.
-  %Centre-left: Distribution of the scaling parameter of each elastic Procrustes fit onto the estimated mean.
-  Right: Four largest outliers (grey) with respect to their distance to the estimated mean (red).
-  Parameters: See \cref{fig:4-pfits}. 
+  \caption{Elastic full Procrustes distances, outliers and estimated optimal scaling. Parameters: See \cref{fig:4-pfits}. 
   Data: See \cref{fig:41-digit3-means-b,fig:41-spiral-means-b}}
   \label{fig:4-outliers}
 \end{figure}
@@ -212,15 +217,15 @@ The results can be seen in \cref{fig:4-tounges}.
     \label{fig:4-tongue-dists}
   \end{subfigure}
   \caption{Right column and bottom row correspond to means and distances over all vowels or all consonants respectively, with the bottom right means corresponding to global and global per-speaker means and distances.
+    Parameters: Estimated using 13 equidistant knots, linear B-splines on SRV level and a 2nd order penalty.
     Data: Prof.\ Dr.\ M.\ \textsc{Pouplier}.}
   \label{fig:4-tounges}
 \end{figure}
 The box plots in \cref{fig:4-tongue-dists} show the distributions of the elastic full Procrustes fits' distances to their  mean in \cref{fig:4-tongue-means}.
 We can note that although the tongue shapes were measured during consonant articulation, the vowel context has a greater influence on their shape, as grouping by vowel (comparing the right to the other columns) consistently decreases variability more so than grouping by consonant (comparing the bottom to the other rows). 
 When comparing the distance distributions for total means (black) this last part is especially noticeable, as the mean distance hardly changes when grouping by consonant.
-It seems that without accounting for the individual speaker, the consonant only explains very little in terms of variability of the tongue shapes.
-When performing the same comparison over the per-speaker means, we can see that grouping by consonants reduces variability in the dataset slightly.
-Taken together, this could indicate that there is no common effect of the spoken consonant on tongue shape over all speakers, but rather that this effect depends on each speaker individually.
+It seems that without accounting for the individual speaker, the consonant only explains very little in terms of variability of the tongue shapes, as when performing the same comparison over the per-speaker means, we can see that grouping by consonants reduces variability in the dataset slightly.
+This indicates that there is no strong effect of the spoken consonant on tongue shape over all speakers, but rather that this effect depends on each speaker individually.
 Finally, the smallest variability is measured over the per-speaker means for repetitions of the same word (central eight plots), indicating that tongue shape is very consistent on a per-speaker basis.
 
 \todo[inline]{One paragraph for possible future extensions.}

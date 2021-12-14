@@ -1,7 +1,7 @@
 \label{sec:1}
 Statistical Shape Analysis \parencite[see e.g.][]{DrydenMardia2016} is the branch of statistics concerned with modelling geometric information.
-Such information might come in the form of outlines of bones or organs in a medical image, traced points along a handwritten digit, or data on the folding structure of a protein.\todo{cite}
-This data is commonly captured using \emph{landmarks}, which are characteristic points on the objects of interest that \textquote[{\parencite[3]{DrydenMardia2016}}]{match between and within populations}.
+Such information might come in the form of outlines of bones or organs in a medical image, traced points along a handwritten digit, or data on the folding structure of a protein.
+This data is commonly captured using \emph{landmarks}, which are characteristic points on the objects of interest that \enquote{match between and within populations} \parencite[3]{DrydenMardia2016}.
 As an example, we might geometrically compare a set of mouse vertebrae by comparing the coordinates of prominent points along the bone outlines, which are common between all mouse vertebrae.
 More formally, we could say that each mouse vertebra's geometric information is then represented by a landmark configuration $X \in \mathbb{R}^{k \times d}$, which is the stacked matrix of the $k$ $d$-dimensional landmark coordinates, allowing for a multivariate treatment of shape or geometric form.
 
@@ -32,13 +32,13 @@ This is illustrated in \cref{fig:1-eucl}, where the same shape of a handwritten 
   \caption{Several representations of the same shape. Data:\ \texttt{digits3.dat} from the \texttt{shapes} package \parencite{shapes} for the \texttt{R} programming language \parencite{R} with smoothing applied using methods discussed in \cref{app:a-smooth}. Original dataset collected by \cite{Anderson1997}.}
   \label{fig:1-shape}
 \end{figure}
-When considering the shape of a curve $\beta : [0,1] \rightarrow \mathbb{R}^d$, one has to additionally take into account effects relating to the parametrization $t \in [0,1]$.
-As illustrated in \cref{fig:1-warp}, curves $\beta(t)$ and $\beta(\gamma(t))$, with some re-parametrization or \textit{warping function} $\gamma : [0,1] \rightarrow [0,1]$ monotonically increasing and differentiable, have the same image and therefore represent the same shape as well.
+When considering the shape of a curve $\beta : [0,1] \rightarrow \mathbb{R}^d$, one has to additionally take into account effects relating to the parameterisation $t \in [0,1]$.
+As illustrated in \cref{fig:1-warp}, curves $\beta(t)$ and $\beta(\gamma(t))$, with some re-parameterisation or \textit{warping function} $\gamma : [0,1] \rightarrow [0,1]$ monotonically increasing and differentiable, have the same image and therefore represent the same shape as well.
 
-A pre-requisite for any statistical analysis of shape is the ability to calculate a distance between and to estimate a mean from observations, in a fashion that does not depend on location, rotation, scale and/or parametrization of the input.
+A pre-requisite for any statistical analysis of shape is the ability to calculate a distance between and to estimate a mean from observations, in a fashion that does not depend on location, rotation, scale and/or parameterisation of the input.
 In this thesis two established approaches to shape analysis will be combined:
 Firstly, the \emph{full Procrustes distance} and \emph{mean} are widely used for translation-, rotation-, and scaling-invariant analysis of landmark data \parencite[see e.g.][Chap.\ 4,\ 6]{DrydenMardia2016}.
-Secondly, \cite{SrivastavaEtAl2011} introduced a mathematical framework for the \emph{elastic} (re-parametrization invariant) shape analysis of curves, by using their square-root-velocity (SRV) representations.
+Secondly, \cite{SrivastavaEtAl2011} introduced a mathematical framework for the \emph{elastic} (re-parameterisation invariant) shape analysis of curves, by using their square-root-velocity (SRV) representations.
 Taken together, both approaches allow for analysing curves in a fashion that is invariant to all four shape-preserving transformations, leading to an \emph{elastic full Procrustes distance} and \emph{mean}.
 As the full Procrustes mean has particularly nice properties in two dimensions, when identifying $\mathbb{R}^2$ with $\mathbb{C}$ \parencite[see][Chap.\ 8]{DrydenMardia2016}, this thesis will be restricted to the case of planar curves.
 
@@ -77,7 +77,7 @@ The aim of this thesis, as illustrated in \cref{fig:1-mean}, is to extend existi
   \caption{Elastic full Procrustes mean function (right) estimated from sparse and irregular observations (left) using a 13 knot linear B-spline basis, with a 2nd order roughness penalty on SRV level. Data: Original (un-smoothed) \texttt{digits3.dat} with additional random rotation, scaling and translation applied.}
   \label{fig:1-mean}
 \end{figure}
-The later will be achieved by generalising the concept of the full Procrustes mean from landmark to functional data and by iteratively applying full Procrustes mean estimation, rotation-alignment and parametrization-alignment, leading to the estimation of elastic full Procrustes means.
+The later will be achieved by generalising the concept of the full Procrustes mean from landmark to functional data and by iteratively applying full Procrustes mean estimation, rotation-alignment and parameterisation-alignment, leading to the estimation of elastic full Procrustes means.
 Here, techniques for Hermitian smoothing of the complex covariance surfaces as available in the \texttt{R} package \texttt{sparseFLMM} \parencite{sparseFLMM} will be used.
 While \citeauthor{Steyer2021} also propose methods for elastic mean estimation over closed curves, given by $\beta:\mathbb{S}^1 \rightarrow \mathbb{C}$, this thesis will only consider means for open curves. 
 

@@ -61,10 +61,10 @@ Consider for example the actions of the \emph{rotation and scaling} product grou
 On the other hand, the joint actions of \emph{scaling and translation} do not commute, as $\lambda(\beta + \xi) \neq \lambda\beta + \xi$, with the same holding for the joint actions of \emph{rotation and translation}.
 As the order of translating and rotating or scaling  matters, one usually takes the translation to act on the already scaled and rotated curve.
 The joint action defined using this ordering is called an \emph{Euclidean similarity transformation} with $\left((\xi, \lambda, \theta), \beta\right) \xmapsto{\text{Eucl}} \lambda e^{i\theta} \beta + \xi$ \parencite[see][62]{DrydenMardia2016}.
-Considering the action of \emph{warping} or re-parametrization, we can note that it necessarily commutes with all Euclidean similarity transformations as those only act on the image of $\beta$, while the former only acts on the parametrization.
+Considering the action of \emph{warping} or re-parameterisation, we can note that it necessarily commutes with all Euclidean similarity transformations as those only act on the image of $\beta$, while the former only acts on the parameterisation.
 Putting everything together we can give a formal definition of the shape of a planar curve as the following equivalence class:
 \begin{definition}[Shape]
-  The \emph{shape} of an absolutely continuous planar curve $\beta \in \mathcal{AC}([0,1], \mathbb{C})$ is given by its equivalence class $[\beta]$ with respect to all Euclidean similarity transformations and re-parametrizations
+  The \emph{shape} of an absolutely continuous planar curve $\beta \in \mathcal{AC}([0,1], \mathbb{C})$ is given by its equivalence class $[\beta]$ with respect to all Euclidean similarity transformations and re-parameterisations
   $$ [\beta] = \left\{\lambda e^{i\theta}(\beta \circ \gamma) + \xi\,|\, \xi \in \mathbb{C},\, \lambda \in \mathbb{R}^+,\, \theta \in [0,2\pi),\, \gamma \in \Gamma\right\}. $$
   The \emph{shape space} $\mathcal{S}$ is then given by $\mathcal{S} = \left\{[\beta]\,|\,\beta \in \mathcal{AC}([0,1],\, \mathbb{C})\right\}$. 
 \end{definition}
@@ -209,7 +209,7 @@ The shape preserving transformations on original curve level translate to SRV cu
 
 \begin{lemma}
   \label{lem:2-transf}
-  The actions of the translation, scaling, rotation, and re-parametrization groups commute on SRV level.
+  The actions of the translation, scaling, rotation, and re-parameterisation groups commute on SRV level.
   Furthermore, the individual transformations translate to SRV level by 
   \begin{equation*}
     \text{i.)} \,\,(\xi, q) \xmapsto{\text{Trl}} q,\quad 
@@ -275,14 +275,14 @@ For fixed rotation and scaling $\omega^{(k)} \in \mathbb{C}$ the optimisation pr
   \label{eq:2-elfpdist-wrp}
   \gamma^{(k+1)} = \arginf_{\gamma \in \Gamma}\,\, \norm{\widetilde q_1 - (\omega^{(k)} \widetilde q_2 \circ \gamma) \sqrt{\dot\gamma}}_{\mathbb{L}^2}\,.
 \end{equation}
-Again,\cref{eq:2-elfpdist-wrp} is equivalent to the optimisation problem of the elastic distance defined in \cref{def:2-eldist}, when aligning the parametrization of the normalised SRV curve $\widetilde q_1$ and the rotation and scaling aligned, normalised SRV curve $\omega^{(k)} q_2$.
+Again,\cref{eq:2-elfpdist-wrp} is equivalent to the optimisation problem of the elastic distance defined in \cref{def:2-eldist}, when aligning the parameterisation of the normalised SRV curve $\widetilde q_1$ and the rotation and scaling aligned, normalised SRV curve $\omega^{(k)} q_2$.
 A solution $\gamma^{(k+1)}$ can be found by applying known optimisation techniques such as a dynamical programming algorithm or a gradient based method.
 In this thesis we will use the methods laid out in \cite{Steyer2021} and implemented in the \texttt{R} package \texttt{elasdics} \parencite{elasdics} for solving \cref{eq:2-elfpdist-wrp} in the setting of sparse and irregularly sampled curves.
 
 \begin{algorithm}[Elastic full Procrustes distance]
   \label{alg:2-dist}
   $\beta_1, \beta_2$ absolutely continuous planar curves with SRV curves $q_1, q_2 \in \mathbb{L}^2([0,1], \mathcal{C})$ and normalised SRV curves $\widetilde q_i = \frac{q_i}{\norm{q_i}}$.
-  Set $\gamma^{(0)}(t) = t$  as the initial parametrization alignment.
+  Set $\gamma^{(0)}(t) = t$  as the initial parameterisation alignment.
   Set $k = 0$. 
   \begin{enumerate}
     \item Set $\widetilde q^{(k)} = (\widetilde q \circ \gamma^{(k)}) \sqrt{\dot\gamma^{(k)}}$
@@ -362,7 +362,7 @@ Turning back to the calculation of $\hat\mu_1$, we can simplify \cref{eq:2-mean-
 \end{align}
 and we end up with a two step optimisation problem consisting of an outer optimisation over $\mu_q$ and an inner optimisation over the set $\left\{\gamma_i\right\}_{i=1,\dots,N}$.
 Similarly to the approaches discussed in \cite{SrivastavaKlassen2016} and to \cite{Steyer2021}, we solve this iteratively by iterative \emph{template based alignment} \parencite[see e.g.][271]{SrivastavaKlassen2016}:
-In each step, the mean $\hat\mu_q$ is estimated while keeping the parametrizations $\gamma_i$ fixed, after which the $\gamma_i$ are updated by calculating the warping alignment of the full Procrustes fit of each $\widetilde q_i$ onto $\hat\mu_q$.\footnote{Note that this is \emph{not} the same as performing an elastic full Procrustes fit of $\widetilde q_i$ onto $\hat \mu_q$ in each step $k$, because the warping and Procrustes alignments are themselves not iterated over.}
+In each step, the mean $\hat\mu_q$ is estimated while keeping the parameterisations $\gamma_i$ fixed, after which the $\gamma_i$ are updated by calculating the warping alignment of the full Procrustes fit of each $\widetilde q_i$ onto $\hat\mu_q$.\footnote{Note that this is \emph{not} the same as performing an elastic full Procrustes fit of $\widetilde q_i$ onto $\hat \mu_q$ in each step $k$, because the warping and Procrustes alignments are themselves not iterated over.}
 Mean estimation and warping alignment are iterated until the mean shape has converged.
 
 Let us consider the outer optimisation problem in step $k$ for a fixed set of warping functions $\{\gamma_i^{(k)}\}_{i=1,\dots,N}$ with corresponding warping aligned normalised SRV curves $\widetilde q_i^{(k)} = ( \widetilde q_i \circ \gamma_i^{(k)}) \sqrt{\dot\gamma_i^{(k)}}$.

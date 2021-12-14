@@ -52,7 +52,6 @@ As an alternative they propose to approximate the derivative, by assuming that i
 Here, this will be used for approximating observations $q(s_j) \approx q_j$ of the SRV curve $q$ in the covariance estimation step.
 See \cref{fig:3-disc-srv} for a visualisation of both approaches.
 Finally, we can approximate the normalised SRV curve $\widetilde q = q / \norm{q}$ using the polygon-length $l$ of $\beta$ by $\widetilde q_j = q_j \big/ \sqrt{l}$ (see \cref{eq:2-norm}).
-\todo{Discuss normalisation?}
 \begin{figure}
   \centering
   \begin{subfigure}{.48\textwidth}
@@ -75,7 +74,7 @@ Finally, we can approximate the normalised SRV curve $\widetilde q = q / \norm{q
 \end{figure}
 When considering the warped normalised SRV curve $(q \circ \gamma ) \sqrt{\dot\gamma}$, the warped discrete derivative is given by $\Delta (\beta \circ \gamma) \big\rvert_{[\gamma^{-1}(t_j), \gamma^{-1}(t_{j+1})]} = \frac{\beta(t_{j+1}) - \beta(t_{j})}{\gamma^{-1}(t_{j+1}) - \gamma^{-1}(t_j)}$.
 The corresponding warped SRV curve is then given by $(q \circ \gamma) \sqrt{\dot\gamma} \big\rvert_{[\gamma^{-1}(t_j), \gamma^{-1}(t_{j+1})]} = \frac{1}{\sqrt{\gamma^{-1}(t_{j+1}) - \gamma^{-1}(t_j)}} \cdot \frac{\beta(t_{j+1}) - \beta(t_j)}{\sqrt{\norm{\beta(t_{j+1}) - \beta(t_j)}}}$ \parencite[see][]{Steyer2021}.
-Note that this does not change the normalisation as re-parametrization is norm-preserving on SRV level.
+Note that this does not change the normalisation as re-parameterisation is norm-preserving on SRV level.
 
 
 \section{Efficient Estimation using Hermitian Covariance Smoothing}
@@ -93,19 +92,18 @@ The exact choice of basis and penalty will be discussed in \cref{sec:3-mean}.
 
 Taking into account the symmetry properties of the covariance surface by considering every unique pair $(s_{il}$, $s_{im})$ only once allows for more efficient estimation, as shown in \cite{CederbaumScheiplGreven2018}. 
 In the complex case the covariance surface is Hermitian with $C^{(k)}(s,t) = \overline{C^{(k)}(t,s)}$, which means we can decompose the estimation into two separate regression problems over the symmetric real and skew-symmetric imaginary parts of $C^{(k)}(s,t)$.
-We estimate the two models\todo{Formal ok?}
+We estimate the two models
 \begin{align}
   \mathbb{E}[\Re(y^{(k)})|s,t] &= b(s)^\top \Xi^{(k)}_{\Re} b(t) \\
   \mathbb{E}[\Im(y^{(k)})|s,t] &= b(s)^\top \Xi^{(k)}_{\Im} b(t)\,,
 \end{align}
 with $\Xi^{(k)}_\Re, \Xi^{(k)}_\Im \in \mathbb{R}^{K\times K}$ and $\Xi^{(k)} = \Xi^{(k)}_\Re + \iu \Xi^{(k)}_\Im$, under the constraints that $(\Xi^{(k)}_\Re)^\top = \Xi^{(k)}_\Re$ and $(\Xi^{(k)}_\Im)^\top = - \Xi^{(k)}_\Im$.
-
 In this thesis  $\Xi^{(k)}_\Re$ and $\Xi^{(k)}_\Im$ are estimated using the \texttt{gam} function from the \texttt{R} package \texttt{mgcv} \parencite{Wood2017}, where the smoothing parameters are selected via restricted maximum likelihood (REML) estimation.
 Two \texttt{mgcv} smooths provided in the package \texttt{sparseFLMM} \parencite{sparseFLMM} are used for efficient Hermitian smoothing, which generalise the approach proposed by \cite{CederbaumScheiplGreven2018} for symmetric tensor product P-splines to the skew-symmetric case.
 Note that \texttt{mgcv} automatically adds a sum-to-zero constraint to a specified basis \parencite[see][175]{Wood2017}, which makes it is necessary to transform the coefficient matrices $\widetilde \Xi_\Re^{(k)}$, $\widetilde \Xi_\Im^{(k)}$ recovered from \texttt{gam} with an appropriate transformation matrix $D$.
 The coefficient matrices in the specified basis are given by $\Xi_{\Re/\Im}^{(k)} = D \cdot \widetilde \Xi_ {\Re/\Im}^{(k)}$, where $D$ may be calculated from the constrained and unconstrained design matrices via $X = D \cdot \widetilde X$.
 
-\section{Estimating the Elastic Full Procrustes Mean in a Fixed Basis}
+\section{Estimation of the Elastic Full Procrustes Mean in a Fixed Basis}
 \label{sec:3-mean}
 Our goal is to estimate a smooth mean function, which might be constructed with the same uni-variate basis $b(s)$ used in the tensor product basis of the covariance surface, so that the mean is given by $\mu_q(s) = b(s)^\top \theta$.
 We can choose an appropriate basis $b(s)$ by considering which, e.g., smoothness properties we want the estimated mean to have.
