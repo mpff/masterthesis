@@ -4,10 +4,10 @@
 %% Packages
 
 %%%% QUALITY OF LIVE DURING WRITING (REMOVE BEFORE PUBLISHING) %%%%
-\RequirePackage[l2tabu, orthodox]{nag}  % detect depreceated latex pkgs
+%\RequirePackage[l2tabu, orthodox]{nag}  % detect depreceated latex pkgs
 %\usepackage[notref,notcite]{showkeys}  % show labels
 %\overfullrule=2cm   % mark overfull hboxes with a black box
-\usepackage{todonotes}  % create TODO marks
+%\usepackage{todonotes}  % create TODO marks
 
 % Document margins/formating
 \usepackage[left=3cm,right=2cm,top=2.5cm,bottom=2.5cm,footskip=\dimexpr1.25cm+\dp\strutbox\relax]{geometry}
@@ -56,6 +56,7 @@
 
 % Additional packages
 \usepackage[nodayofweek]{datetime}
+\usepackage{advdate}
 \usepackage{import}
 \usepackage{verbatim}
 \usepackage{color}
@@ -167,11 +168,11 @@
     for Sparse and Irregular Planar Curves}}
   \vspace{1.2cm}\\
     {\large Masters Thesis}\\
-    in partial fulfillment of the requirements for the degree\\
+    in partial fulfilment of the requirements for the degree\\
     \textbf{M.Sc.\ Statistics}
   \vspace{1.2cm}\\
   \textsc{\large Manuel Pfeuffer\footnote{\url{mnl.pfeuffer@gmail.com}, Matriculation number: 577668}}\\
-  Berlin, \today
+    Berlin, {\AdvanceDate[1]\today}
   \vspace{2.0cm}\\
     \includegraphics[width=0.4\textwidth]{graphics/hulogo.pdf}
   \vspace{0.5cm}\\
@@ -189,7 +190,7 @@
 \pagenumbering{roman}
 \tableofcontents
 
-\listoftodos
+%\listoftodos
 
 
 % --- Main Content ---
@@ -208,11 +209,11 @@
 \input{sections/3-estimation}
 
 \newpage
-\chapter{Verification and Application using Simulated and Empirical Datasets}
+\chapter{Verification and Application Using Simulated and Empirical Datasets}
 \input{sections/4-application}
 
 \newpage
-\chapter{Summary and Outlook}
+\chapter{Summary}
 \input{sections/5-summary}
 
 
@@ -245,7 +246,7 @@
 %\chapter*{---Discarded---}
 %\input{sections/c-discards}
 
-\addtocontents{toc}{\protect\setcounter{tocdepth}{1}}  % Show todo entries.
+%\addtocontents{toc}{\protect\setcounter{tocdepth}{1}}  % Show todo entries.
 
 
 \end{document}

@@ -1,25 +1,25 @@
 \label{sec:4}
 In this chapter the proposed methods will be applied and verified.
-\cref{sec:4-means} offers a comparison between the elastic full Procrustes mean, the elastic mean and the full Procrustes mean over two datasets, with the goal of illustrating some properties of the elastic full Procrustes mean.
+\cref{sec:4-means} offers a comparison between the elastic full Procrustes mean, the elastic mean and the full Procrustes mean over two datasets.
 \cref{sec:4-penalty} briefly discusses the effect of the penalty parameter on the estimation.
-\cref{sec:4-pfits} mentions pitfalls when comparing the mean to the elastic full Procrustes fits and discusses outliers.
+\cref{sec:4-pfits} mentions pitfalls when plotting the mean together with the aligned curves and discusses outliers.
 Finally, \cref{sec:4-tounges} applies the proposed methods to an empirical dataset of tongue contours, which was kindly provided by Prof.\ Dr.\ Marianne \textsc{Pouplier}.
 
 
 \section{Comparison to the Elastic and the Full Procrustes Mean}
 \label{sec:4-means}
 In this section we will estimate and compare the elastic mean, the full Procrustes mean and the elastic full Procrustes mean for two datasets.
-The first dataset is the \texttt{digits3.dat} dataset provided in the \texttt{shapes} package \parencite{shapes} and originally collected by \cite{Anderson1997}, which has already been used throughout this thesis for illustrative purposes.
+The first dataset is the \texttt{digits3.dat} dataset provided in the \texttt{shapes} package \parencite{shapes} and originally collected by \cite{Anderson1997}, which was already used \cref{sec:2,sec:3} for illustrative purposes.
 It consist of 30 handwritten digits \enquote*{3}, each of which was sampled in a regular fashion at 13 points along the digit, leading to sparse but somewhat regular observations.
-The second dataset consists of ten simulated spirals, each of which is a sample of the curve $\beta(t) = t \cos(13t) + \iu \cdot t \sin(13t)$, evaluated $m_i \in [10,15]$ times over a noisy grid, with additional noise applied to the output, leading to sparse and irregular observations.
+The second dataset consists of ten simulated spirals, each of which is a sample of the curve $\beta(t) = t \cos(13t) + \iu \cdot t \sin(13t)$ evaluated $n_i \in [10,15]$ times over a noisy grid, with additional noise applied to the output, leading to sparse and irregular observations.
 The code simulating these spirals was adapted from the \texttt{compute\_elastic\_mean} function's documentation in the \texttt{elasdics} package \parencite{elasdics}.
-Because the spirals \enquote{speed up} w.r.t.\ $t$ towards the end ($t = 1$), they start out quite densely sampled but become increasingly sparser, making the mean estimation, especially close to $t=1$, a challenge.
+Because the spirals \enquote{speed up} w.r.t.\ $t$ towards the end ($t = 1$), they start out quite densely sampled but become increasingly sparser, making the mean estimation close to $t=1$ a challenge.
 The datasets are considered in two settings:
-In the first, each dataset is considered as is, which means that all curves are centred and similarly aligned.
+In the first, each dataset is considered as is, meaning that all curves are centred and similarly aligned.
 In the second, for each curve $\beta_i$ a random Euclidean similarity transform with translation $\xi_i \sim \mathcal{U}([\xi_\mathrm{min}, \xi_\mathrm{max}])$, rotation $\theta_i \sim \mathcal{U}([0,2\pi))$ and scaling $\lambda_i \sim \mathcal{U}([0.5,1.5])$ is drawn, where $\xi_\mathrm{min}, \xi_\mathrm{max}$ are set respectively to $\pm 60$ and $\pm 2$ for the digits and spirals.
 The curves are then transformed by $\lambda_i e^{\iu \theta_i} \beta_i + \xi_i$.
 
-The four sets of data curves and means, are show in \cref{fig:4-means}.
+The four sets of data curves and means, are shown in \cref{fig:4-means}.
 \begin{figure}
   \centering
   \begin{subfigure}{\textwidth}
@@ -52,18 +52,19 @@ The four sets of data curves and means, are show in \cref{fig:4-means}.
   \label{fig:4-means}
 \end{figure}
 Here, the elastic mean (blue) is estimated using \texttt{compute\_elastic\_mean} from the \texttt{elasdics} package.
-The full Procrustes (green) and the elastic full Procrustes mean (red) are estimated using the methods proposed in \cref{sec:2,sec:3}, where for the full Procrustes mean the estimation is stopped before the warping alignment step during the first iteration.
+The full Procrustes (green) and the elastic full Procrustes mean (red) are estimated using the methods proposed in \cref{sec:2,sec:3}.
+For the full Procrustes mean the estimation is stopped before the warping alignment step during the first iteration.
 Note that the full Procrustes mean calculated in this way is not exactly a minimizer of the sum of squared full Procrustes distance defined in \cref{def:2-fpdist}, but instead is a minimizer of the sum of squared full Procrustes distances on SRV level.
 When comparing the different mean types in \cref{fig:4-means} we can see that, unlike the elastic mean, both Procrustes means are invariant with respect to all Euclidean similarity transforms, as the estimated mean is the same for the transformed and original datasets.
 However for this very same reason, both Procrustes means hold no information about the scale or rotation of the original curves, as they are of unit-length and have a rotation dependent on the eigendecomposition of the covariance surface.
 The elastic mean is invariant only with respect to re-parameterisation and translation, so that its scale and rotation match the original data curves.
 It can therefore be meaningfully plotted together with the original curves, when they are centred.
 
-Apart from illustrating these properties, \cref{fig:4-means} provides two important validation checks for the estimation procedure proposed in \cref{sec:2,sec:3}.
-Firstly, as stated, the estimated elastic full Procrustes mean is invariant to all Euclidean similarity transforms, as the mean shapes do not change with transformations of the input curves.
-Secondly, when considering untransformed curves, the estimated elastic full Procrustes mean shapes are very comparable to elastic mean shapes estimated with the method proposed in \cite{Steyer2021}.
+\cref{fig:4-means} provides two important validation checks for the estimation procedure proposed in \cref{sec:2,sec:3}.
+Firstly, the estimated elastic full Procrustes mean is invariant to all Euclidean similarity transforms, as the mean shapes do not change with transformations of the input curves.
+Secondly, the estimated elastic full Procrustes mean shapes are very comparable to estimated elastic mean shape, when considering the untransformed curves.
 This is especially notable when comparing the means in \cref{fig:4-means} (a) where the prominent \enquote{notch} in the centre of the mean shape is similarly pronounced for the elastic and the elastic full Procrustes means, but not for the (non-elastic) full Procrustes mean.
-Taken together this shows that the proposed mean estimation method provides elastic mean estimates in the setting of sparse and irregular curves, which are invariant to all shape-preserving transformations.
+Taken together, this shows that the proposed mean estimation method provides elastic mean estimates in the setting of sparse and irregular curves, which are invariant to all shape-preserving transformations.
 
 
 \section{Effect of the Penalty Parameter on Estimated Means}
@@ -86,7 +87,7 @@ This can be seen in \cref{fig:4-penalty}, where a smooth mean was estimated for 
 \end{figure}
 Here, in particular, the spiral mean shapes help to illustrate the penalty effect.
 As mentioned in \cref{sec:4-means}, the spirals are evaluated in a way that makes them very sparse towards the end, leading to unstable mean estimates in that region.
-By penalising $p$-th order differences between neighbouring coefficients, the penalty helps to stabilise the covariance estimation (and thereby the mean) in regions where observations are sparse, where the shape of the function is consequently dominated by the penalty.
+By penalising $p$-th order differences between neighbouring coefficients, the penalty helps to stabilise the covariance estimation (and thereby the mean) in regions where observations are sparse and where the shape of the function is consequently dominated by the penalty.
 
 The mean function on the far left in \cref{fig:4-penalty} was estimated using no penalty.
 We can see that the spiral shape is estimated well in the beginning (central part), where observations are dense, but becomes increasingly unstable and wriggly towards the end (outer part).
@@ -95,9 +96,10 @@ A zero order penalty on a B-spline basis can be interpreted as a ridge-penalty o
 It is important to note that the penalised covariance estimation is performed on SRV level and not on data curve level, which means the ridge penalty shrinks the estimated SRV mean towards zero.
 However, this does not imply that the estimated mean on data curve level also gets shrunk towards zero.
 In fact, a ridge penalty on SRV level only shrinks the \emph{absolute velocity} of the mean on data curve level towards zero, but should not directly influence the \emph{direction} of the mean curve.
-This can be seen, when comparing the zero order penalty spiral mean (centre-left) to the higher order penalty spiral means (right) and noting that, as a consequence of the decreased absolute velocity, it is relatively \enquote{shorter} towards the end when compared to the beginning of the spiral.
+\footnote{While the penalty acts on the estimated covariance surface, its effect seems to translate more or less directly to its leading eigenfunction.}
+This can be seen, when comparing the zero order penalty spiral mean (centre-left) to the higher order penalty spiral means (right).
+As a consequence of the decreased absolute velocity the former is relatively \enquote{shorter} towards the end, when compared to the beginning of the spiral.
 The higher order penalties may be interpreted as smoothing the SRV mean function towards a polynomial of degree $p-1$ in areas where the penalty dominates, which means a constant function for the first order penalty and a linear function for the second order penalty \parencite[see e.g.][435]{FahrmeierEtAl2013}.
-\todo{Kann man das so einfach übertrage?}
 Looking at the means for $p = 1,2$ in \cref{fig:4-penalty}, these differences are already hard to spot.
 The order two mean (right) is slightly longer towards the end, indicating a speed up, which is caused by the penalisation towards a global linearly (increasing) velocity, compared to a more conservative penalisation towards a global constant velocity. 
 
@@ -106,7 +108,7 @@ The order two mean (right) is slightly longer towards the end, indicating a spee
 \label{sec:4-pfits}
 Although the elastic full Procrustes mean does not share the rotation, scale and translation of the input curves, it is still possible to visually compare it to them, by plotting the mean together with the elastic full Procrustes fits.
 In this thesis, the elastic full Procrustes fits are calculated on SRV level as $\widetilde q^\mathrm{EP} = (\omega^\mathrm{opt}\cdot \widetilde q \circ \gamma^\mathrm{opt} ) \sqrt{\dot\gamma^\mathrm{opt}}$, where the optimal rotation and scaling alignment $\omega^\mathrm{opt} = \lambda^\mathrm{opt} e^{\iu \theta^\mathrm{opt}}$ and optimal warping alignment $\gamma^\mathrm{opt}$ of each curve to the mean are taken from the last iteration of the mean estimation step.
-In \cref{fig:4-pfits-curve} the elastic full Procrustes mean and fits are plotted for the digits \enquote*{3} and simulated spiral datasets discussed in \cref{sec:4-means}, with random Euclidean similarity transforms applied to each curve.
+In \cref{fig:4-pfits-curve} the elastic full Procrustes mean and fits are plotted for the digits \enquote*{3} and simulated spiral datasets discussed in \cref{sec:4-means}.
 \begin{figure}
   \centering
   \begin{subfigure}{\textwidth}
@@ -134,13 +136,14 @@ In \cref{fig:4-pfits-curve} the elastic full Procrustes mean and fits are plotte
 \end{figure}
 This alignment works very well for the simulated spirals and is more fuzzy for the digits, due to their greater variability in shape. 
 
-In general, one has to be careful when interpreting these plots.
+In general one has to be careful when interpreting these plots.
 For example, it can be seen that the estimated mean does not necessarily follow the \enquote{centre of mass} of the aligned curves. 
 One reason for this is that the mean is calculated on SRV level, meaning we may set an arbitrary translation for the mean on data curve level.
-Here, the Procrustes fits and the mean function are centred, but a natural alternative might be to have all curves start at the origin, with both choices leading to very different, but equally valid, visual representations.
-Another reason is the scaling alignment, especially with respect to outliers.
-This is more noticeable in the \texttt{digits3.dat}, because of the greater variation in '3' shapes, where some curves cannot be properly aligned.
-Four outlier shapes are shown in \cref{fig:4-outliers}, which were classified using their distance to the mean (left). 
+Here, the Procrustes fits and the mean function are centred, but a natural alternative might be to have all curves start at the origin.
+Both choices lead to very different but equally valid visual representations.
+Likewise, we can see that the mean on SRV level is also not a simple functional mean of the aligned curves.
+This may be caused by the scaling alignment, which tends to favour sightly shrinking curves to decrease their distance to the mean, as shown by values of $\lambda^\mathrm{opt} < 1$ in \cref{fig:4-bopts}.
+This shrinkage is more noticeable in the \texttt{digits3.dat} for which four outlier shapes are shown in \cref{fig:4-outliers}, which were classified using their distance to the mean. 
 \begin{figure}
   \centering
   \begin{subfigure}[t]{0.59\textwidth}
@@ -164,18 +167,16 @@ Four outlier shapes are shown in \cref{fig:4-outliers}, which were classified us
   \caption{Elastic full Procrustes distances, outliers and estimated optimal scaling. Parameters: See \cref{fig:4-pfits}. 
   Data: See \cref{fig:41-digit3-means-b,fig:41-spiral-means-b}}
 \end{figure}
-One prominent feature of the full Procrustes mean is its relative robustness to outliers, when compared to the normal and partial Procrustes means.
-This comes from the additional scaling alignment, which allows for shrinkage of any outlier curve towards zero, as can be seen for curves $1$ and $4$ in \cref{fig:4-outliers}.
-This shrinkage, indicated by a value of $\lambda^\mathrm{opt} < 1$ in \cref{fig:4-bopts}, does occur for all curves, not only occur for outlier curves, which should not be surprising, as the alignment minimizes the distance to the mean, which always makes it advantageous to shrink the aligned curves slightly rather than scaling them up.
-Because the warping alignment is performed between the elastic full Procrustes fit and the mean curve, it might be important to better understand how it is affected by bad rotation and scaling alignment.
-While a bad scaling alignment does not seem to be immediately problematic, as the warping alignment only takes into account the \emph{relative} distances over $t$ between the aligned and the mean curve, a bad rotation alignment will most likely always lead to a bad warping alignment.
-However, because of the discussed shrinkage, these outliers are only problematic when considering the alignment of single curves, as their influence on the estimated means shape is always limited by a shrinkage to zero.
+Robustness to outliers is a prominent feature of the full Procrustes mean, when compared to the normal and partial Procrustes means.
+This comes from the discussed shrinkage, seen for example for outliers $1$ and $4$ in \cref{fig:4-outliers}.
+When considering how this shrinkage might influence the warping alignment over the elastic full Procrustes fits, we can note that a bad scaling alignment is not immediately problematic as the warping alignment only takes into account the \emph{relative} distances over $t$ between the aligned and the mean curve
+While a bad rotation alignment will most likely always lead to a bad warping alignment, these outliers are only problematic when considering the alignment of single curves, as their influence on the estimated overall mean shape will always be limited by a shrinkage to zero.
 
 
-\section{Analysis of Variations in Tongue Shapes}
+\section{Analysis of Variability in Tongue Shapes}
 \label{sec:4-tounges}
 Mean and distance estimation for planar shapes extracted from imagery is a typical use-case for the proposed methods.
-In this section a dataset consisting of tongue contours obtained from ultrasound recordings and their phonetic context is analysed.
+In this section, tongue contours obtained from ultrasound recordings are analysed in their phonetic context.
 The data was kindly provided by Prof.\ Dr.\ Marianne \textsc{Pouplier} and was gathered in an experimental setting from 6 native German speakers, each of whom was recorded speaking the same set of ficticious words over multiple repetitions.
 Each word is a combination of two flanking vowels such as 'aa' or 'ii' and one consonant such as 'd' or 'l', leading to words such as 'pada', 'pidi', 'pala' or 'pili'.
 The tongue contours follow the centre of the tongue and are extracted from the ultrasound recordings at times corresponding to the centre of consonant articulation, which is estimated from the acoustic signal.
@@ -185,17 +186,20 @@ Procrustes analysis can account for anatomical differences between speakers, suc
 At the same time, the tongue is a flexible muscle capable of stretching, bending and compressing itself, providing some indication that an elastic analysis is appropriate. 
 Therefore, the tongue shapes will be analysed using the elastic full Procrustes mean and distance.
 
-The dataset we analyse consists of tongue shapes during articulation of the consonants 'd', 'l', 'n' and 's', for each of which there are multiple observations over two vowel contexts ('aa' and 'ii') and six speakers.
-The shapes will vary between consonants, vowel context and speaker and also, per speaker, over multiple repetitions.
-However, it is not immediately clear which factors are relatively more important for tongue shape than others.
-We are therefore interested in questions such as:
-Does tongue shape vary more strongly between vowel context than between consonants?
-Do individual speakers have a consistent tongue shape per word between their repetitions?
-Does each speakers individual way of speaking influence tongue shape more strongly than the actual consonant spoken?
-To answer these questions, the dataset is grouped hierarchically, by consonants and vowel contexts and means are estimated for each grouping structure, one total mean over all observations belonging to the specific combination of consonants and vowels, and 6 speaker-wise means.
-Then, to get a measure for the variability of tongue shapes inside a specific group, elastic full Procrustes distances to the mean are calculated and their distribution compared.
+The dataset we analyse consists of tongue shapes during articulation of the consonants 'd', 'l', 'n' and 's'.
+For each consonant we consider two flanking vowels, 'aa' and 'ii', resulting in eight unique combinations of vowels and consonants.
+There are multiple sources of variation in the dataset: i.) variation over the consonants, ii.) variation over the vowel context, iii.) variation over the speakers and iv.) variation over multiple repetitions of the same word by the same speaker.
+We want to analyse which of these factors are relatively more important for tongue shape than others.
+Does tongue shape vary more strongly between the vowel contexts than between different consonants?
+Is the tongue shape of an individual speaker consistent over multiple repetitions of the same word?
+How strongly does each speakers individual way of speaking influence the tongue shape?
 
-The results can be seen in \cref{fig:4-tounges}.
+We want to answer these questions using only mean and distance calculations.
+For this, the dataset is grouped hierarchically, as displayed in \cref{fig:4-tongue-means}.
+In a first step, we can group the dataset by vowels and by consonants and estimate means over all observed tongue curves belonging to a specific consonant or vowel (right column and bottom row).
+In a second step, we can group the dataset by unique combinations of vowel and consonant (central eight plots).
+In a third step, we can estimate six per-speaker means (coloured) for each group in the first and second steps.
+Then, to get a measure for the variability of tongue shapes inside a specific group, each curves elastic full Procrustes distance to its respective group mean is calculated and their distribution is compared (see \cref{fig:4-tongue-dists}).
 \begin{figure}
   \centering
   \advance\leftskip-1cm
@@ -219,11 +223,13 @@ The results can be seen in \cref{fig:4-tounges}.
     Data: Prof.\ Dr.\ M.\ \textsc{Pouplier}.}
   \label{fig:4-tounges}
 \end{figure}
-The box plots in \cref{fig:4-tongue-dists} show the distributions of the elastic full Procrustes fits' distances to their  mean in \cref{fig:4-tongue-means}.
-We can note that although the tongue shapes were measured during consonant articulation, the vowel context has a greater influence on their shape, as grouping by vowel (comparing the right to the other columns) consistently decreases variability more so than grouping by consonant (comparing the bottom to the other rows). 
-When comparing the distance distributions for total means (black) this last part is especially noticeable, as the mean distance hardly changes when grouping by consonant.
-It seems that without accounting for the individual speaker, the consonant only explains very little in terms of variability of the tongue shapes, as when performing the same comparison over the per-speaker means, we can see that grouping by consonants reduces variability in the dataset slightly.
-This indicates that there is no strong effect of the spoken consonant on tongue shape over all speakers, but rather that this effect depends on each speaker individually.
-Finally, the smallest variability is measured over the per-speaker means for repetitions of the same word (central eight plots), indicating that tongue shape is very consistent on a per-speaker basis.
 
+We can note that grouping by vowel (comparing the right to the other columns) consistently decreases variability more so than grouping by consonant (comparing the bottom to the other rows). 
+This indicates that vowel context has a greater influence on tongue shape, when compared to the actual  consonant that was spoken at time of measurement, which might already be surprising for someone not familiar with the subject.
+This is also confirmed visually, when considering the stark difference in estimated mean shapes between vowels and comparing it to the difference in mean shapes between consonants.
+In fact, when considering the distance distributions for total means (black), we can note the mean distance does hardly changes when grouping by consonant (comparing the bottom to the other rows).
+This is in contrast to the per-speaker means (coloured), where grouping by consonant seems to decrease the variability at least slightly.
+It seems that without accounting for the individual speaker, the consonant only explains very little in terms of variability of the tongue shapes.
+This indicates that there is no strong common effect of the spoken consonant on tongue shape, but rather that this effect depends on each speaker individually.
+Finally, when considering the grouping by single words (central eight plots), we can note that the variability measured over the per-speaker means is consistently smaller than the variability of the total means, indicating that tongue shape is very consistent on a per-speaker basis.
 

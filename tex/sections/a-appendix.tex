@@ -36,19 +36,20 @@ Then
 
 \section{Shape-Smoothing Using the Estimated Covariance-Surface}
 \label{app:a-smooth}
-Instead of treating $\widetilde q_i$ as piecewise constant, we might want to smooth each curve in the mean basis $b(t)$, so that $\widetilde q_i \approx b(s)^\top \hat\theta_i$.
+Instead of treating $\widetilde q$ as piecewise constant, we might want to smooth each curve in the mean basis $b(t)$, so that $\widetilde q \approx b(s)^\top \hat\theta$.
 The optimal rotation and scaling alignment is then simply given by the scalar product 
-$ \omega_i = \langle \widetilde q_i, \hat\mu_q \rangle \approx (\hat\theta_i)^H G \hat\theta$.
-To make use of information from the other observations, we can estimate the coefficient vector $\theta_i$ in way that penalises deviations from the estimated mean covariance-structure $\hat\Xi$.
-This may be achieved by using a ridge penalty, where we assume $\widetilde q_i \sim \mathcal{N}_{\mathbb{C}^k}(B \theta_i, \sigma^2 I_{m_i})$, with $B$ the $m_i \times k$ design matrix and $q_i$ now the stacked vector of observations, and place a complex normal prior $\theta_q \sim \mathcal{N}_{\mathbb{C}^k}(0, \tau^2 \hat\Xi)$ on the coeficient vector.
-See e.g.\ \parencite{Picinbono1996} for information on the complex normal distribution.
+$ \omega = \langle \widetilde q, \hat\mu_q \rangle \approx (\hat\theta)^H G \hat\theta_\mu$, where $\hat\theta_\mu$ are the estimated mean basis coefficients.
+To make use of information from the other observations, we can estimate the coefficient vector $\theta$ in way that penalises deviations from the estimated mean covariance-structure $\hat\Xi$.
+This may be achieved by using a ridge penalty, where we assume $\widetilde q \sim \mathcal{N}_{\mathbb{C}^k}(B \theta, \sigma^2 I_{m})$, with $B$ the $m \times k$ design matrix, for $m$ observed points and $k$ basis funcitons, and $\widetilde q$ now the stacked vector of observations.
+We can then place a complex normal prior $\theta \sim \mathcal{N}_{\mathbb{C}^k}(0, \tau^2 \hat\Xi)$ on the coeficient vector.
+See e.g.\ \cite{Picinbono1996} for information on the complex normal distribution.
 Here, $\lambda = \frac{\sigma^2}{\tau^2}$ is a hyperparameter controlling the strength of the penalisation.
 \begin{equation}
-  \argmax_{\theta_i \in \mathbb{C}^k} \,\, (\widetilde q_i - B\theta_i)^H (\widetilde q_i - B \theta_i) - \lambda {\theta_i}^H {\hat\Xi}^H \theta_i
+  \argmax_{\theta \in \mathbb{C}^k} \,\, (\widetilde q - B\theta)^H (\widetilde q - B \theta) - \lambda {\theta}^H {\hat\Xi}^{-1} \theta
 \end{equation}
-The penalised estimate is then given by the solution to the above optimisation problem, and therefore after some derivation
+The penalised estimate is then given by the solution to the above optimisation problem.
 \begin{equation}
-  \hat\theta_i = (B^T B + \lambda {\hat\Xi}^{-1})^{-1} B^T \widetilde q_i.
+  \hat\theta = (B^H B + \lambda {\hat\Xi}^{-1})^{-1} B^H \widetilde q.
 \end{equation}
 The results of this smoothing procedure can be seen in \cref{fig:a-smooth-lm} for $\lambda = 0.4$.
 %\begin{figure}
@@ -107,18 +108,18 @@ The results of this smoothing procedure can be seen in \cref{fig:a-smooth-lm} fo
   \caption{Elastic full Procrustes means and fits for digits with smoothed observations ($\lambda = 0.4$). Parameters: Second order penalty and linear B-splines, with 13 equidistant knots. Data: See \cref{fig:41-digit3-means-b,fig:41-spiral-means-b}}
   \label{fig:a-smooth-lm}
 \end{figure}
-The method succeeds in estimating very natural looking smooth SRV curves, however, the smoothed curves tend to get shrinked towards 0, because of the ridge penalty.
-While this shrinking may be prevented by normalizing the smoothed SRV curve (leading to unit-length curves on original curve leve), a normal prior is probably simply not the appropriate prior in this setting.
-For the individual coefficients $\theta_{ik}$ it is true that $\mathbb{E}[\theta_{ik}] = 0$ (due to rotational symmetry), however, in general $\mathbb{E}[\abs{\theta_{ik}}] \neq 0$. 
-A distribution more like a Normal distribution lying on a ring around 0 with radius $r = \abs\theta$, or a proper shape distribution such as the complex Bingham distribution \parencite[see e.g.][Chap.\ 10]{DrydenMardia2016} might be more appropriate.
-Using those, the estimates would not be shrinked towards zero and instead would be smoothed toworads a curve of size equal to the estimated mean.
+The method succeeds in estimating very natural looking smooth SRV curves.
+However, the smoothed curves tend to get shrinked towards the origin because of the ridge penalty.
+This shrinking may be prevented by normalizing the smoothed SRV curve, leading to unit-length curves on original curve level.
+In general, a normal prior is probably appropriate in this setting and a proper shape distribution, such as the complex Bingham distribution \parencite[see e.g.][Chap.\ 10]{DrydenMardia2016} should be used.
+This can be seen when noting that we would ideally have a prior with $\mathbb{E}[\abs{\theta}] = \abs{\hat\theta_\mu}$, smoothing the observations towards a curve of similar size to the mean curve, which cannot be achieved with a normal distribution.
 The smoothing could be further improved by providing true interpolation, so that the interpolated curve goes through the observed points on original curve level.
-As the smoothed original curve is calculated by integrating the smoothed SRV curves, this means one has to implement a nonlinear constraint ensuring that the curve integrates to the difference between the observed points on the interval between them.
+As the smoothed original curve is calculated by integrating the smoothed SRV curves, this means one has to implement a nonlinear constraint on SRV level, ensuring that the SRV curve integrates to the difference of the observed points on the interval between them.
 
 
 \section{Implicit Rotation and Scaling Alignment}
-\label{app:a-warping}
-Instead of solving for the optimal warping and rotation and scaling alignment iteratively, we might optimse the warping alignment directly over the analytical solution to the rotation and scaling alignment (see \cref{lem:2-fpdist} i.).
+\label{app:a-warp}
+Instead of solving for the optimal warping and rotation and scaling alignment iteratively, we might optimse the warping alignment directly over the analytical solution to the rotation and scaling alignment (see \cref{lem:2-elfpdist}).
 Then we have an alternative optimisation problem
 \begin{align*}
   \gamma^\mathrm{opt} = & \argmin_{\gamma \in \Gamma}\, \sqrt{1 - \langle \widetilde q_1, (\widetilde q_2  \circ \gamma ) \sqrt{\dot\gamma} \rangle \langle (\widetilde q_2 \circ \gamma) \sqrt{\dot\gamma}, \widetilde q_1 \rangle } \\
